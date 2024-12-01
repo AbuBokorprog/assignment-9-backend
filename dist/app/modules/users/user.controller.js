@@ -44,4 +44,29 @@ const createCustomer = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0,
         data,
     });
 }));
-exports.userControllers = { createAdmin, createVendor, createCustomer };
+const retrieveAllUsers = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.userServices.retrieveAllUsers();
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all users successfully!',
+        data,
+    });
+}));
+const retrieveUserById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const data = yield user_service_1.userServices.retrieveUserById(id);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve users by id successfully!',
+        data,
+    });
+}));
+exports.userControllers = {
+    createAdmin,
+    createVendor,
+    createCustomer,
+    retrieveAllUsers,
+    retrieveUserById,
+};

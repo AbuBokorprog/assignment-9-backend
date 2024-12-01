@@ -21,4 +21,8 @@ router.post(
   userControllers.createCustomer,
 )
 
+router.get('/', userControllers.retrieveAllUsers)
+
+router.get('/:id', userControllers.retrieveUserById)
+
 export const userRouter = router

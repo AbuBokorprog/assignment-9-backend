@@ -94,4 +94,37 @@ const createCustomer = async (payload: TAdmin) => {
   return result
 }
 
-export const userServices = { createAdmin, createVendor, createCustomer }
+const retrieveAllUsers = async () => {
+  const result = await prisma.user.findMany({
+    include: {
+      admin: true,
+      customer: true,
+      vendor: true,
+    },
+  })
+
+  return result
+}
+
+const retrieveUserById = async (id: string) => {
+  const result = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+    include: {
+      admin: true,
+      customer: true,
+      vendor: true,
+    },
+  })
+
+  return result
+}
+
+export const userServices = {
+  createAdmin,
+  createVendor,
+  createCustomer,
+  retrieveAllUsers,
+  retrieveUserById,
+}

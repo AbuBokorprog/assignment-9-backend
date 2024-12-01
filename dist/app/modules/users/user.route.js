@@ -12,4 +12,6 @@ const router = express_1.default.Router();
 router.post('/create-admin', (0, ValidationRequest_1.default)(user_validation_1.userValidation.createAdmin), user_controller_1.userControllers.createAdmin);
 router.post('/create-vendor', (0, ValidationRequest_1.default)(user_validation_1.userValidation.createAdmin), user_controller_1.userControllers.createVendor);
 router.post('/create-customer', (0, ValidationRequest_1.default)(user_validation_1.userValidation.createAdmin), user_controller_1.userControllers.createCustomer);
+router.get('/', user_controller_1.userControllers.retrieveAllUsers);
+router.get('/:id', user_controller_1.userControllers.retrieveUserById);
 exports.userRouter = router;

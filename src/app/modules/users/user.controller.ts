@@ -34,4 +34,33 @@ const createCustomer = CatchAsync(async (req, res) => {
   })
 })
 
-export const userControllers = { createAdmin, createVendor, createCustomer }
+const retrieveAllUsers = CatchAsync(async (req, res) => {
+  const data = await userServices.retrieveAllUsers()
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve all users successfully!',
+    data,
+  })
+})
+
+const retrieveUserById = CatchAsync(async (req, res) => {
+  const { id } = req.params
+  const data = await userServices.retrieveUserById(id)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve users by id successfully!',
+    data,
+  })
+})
+
+export const userControllers = {
+  createAdmin,
+  createVendor,
+  createCustomer,
+  retrieveAllUsers,
+  retrieveUserById,
+}
