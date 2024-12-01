@@ -78,7 +78,7 @@ model Customer {
 
 model Shop {
   id              String   @id @default(uuid())
-  shopName        String
+  shopName        String @unique
   shopLogo        String
   description     String?
   vendorId        String   @unique
