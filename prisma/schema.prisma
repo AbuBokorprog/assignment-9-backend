@@ -14,28 +14,209 @@ datasource db {
 }
 
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
-}
-
+// All Models
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+  id              String @id @default(uuid())
+  email           String   @unique
+  password        String
+  role            UserRole @default(CUSTOMER)
+  status          UserStatus @default(ACTIVE)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  admin           Admin?
+  vendor          Vendor?
+  customer        Customer?
+
+  @@map("users")
+}
+
+model Admin {
+  id              String @id @default(uuid())
+  name            String
+  email           String @unique
+  profilePhoto    String
+  contactNumber   String
+  isDeleted       Boolean @default(false)
+  user            User @relation(fields: [email], references: [email])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+@@map("admins")
+}
+
+model Vendor {
+  id              String @id @default(uuid())
+  name            String
+  email           String @unique
+  profilePhoto    String
+  contactNumber   String
+  user            User @relation(fields: [email], references: [email])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  shop            Shop?
+  products        Product[]
+@@map("vendors")
+}
+
+model Customer {
+  id              String @id @default(uuid())
+  name            String
+  email           String @unique
+  profilePhoto    String
+  contactNumber   String
+  user            User @relation(fields: [email], references: [email])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  orders          Order[]
+  following       Follower[]
+  reviews         Review[]
+@@map("customers")
+}
+
+model Shop {
+  id              String   @id @default(uuid())
+  shopName        String
+  shopLogo        String
+  description     String?
+  vendorId        String   @unique
+  vendor          Vendor   @relation(fields: [vendorId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  products        Product[]
+  followers       Follower[]
+  @@map("shops")
+}
+
+model Product {
+  id           String          @id @default(uuid())
+  name         String
+  price        Float
+  description  String?
+  category     Category         @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  vendor       Vendor           @relation(fields: [vendorId], references: [id])
+  vendorId     String
+  shopId       String
+  shop         Shop             @relation(fields: [shopId], references: [id])
+  images       String
+  inventory    Int
+  discount     Float?
+  orders       ProductOrder[]   // Many-to-Many relationship via ProductOrder
+  reviews      Review[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@map("products")
+}
+
+
+
+model Category {
+  id               String @id @default(uuid())
+  name             String @unique
+  image	           String
+  description      String?
+  products         Product[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model ProductOrder {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int      // Quantity of products in the order
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+
+model Order {
+  id           String          @id @default(uuid())
+  customerId   String
+  customer     Customer         @relation(fields: [customerId], references: [id])
+  products     ProductOrder[]   // Relationship with join table
+  totalAmount  Float
+  status       OrderStatus      @default(PENDING)
+  payment      Payment?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model Payment {
+  id              String @id @default(uuid())
+  orderId         String @unique
+  order           Order @relation(fields: [orderId], references: [id])
+  amount          Float
+  paymentMethod   String
+  status          PaymentStatus @default(PENDING)
+  transactionId   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("payments")
+}
+model Follower {
+  id              String @id @default(uuid())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  shopId          String
+  shop            Shop @relation(fields: [shopId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("followers")
+}
+
+model Review {
+  id              String @id @default(uuid())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  productId       String
+  product         Product @relation(fields: [productId], references: [id])
+  rating          Int @default(5)
+  comment         String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Coupon {
+  id             String      @id @default(uuid())
+  code           String   @unique
+  discount       Float
+  expiryDate     DateTime
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// enums
+enum UserRole {
+  ADMIN
+  VENDOR
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
 }
