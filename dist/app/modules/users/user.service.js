@@ -49,7 +49,7 @@ const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* ()
         role: client_1.UserRole.VENDOR,
         status: client_1.UserStatus.ACTIVE,
     };
-    const adminData = {
+    const vendorData = {
         name: payload.name,
         email: payload.email,
         contactNumber: payload.contactNumber,
@@ -60,7 +60,7 @@ const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* ()
             data: userData,
         });
         const vendor = yield transactionClient.vendor.create({
-            data: adminData,
+            data: vendorData,
         });
         return vendor;
     }));

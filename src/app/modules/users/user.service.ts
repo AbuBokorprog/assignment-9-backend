@@ -42,7 +42,7 @@ const createVendor = async (payload: TAdmin) => {
     status: UserStatus.ACTIVE,
   }
 
-  const adminData = {
+  const vendorData = {
     name: payload.name,
     email: payload.email,
     contactNumber: payload.contactNumber,
@@ -55,7 +55,7 @@ const createVendor = async (payload: TAdmin) => {
     })
 
     const vendor = await transactionClient.vendor.create({
-      data: adminData,
+      data: vendorData,
     })
 
     return vendor
