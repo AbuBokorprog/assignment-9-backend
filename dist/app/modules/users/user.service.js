@@ -41,6 +41,54 @@ const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () 
     }));
     return result;
 });
-const createVendor = () => __awaiter(void 0, void 0, void 0, function* () { });
-const createCustomer = () => __awaiter(void 0, void 0, void 0, function* () { });
+const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const password = yield (0, hash_password_1.HashPassword)(payload.password);
+    const userData = {
+        email: payload.email,
+        password: password,
+        role: client_1.UserRole.VENDOR,
+        status: client_1.UserStatus.ACTIVE,
+    };
+    const adminData = {
+        name: payload.name,
+        email: payload.email,
+        contactNumber: payload.contactNumber,
+        isDeleted: false,
+    };
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        yield transactionClient.user.create({
+            data: userData,
+        });
+        const vendor = yield transactionClient.vendor.create({
+            data: adminData,
+        });
+        return vendor;
+    }));
+    return result;
+});
+const createCustomer = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const password = yield (0, hash_password_1.HashPassword)(payload.password);
+    const userData = {
+        email: payload.email,
+        password: password,
+        role: client_1.UserRole.CUSTOMER,
+        status: client_1.UserStatus.ACTIVE,
+    };
+    const customerData = {
+        name: payload.name,
+        email: payload.email,
+        contactNumber: payload.contactNumber,
+        isDeleted: false,
+    };
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        yield transactionClient.user.create({
+            data: userData,
+        });
+        const customer = yield transactionClient.customer.create({
+            data: customerData,
+        });
+        return customer;
+    }));
+    return result;
+});
 exports.userServices = { createAdmin, createVendor, createCustomer };

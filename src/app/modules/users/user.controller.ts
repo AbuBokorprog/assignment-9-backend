@@ -13,7 +13,25 @@ const createAdmin = CatchAsync(async (req, res) => {
     data,
   })
 })
-const createVendor = CatchAsync(async (req, res) => {})
-const createCustomer = CatchAsync(async (req, res) => {})
+const createVendor = CatchAsync(async (req, res) => {
+  const data = await userServices.createVendor(req.body)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Vendor created successfully!',
+    data,
+  })
+})
+const createCustomer = CatchAsync(async (req, res) => {
+  const data = await userServices.createCustomer(req.body)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Customer created successfully!',
+    data,
+  })
+})
 
 export const userControllers = { createAdmin, createVendor, createCustomer }

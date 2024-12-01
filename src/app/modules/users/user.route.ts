@@ -10,4 +10,15 @@ router.post(
   userControllers.createAdmin,
 )
 
+router.post(
+  '/create-vendor',
+  ValidationRequest(userValidation.createAdmin),
+  userControllers.createVendor,
+)
+router.post(
+  '/create-customer',
+  ValidationRequest(userValidation.createAdmin),
+  userControllers.createCustomer,
+)
+
 export const userRouter = router

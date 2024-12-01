@@ -26,6 +26,22 @@ const createAdmin = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data,
     });
 }));
-const createVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () { }));
-const createCustomer = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () { }));
+const createVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.userServices.createVendor(req.body);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Vendor created successfully!',
+        data,
+    });
+}));
+const createCustomer = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.userServices.createCustomer(req.body);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Customer created successfully!',
+        data,
+    });
+}));
 exports.userControllers = { createAdmin, createVendor, createCustomer };
