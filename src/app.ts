@@ -15,7 +15,6 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use('/api', router)
-
 app.use(GlobalErrorHandler)
 app.use(NotFoundErrorHandler)
 

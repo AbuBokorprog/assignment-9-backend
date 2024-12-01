@@ -21,6 +21,7 @@
     "@types/node": "^22.10.1",
     "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.16.0",
+    "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.12.0",

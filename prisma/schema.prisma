@@ -35,7 +35,7 @@ model Admin {
   id              String @id @default(uuid())
   name            String
   email           String @unique
-  profilePhoto    String
+  profilePhoto    String?
   contactNumber   String
   isDeleted       Boolean @default(false)
   user            User @relation(fields: [email], references: [email])
@@ -49,7 +49,7 @@ model Vendor {
   id              String @id @default(uuid())
   name            String
   email           String @unique
-  profilePhoto    String
+  profilePhoto    String?
   contactNumber   String
   user            User @relation(fields: [email], references: [email])
   createdAt       DateTime @default(now())
@@ -63,7 +63,7 @@ model Customer {
   id              String @id @default(uuid())
   name            String
   email           String @unique
-  profilePhoto    String
+  profilePhoto    String?
   contactNumber   String
   user            User @relation(fields: [email], references: [email])
   createdAt       DateTime @default(now())
