@@ -3,6 +3,7 @@ import { userRouter } from '../modules/users/user.route'
 import { shopRouter } from '../modules/shop/shop.route'
 import { productRouter } from '../modules/Products/ProductsRoute'
 import { categoryRouter } from '../modules/Categories/CategoriesRoute'
+import { couponRouter } from '../modules/Coupon/CouponRoute'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -21,6 +22,10 @@ const moduleRoutes = [
   {
     path: '/products',
     route: productRouter,
+  },
+  {
+    path: '/coupon',
+    route: couponRouter,
   },
 ]
 

@@ -189,12 +189,13 @@ model Review {
 
 model Coupon {
   id             String      @id @default(uuid())
-  code           String   @unique
+  name           String
+  code           String      @unique
   discount       Float
   expiryDate     DateTime
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isActive       Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
 
 // enums
