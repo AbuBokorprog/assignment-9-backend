@@ -20,7 +20,7 @@ const user_service_1 = require("./user.service");
 const createAdmin = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield user_service_1.userServices.createAdmin(req.body);
     (0, SuccessResponse_1.default)(res, {
-        status: http_status_1.default.OK,
+        status: http_status_1.default.CREATED,
         success: true,
         message: 'Admin created successfully!',
         data,
@@ -29,7 +29,7 @@ const createAdmin = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, vo
 const createVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield user_service_1.userServices.createVendor(req.body);
     (0, SuccessResponse_1.default)(res, {
-        status: http_status_1.default.OK,
+        status: http_status_1.default.CREATED,
         success: true,
         message: 'Vendor created successfully!',
         data,
@@ -38,7 +38,7 @@ const createVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, v
 const createCustomer = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield user_service_1.userServices.createCustomer(req.body);
     (0, SuccessResponse_1.default)(res, {
-        status: http_status_1.default.OK,
+        status: http_status_1.default.CREATED,
         success: true,
         message: 'Customer created successfully!',
         data,

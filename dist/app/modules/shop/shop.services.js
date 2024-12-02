@@ -37,7 +37,7 @@ const retrieveShopById = (id) => __awaiter(void 0, void 0, void 0, function* () 
     });
     return result;
 });
-const updateShopById = (payload, id) => __awaiter(void 0, void 0, void 0, function* () {
+const updateShopById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
             id: id,

@@ -20,7 +20,7 @@ const shop_services_1 = require("./shop.services");
 const createShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield shop_services_1.shopServices.createShop(req.body);
     (0, SuccessResponse_1.default)(res, {
-        status: http_status_1.default.OK,
+        status: http_status_1.default.CREATED,
         success: true,
         message: 'Create shop successfully!',
         data,

@@ -31,7 +31,7 @@ const retrieveShopById = async (id: any) => {
   return result
 }
 
-const updateShopById = async (payload: any, id: string) => {
+const updateShopById = async (id: string, payload: any) => {
   await prisma.shop.findUniqueOrThrow({
     where: {
       id: id,

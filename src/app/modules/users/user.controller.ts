@@ -7,7 +7,7 @@ const createAdmin = CatchAsync(async (req, res) => {
   const data = await userServices.createAdmin(req.body)
 
   SuccessResponse(res, {
-    status: httpStatus.OK,
+    status: httpStatus.CREATED,
     success: true,
     message: 'Admin created successfully!',
     data,
@@ -17,7 +17,7 @@ const createVendor = CatchAsync(async (req, res) => {
   const data = await userServices.createVendor(req.body)
 
   SuccessResponse(res, {
-    status: httpStatus.OK,
+    status: httpStatus.CREATED,
     success: true,
     message: 'Vendor created successfully!',
     data,
@@ -27,7 +27,7 @@ const createCustomer = CatchAsync(async (req, res) => {
   const data = await userServices.createCustomer(req.body)
 
   SuccessResponse(res, {
-    status: httpStatus.OK,
+    status: httpStatus.CREATED,
     success: true,
     message: 'Customer created successfully!',
     data,

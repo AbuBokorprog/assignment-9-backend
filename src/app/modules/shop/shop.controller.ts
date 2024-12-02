@@ -7,7 +7,7 @@ const createShop = CatchAsync(async (req, res) => {
   const data = await shopServices.createShop(req.body)
 
   SuccessResponse(res, {
-    status: httpStatus.OK,
+    status: httpStatus.CREATED,
     success: true,
     message: 'Create shop successfully!',
     data,
