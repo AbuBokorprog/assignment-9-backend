@@ -25,6 +25,11 @@ const createProduct = (payload) => __awaiter(void 0, void 0, void 0, function* (
             id: payload.shopId,
         },
     });
+    yield prisma_1.default.category.findUniqueOrThrow({
+        where: {
+            id: payload.categoryId,
+        },
+    });
     const product = yield prisma_1.default.product.create({
         data: payload,
     });

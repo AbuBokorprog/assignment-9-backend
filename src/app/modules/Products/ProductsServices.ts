@@ -14,6 +14,12 @@ const createProduct = async (payload: TProduct) => {
     },
   })
 
+  await prisma.category.findUniqueOrThrow({
+    where: {
+      id: payload.categoryId,
+    },
+  })
+
   const product = await prisma.product.create({
     data: payload,
   })
