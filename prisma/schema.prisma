@@ -140,8 +140,6 @@ model Cart {
   @@map("carts")
 }
 
-
-
 model ProductOrder {
   id         String   @id @default(uuid())
   orderId    String

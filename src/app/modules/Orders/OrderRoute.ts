@@ -11,7 +11,7 @@ router.post(
 )
 router.get('/', ordersController.retrieveOrder)
 router.get('/:id', ordersController.retrieveOrderById)
-router.patch('/:id', ordersController.updateOrder)
+// router.patch('/:id', ordersController.updateOrder)
 router.delete('/:id', ordersController.deleteOrder)
 
 export const orderRouter = router

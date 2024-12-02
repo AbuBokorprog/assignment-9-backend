@@ -12,6 +12,6 @@ const router = express_1.default.Router();
 router.post('/', (0, ValidationRequest_1.default)(OrderValidation_1.orderValidation.createOrder), OrderController_1.ordersController.createOrder);
 router.get('/', OrderController_1.ordersController.retrieveOrder);
 router.get('/:id', OrderController_1.ordersController.retrieveOrderById);
-router.patch('/:id', OrderController_1.ordersController.updateOrder);
+// router.patch('/:id', ordersController.updateOrder)
 router.delete('/:id', OrderController_1.ordersController.deleteOrder);
 exports.orderRouter = router;

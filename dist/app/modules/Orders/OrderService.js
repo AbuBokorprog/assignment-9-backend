@@ -8,17 +8,80 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordersService = void 0;
-const createOrder = () => __awaiter(void 0, void 0, void 0, function* () { });
-const retrieveOrder = () => __awaiter(void 0, void 0, void 0, function* () { });
-const retrieveOrderById = () => __awaiter(void 0, void 0, void 0, function* () { });
-const updateOrder = () => __awaiter(void 0, void 0, void 0, function* () { });
-const deleteOrder = () => __awaiter(void 0, void 0, void 0, function* () { });
+const prisma_1 = __importDefault(require("../../helpers/prisma"));
+const createOrder = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: payload.customerId,
+        },
+    });
+    const result = yield prisma_1.default.$transaction((transactionalClient) => __awaiter(void 0, void 0, void 0, function* () {
+        const orderData = yield transactionalClient.order.create({
+            data: {
+                customerId: payload.customerId,
+                totalAmount: payload.totalAmount,
+            },
+        });
+        yield transactionalClient.productOrder.create({
+            data: {
+                orderId: orderData.id,
+                productId: payload.productId,
+                quantity: payload.quantity,
+            },
+        });
+    }));
+    return result;
+});
+const retrieveOrder = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.order.findMany({
+        include: {
+            products: true,
+        },
+    });
+    return result;
+});
+const retrieveOrderById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.order.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+        include: {
+            products: true,
+        },
+    });
+    return result;
+});
+// const updateOrder = async (id: string, payload: Partial<TOrder>) => {
+//   await prisma.order.findUniqueOrThrow({
+//     where: {
+//       id: id,
+//     },
+//   })
+//   const result = await prisma.order.update({
+//     where: {
+//       id: id,
+//     },
+//     data: payload,
+//   })
+//   return result
+// }
+const deleteOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.order.delete({
+        where: {
+            id: id,
+        },
+    });
+    return result;
+});
 exports.ordersService = {
     createOrder,
     retrieveOrder,
     retrieveOrderById,
-    updateOrder,
+    // updateOrder,
     deleteOrder,
 };

@@ -13,16 +13,62 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordersController = void 0;
+const http_status_1 = __importDefault(require("http-status"));
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
-const createOrder = (0, CatchAsync_1.default)(() => __awaiter(void 0, void 0, void 0, function* () { }));
-const retrieveOrder = (0, CatchAsync_1.default)(() => __awaiter(void 0, void 0, void 0, function* () { }));
-const retrieveOrderById = (0, CatchAsync_1.default)(() => __awaiter(void 0, void 0, void 0, function* () { }));
-const updateOrder = (0, CatchAsync_1.default)(() => __awaiter(void 0, void 0, void 0, function* () { }));
-const deleteOrder = (0, CatchAsync_1.default)(() => __awaiter(void 0, void 0, void 0, function* () { }));
+const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
+const OrderService_1 = require("./OrderService");
+const createOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield OrderService_1.ordersService.createOrder(req.body);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.CREATED,
+        success: true,
+        message: 'Order created successfully!',
+        data,
+    });
+}));
+const retrieveOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield OrderService_1.ordersService.retrieveOrder();
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve orders successfully!',
+        data,
+    });
+}));
+const retrieveOrderById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const data = yield OrderService_1.ordersService.retrieveOrderById(id);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve cart by id successfully!',
+        data,
+    });
+}));
+// const updateOrder = CatchAsync(async (req, res) => {
+//   const { id } = req.params
+//   const data = await ordersService.retrieveOrderById(id)
+//   SuccessResponse(res, {
+//     status: httpStatus.OK,
+//     success: true,
+//     message: 'Update cart by id successfully!',
+//     data,
+//   })
+// })
+const deleteOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const data = yield OrderService_1.ordersService.retrieveOrderById(id);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Delete cart by id successfully!',
+        data,
+    });
+}));
 exports.ordersController = {
     createOrder,
     retrieveOrder,
     retrieveOrderById,
-    updateOrder,
+    // updateOrder,
     deleteOrder,
 };
