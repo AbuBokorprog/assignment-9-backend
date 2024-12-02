@@ -112,8 +112,6 @@ model Product {
   @@map("products")
 }
 
-
-
 model Category {
   id               String @id @default(uuid())
   name             String @unique
@@ -136,7 +134,6 @@ model ProductOrder {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
-
 
 model Order {
   id           String          @id @default(uuid())
