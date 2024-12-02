@@ -44,7 +44,7 @@ const moduleRoutes = [
         route: ReviewRoute_1.reviewRouter,
     },
     {
-        path: '/shop/follow',
+        path: '/follower',
         route: FollowersRoute_1.followerRouter,
     },
     {

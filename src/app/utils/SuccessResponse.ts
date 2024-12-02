@@ -4,7 +4,7 @@ interface ISuccessResponse<T> {
   success: boolean
   status: number
   message: string
-  data: T
+  data?: T
 }
 
 const SuccessResponse = <T>(res: Response, data: ISuccessResponse<T>) => {

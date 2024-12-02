@@ -9,9 +9,10 @@ const ValidationRequest_1 = __importDefault(require("../../utils/ValidationReque
 const FollowersValidation_1 = require("./FollowersValidation");
 const FollowersController_1 = require("./FollowersController");
 const router = express_1.default.Router();
-router.post('/', (0, ValidationRequest_1.default)(FollowersValidation_1.followerValidation.createFollower), FollowersController_1.followerController.createFollower);
-router.get('/', FollowersController_1.followerController.retrieveAllFollower);
-router.get('/:id', FollowersController_1.followerController.retrieveFollowerById);
-router.patch('/:id', FollowersController_1.followerController.updateFollowerById);
-router.delete('/:id', FollowersController_1.followerController.deleteFollowerById);
+router.post('/shop-follow', (0, ValidationRequest_1.default)(FollowersValidation_1.followerValidation.createFollower), FollowersController_1.followerController.FollowShop);
+router.post('/shop-unfollow', (0, ValidationRequest_1.default)(FollowersValidation_1.followerValidation.createFollower), FollowersController_1.followerController.unFollowShop);
+// router.get('/', followerController.retrieveAllFollower)
+// router.get('/:id', followerController.retrieveFollowerById)
+// router.patch('/:id', followerController.updateFollowerById)
+// router.delete('/:id', followerController.deleteFollowerById)
 exports.followerRouter = router;

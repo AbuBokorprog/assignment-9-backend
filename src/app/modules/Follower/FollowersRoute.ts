@@ -6,13 +6,18 @@ import { followerController } from './FollowersController'
 const router = express.Router()
 
 router.post(
-  '/',
+  '/shop-follow',
   ValidationRequest(followerValidation.createFollower),
-  followerController.createFollower,
+  followerController.FollowShop,
 )
-router.get('/', followerController.retrieveAllFollower)
-router.get('/:id', followerController.retrieveFollowerById)
-router.patch('/:id', followerController.updateFollowerById)
-router.delete('/:id', followerController.deleteFollowerById)
+router.post(
+  '/shop-unfollow',
+  ValidationRequest(followerValidation.createFollower),
+  followerController.unFollowShop,
+)
+// router.get('/', followerController.retrieveAllFollower)
+// router.get('/:id', followerController.retrieveFollowerById)
+// router.patch('/:id', followerController.updateFollowerById)
+// router.delete('/:id', followerController.deleteFollowerById)
 
 export const followerRouter = router
