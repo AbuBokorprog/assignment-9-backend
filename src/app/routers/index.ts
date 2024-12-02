@@ -8,6 +8,8 @@ import { reviewRouter } from '../modules/Review/ReviewRoute'
 import { followerRouter } from '../modules/Follower/FollowersRoute'
 import { authRouter } from '../modules/Auth/AuthRoute'
 import { comparisonRouter } from '../modules/Comparison/ComparisonRoute'
+import { cartRouter } from '../modules/Carts/CartsRoute'
+import { orderRouter } from '../modules/Orders/OrderRoute'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -30,6 +32,14 @@ const moduleRoutes = [
   {
     path: '/products',
     route: productRouter,
+  },
+  {
+    path: '/carts',
+    route: cartRouter,
+  },
+  {
+    path: '/orders',
+    route: orderRouter,
   },
   {
     path: '/coupon',

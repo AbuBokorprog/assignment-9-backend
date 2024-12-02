@@ -118,7 +118,7 @@ model Product {
   images       String
   inventory    Int
   discount     Float?
-  cartItems    CartItems[]
+  carts        Cart[]
   orders       ProductOrder[]   // Many-to-Many relationship via ProductOrder
   reviews      Review[]
   comparison   Comparison[]
@@ -132,24 +132,15 @@ model Cart {
   id           String          @id @default(uuid())
   customerId   String
   customer     User @relation(fields: [customerId], references: [id])
-  items        CartItems[]
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   @@map("carts")
 }
 
-model CartItems {
-  id           String   @id @default(uuid())
-  cartId       String
-  cart         Cart @relation(fields: [cartId], references: [id])
-  productId    String
-  product      Product @relation(fields: [productId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 
-  @@map("cart-items")
-}
 
 model ProductOrder {
   id         String   @id @default(uuid())

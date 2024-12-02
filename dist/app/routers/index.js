@@ -13,6 +13,8 @@ const ReviewRoute_1 = require("../modules/Review/ReviewRoute");
 const FollowersRoute_1 = require("../modules/Follower/FollowersRoute");
 const AuthRoute_1 = require("../modules/Auth/AuthRoute");
 const ComparisonRoute_1 = require("../modules/Comparison/ComparisonRoute");
+const CartsRoute_1 = require("../modules/Carts/CartsRoute");
+const OrderRoute_1 = require("../modules/Orders/OrderRoute");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -34,6 +36,14 @@ const moduleRoutes = [
     {
         path: '/products',
         route: ProductsRoute_1.productRouter,
+    },
+    {
+        path: '/carts',
+        route: CartsRoute_1.cartRouter,
+    },
+    {
+        path: '/orders',
+        route: OrderRoute_1.orderRouter,
     },
     {
         path: '/coupon',
