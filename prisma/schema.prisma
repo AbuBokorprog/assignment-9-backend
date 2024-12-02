@@ -26,6 +26,11 @@ model User {
   admin           Admin?
   vendor          Vendor?
   customer        Customer?
+  carts           Cart[]
+  orders          Order[]
+  following       Follower[]
+  reviews         Review[]
+  comparison      Comparison[]
 
   @@map("users")
 }
@@ -69,10 +74,7 @@ model Customer {
   user            User @relation(fields: [email], references: [email])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  carts           Cart[]
-  orders          Order[]
-  following       Follower[]
-  reviews         Review[]
+
 @@map("customers")
 }
 
@@ -119,6 +121,7 @@ model Product {
   cartItems    CartItems[]
   orders       ProductOrder[]   // Many-to-Many relationship via ProductOrder
   reviews      Review[]
+  comparison   Comparison[]
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
@@ -128,7 +131,7 @@ model Product {
 model Cart {
   id           String          @id @default(uuid())
   customerId   String
-  customer     Customer @relation(fields: [customerId], references: [id])
+  customer     User @relation(fields: [customerId], references: [id])
   items        CartItems[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -162,7 +165,7 @@ model ProductOrder {
 model Order {
   id           String          @id @default(uuid())
   customerId   String
-  customer     Customer         @relation(fields: [customerId], references: [id])
+  customer     User         @relation(fields: [customerId], references: [id])
   products     ProductOrder[]   // Relationship with join table
   totalAmount  Float
   status       OrderStatus      @default(PENDING)
@@ -187,7 +190,7 @@ model Payment {
 model Follower {
   id              String @id @default(uuid())
   customerId      String
-  customer        Customer @relation(fields: [customerId], references: [id])
+  customer        User @relation(fields: [customerId], references: [id])
   shopId          String
   shop            Shop @relation(fields: [shopId], references: [id])
   createdAt       DateTime  @default(now())
@@ -199,7 +202,7 @@ model Follower {
 model Review {
   id              String @id @default(uuid())
   customerId      String
-  customer        Customer @relation(fields: [customerId], references: [id])
+  customer        User @relation(fields: [customerId], references: [id])
   productId       String
   product         Product @relation(fields: [productId], references: [id])
   rating          Int @default(5)
@@ -217,6 +220,18 @@ model Coupon {
   isActive       Boolean     @default(true)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+}
+
+model Comparison{
+  id             String @id @default(uuid())
+  userId         String
+  user           User @relation(fields: [userId], references: [id])
+  productId      String
+  product        Product @relation(fields: [productId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@map("comparisons")
 }
 
 // enums

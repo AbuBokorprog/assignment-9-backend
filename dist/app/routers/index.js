@@ -12,6 +12,7 @@ const CouponRoute_1 = require("../modules/Coupon/CouponRoute");
 const ReviewRoute_1 = require("../modules/Review/ReviewRoute");
 const FollowersRoute_1 = require("../modules/Follower/FollowersRoute");
 const AuthRoute_1 = require("../modules/Auth/AuthRoute");
+const ComparisonRoute_1 = require("../modules/Comparison/ComparisonRoute");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -45,6 +46,10 @@ const moduleRoutes = [
     {
         path: '/shop/follow',
         route: FollowersRoute_1.followerRouter,
+    },
+    {
+        path: '/comparison',
+        route: ComparisonRoute_1.comparisonRouter,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

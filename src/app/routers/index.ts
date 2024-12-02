@@ -7,6 +7,7 @@ import { couponRouter } from '../modules/Coupon/CouponRoute'
 import { reviewRouter } from '../modules/Review/ReviewRoute'
 import { followerRouter } from '../modules/Follower/FollowersRoute'
 import { authRouter } from '../modules/Auth/AuthRoute'
+import { comparisonRouter } from '../modules/Comparison/ComparisonRoute'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -41,6 +42,10 @@ const moduleRoutes = [
   {
     path: '/shop/follow',
     route: followerRouter,
+  },
+  {
+    path: '/comparison',
+    route: comparisonRouter,
   },
 ]
 
