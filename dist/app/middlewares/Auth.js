@@ -12,8 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const AppError_1 = require("./../utils/AppError");
+const http_status_1 = __importDefault(require("http-status"));
 const CatchAsync_1 = __importDefault(require("../utils/CatchAsync"));
-const Auth = () => {
-    return (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () { }));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const prisma_1 = __importDefault(require("../helpers/prisma"));
+const Auth = (...userRole) => {
+    return (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(',')[1];
+        if (!token) {
+            throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, "You're unauthorized!");
+        }
+        // checking if the given token is valid
+        const decoded = jsonwebtoken_1.default.verify(token, 'secret');
+        const { email, role } = decoded;
+        const user = yield prisma_1.default.user.findUniqueOrThrow({
+            where: {
+                email: email,
+                status: 'ACTIVE',
+            },
+        });
+        if (userRole && !userRole.include(role)) {
+            throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, "You're unAuthorized!");
+        }
+        req.user = decoded;
+        next();
+    }));
 };
 exports.default = Auth;
