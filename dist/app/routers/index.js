@@ -11,8 +11,13 @@ const CategoriesRoute_1 = require("../modules/Categories/CategoriesRoute");
 const CouponRoute_1 = require("../modules/Coupon/CouponRoute");
 const ReviewRoute_1 = require("../modules/Review/ReviewRoute");
 const FollowersRoute_1 = require("../modules/Follower/FollowersRoute");
+const AuthRoute_1 = require("../modules/Auth/AuthRoute");
 const router = express_1.default.Router();
 const moduleRoutes = [
+    {
+        path: '/auth',
+        route: AuthRoute_1.authRouter,
+    },
     {
         path: '/users',
         route: user_route_1.userRouter,

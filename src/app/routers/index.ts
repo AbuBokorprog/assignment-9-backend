@@ -6,9 +6,14 @@ import { categoryRouter } from '../modules/Categories/CategoriesRoute'
 import { couponRouter } from '../modules/Coupon/CouponRoute'
 import { reviewRouter } from '../modules/Review/ReviewRoute'
 import { followerRouter } from '../modules/Follower/FollowersRoute'
+import { authRouter } from '../modules/Auth/AuthRoute'
 const router = express.Router()
 
 const moduleRoutes = [
+  {
+    path: '/auth',
+    route: authRouter,
+  },
   {
     path: '/users',
     route: userRouter,
