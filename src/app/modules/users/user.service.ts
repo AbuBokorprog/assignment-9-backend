@@ -1,7 +1,7 @@
 import { UserRole, UserStatus } from '@prisma/client'
 import { TAdmin } from './user.interface'
 import prisma from '../../helpers/prisma'
-import { HashPassword } from '../../helpers/hash-password'
+import { HashPassword } from '../../helpers/HashPassword'
 
 const createAdmin = async (payload: TAdmin) => {
   const password = await HashPassword(payload.password)

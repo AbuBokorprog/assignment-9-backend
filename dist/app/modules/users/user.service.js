@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = void 0;
 const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const hash_password_1 = require("../../helpers/hash-password");
+const HashPassword_1 = require("../../helpers/HashPassword");
 const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const password = yield (0, hash_password_1.HashPassword)(payload.password);
+    const password = yield (0, HashPassword_1.HashPassword)(payload.password);
     const userData = {
         email: payload.email,
         password: password,
@@ -42,7 +42,7 @@ const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () 
     return result;
 });
 const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const password = yield (0, hash_password_1.HashPassword)(payload.password);
+    const password = yield (0, HashPassword_1.HashPassword)(payload.password);
     const userData = {
         email: payload.email,
         password: password,
@@ -67,7 +67,7 @@ const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* ()
     return result;
 });
 const createCustomer = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const password = yield (0, hash_password_1.HashPassword)(payload.password);
+    const password = yield (0, HashPassword_1.HashPassword)(payload.password);
     const userData = {
         email: payload.email,
         password: password,
