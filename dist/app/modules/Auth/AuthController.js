@@ -21,7 +21,7 @@ const config_1 = __importDefault(require("../../config"));
 const userLogin = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield AuthService_1.authService.userLogin(req.body);
     const { refreshToken } = data;
-    req.cookies('refreshToken', refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
         secure: config_1.default.node_env === 'production',
         httpOnly: true,
     });

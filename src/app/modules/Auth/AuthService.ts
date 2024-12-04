@@ -6,6 +6,7 @@ import { TLogin } from './AuthInterface'
 import { getAccessToken } from '../../helpers/AccessToken'
 import config from '../../config'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+
 const userLogin = async (payload: TLogin) => {
   const isExistUser = await prisma.user.findUniqueOrThrow({
     where: {
@@ -13,6 +14,27 @@ const userLogin = async (payload: TLogin) => {
       status: 'ACTIVE',
     },
   })
+
+  let user
+  if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
+    user = await prisma.admin.findUniqueOrThrow({
+      where: {
+        email: isExistUser.email,
+      },
+    })
+  } else if (isExistUser.role === 'VENDOR') {
+    user = await prisma.vendor.findUniqueOrThrow({
+      where: {
+        email: isExistUser.email,
+      },
+    })
+  } else {
+    user = await prisma.customer.findUniqueOrThrow({
+      where: {
+        email: isExistUser.email,
+      },
+    })
+  }
 
   const isMatchedPassword = await ComparePassword(
     payload.password,
@@ -25,6 +47,7 @@ const userLogin = async (payload: TLogin) => {
 
   const accessTokenData = {
     email: isExistUser.email,
+    name: user.name,
     role: isExistUser.role,
   }
   const accessToken = await getAccessToken(
@@ -41,6 +64,7 @@ const userLogin = async (payload: TLogin) => {
 
   return {
     email: isExistUser.email,
+    name: user.name,
     role: isExistUser.role,
     token: accessToken,
     refreshToken: refreshToken,

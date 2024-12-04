@@ -12,7 +12,7 @@ router.post(
 
 router.post(
   '/create-vendor',
-  ValidationRequest(userValidation.createAdmin),
+  // ValidationRequest(userValidation.createAdmin),
   userControllers.createVendor,
 )
 router.post(
