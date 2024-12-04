@@ -16,117 +16,117 @@ datasource db {
 
 // All Models
 model User {
-  id              String @id @default(uuid())
-  email           String   @unique
-  password        String
-  role            UserRole @default(CUSTOMER)
-  status          UserStatus @default(ACTIVE)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  admin           Admin?
-  vendor          Vendor?
-  customer        Customer?
-  carts           Cart[]
-  orders          Order[]
-  following       Follower[]
-  reviews         Review[]
-  comparison      Comparison[]
+  id                    String @id @default(uuid())
+  email                 String   @unique
+  password              String
+  role                  UserRole @default(CUSTOMER)
+  status                UserStatus @default(ACTIVE)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  admin                 Admin?
+  vendor                Vendor?
+  customer              Customer?
+  carts                 Cart[]
+  orders                Order[]
+  following             Follower[]
+  reviews               Review[]
+  comparison            Comparison[]
   recentProducts        RecentProduct[]
   
   @@map("users")
 }
 
 model Admin {
-  id              String @id @default(uuid())
-  name            String
-  email           String @unique
-  profilePhoto    String?
-  contactNumber   String
-  isDeleted       Boolean @default(false)
-  user            User @relation(fields: [email], references: [email])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String @id @default(uuid())
+  name                  String
+  email                 String @unique
+  profilePhoto          String?
+  contactNumber         String
+  isDeleted             Boolean @default(false)
+  user                  User @relation(fields: [email], references: [email])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
 @@map("admins")
 }
 
 model Vendor {
-  id              String @id @default(uuid())
-  name            String
-  email           String @unique
-  profilePhoto    String?
-  contactNumber   String
-  isDeleted       Boolean @default(false)
-  user            User @relation(fields: [email], references: [email])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  shop            Shop?
-  products        Product[]
+  id                    String @id @default(uuid())
+  name                  String
+  email                 String @unique
+  profilePhoto          String?
+  contactNumber         String
+  isDeleted             Boolean @default(false)
+  user                  User @relation(fields: [email], references: [email])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  shop                  Shop?
+  products              Product[]
 @@map("vendors")
 }
 
 model Customer {
-  id              String @id @default(uuid())
-  name            String
-  email           String @unique
-  profilePhoto    String?
-  contactNumber   String
-  isDeleted       Boolean @default(false)
-  user            User @relation(fields: [email], references: [email])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String @id @default(uuid())
+  name                  String
+  email                 String @unique
+  profilePhoto          String?
+  contactNumber         String
+  isDeleted             Boolean @default(false)
+  user                  User @relation(fields: [email], references: [email])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
 @@map("customers")
 }
 
 model Shop {
-  shopName            String @unique
-  id                  String   @id @default(uuid())
-  shopLogo            String
-  shopCover           String
-  description         String?
-  address             String
-  registrationNumber  String
-  categoryId          String
-  category            Category @relation(fields: [categoryId], references: [id])
-  vendorId            String   @unique
-  vendor              Vendor   @relation(fields: [vendorId], references: [id])
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  products            Product[]
-  followers           Follower[]
-  orders              Order[]
+  shopName              String @unique
+  id                    String   @id @default(uuid())
+  shopLogo              String
+  shopCover             String
+  description           String?
+  address               String
+  registrationNumber    String
+  categoryId            String
+  category              Category @relation(fields: [categoryId], references: [id])
+  vendorId              String   @unique
+  vendor                Vendor   @relation(fields: [vendorId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  products              Product[]
+  followers             Follower[]
+  orders                Order[]
   @@map("shops")
 }
 
 model Category {
-  id               String @id @default(uuid())
-  name             String @unique
-  image	           String
-  description      String?
-  isActive         ActiveStatus @default(APPROVED)
-  products         Product[]
-  shop             Shop[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id                    String @id @default(uuid())
+  name                  String @unique
+  image	                String
+  description           String?
+  isActive              ActiveStatus @default(APPROVED)
+  products              Product[]
+  shop                  Shop[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("categories")
 }
 
 model SizeOption {
-  id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  size      String
-    stock     Int
+  id                    String   @id @default(uuid())
+  productId             String
+  product               Product  @relation(fields: [productId], references: [id])
+  size                  String
+  stock                 Int
 }
 
 model ColorOption {
-  id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  color     String
-  stock     Int
+  id                    String   @id @default(uuid())
+  productId             String
+  product               Product  @relation(fields: [productId], references: [id])
+  color                 String
+  stock                 Int
 }
 
 
@@ -161,26 +161,26 @@ model Product {
 }
 
 model Cart {
-  id              String          @id @default(uuid())
-  customerId      String
-  customer        User @relation(fields: [customerId], references: [id])
-  productId       String
-  product         Product @relation(fields: [productId], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String          @id @default(uuid())
+  customerId            String
+  customer              User @relation(fields: [customerId], references: [id])
+  productId             String
+  product               Product @relation(fields: [productId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   @@map("carts")
 }
 
 model ProductOrder {
-  id         String   @id @default(uuid())
-  orderId    String
-  order      Order    @relation(fields: [orderId], references: [id])
-  productId  String
-  product    Product  @relation(fields: [productId], references: [id])
-  quantity   Int      // Quantity of products in the order
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                    String   @id @default(uuid())
+  orderId               String
+  order                 Order    @relation(fields: [orderId], references: [id])
+  productId             String
+  product               Product  @relation(fields: [productId], references: [id])
+  quantity              Int      // Quantity of products in the order
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 // model ShippingInfo {
@@ -197,97 +197,97 @@ model ProductOrder {
 // }
 
 model Order {
-  id                String          @id @default(uuid())
-  customerId        String
-  customer          User            @relation(fields: [customerId], references: [id])
-  products          ProductOrder[]  // Relationship with join table
-  totalAmount       Float
-  status            OrderStatus     @default(PENDING)
-  fullName          String
-  phoneNumber       String
-  email             String
-  deliveryAddress   String
-  city              String
-  postalCode        Int
-  payment           Payment?
-  // shippingInfoId String?
-  // shippingInfo ShippingInfo?   @relation(fields: [shippingInfoId], references: [id])
-  shopId            String
-  shop              Shop @relation(fields: [shopId], references: [id])
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
+  id                  String          @id @default(uuid())
+  customerId          String
+  customer            User            @relation(fields: [customerId], references: [id])
+  products            ProductOrder[]  // Relationship with join table
+  totalAmount         Float
+  status              OrderStatus     @default(PENDING)
+  fullName            String
+  phoneNumber         String
+  email               String
+  deliveryAddress     String
+  city                String
+  postalCode          Int
+  payment             Payment?
+  // shippingInfoId   String?
+  // shippingInfo   ShippingInfo?   @relation(fields: [shippingInfoId], references: [id])
+  shopId              String
+  shop                Shop @relation(fields: [shopId], references: [id])
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
 }
 
 model Payment {
-  id              String @id @default(uuid())
-  orderId         String @unique
-  order           Order @relation(fields: [orderId], references: [id])
-  amount          Float
-  paymentMethod   String
-  status          PaymentStatus @default(UNPAID)
-  transactionId   String?
-  paidAt          DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String @id @default(uuid())
+  orderId             String @unique
+  order               Order @relation(fields: [orderId], references: [id])
+  amount              Float
+  paymentMethod       String
+  status              PaymentStatus @default(UNPAID)
+  transactionId       String?
+  paidAt              DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   @@map("payments")
 }
 model Follower {
-  id              String @id @default(uuid())
-  customerId      String
-  shopId          String
-  customer        User @relation(fields: [customerId], references: [id])
-  shop            Shop @relation(fields: [shopId], references: [id])
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String @id @default(uuid())
+  customerId          String
+  shopId              String
+  customer            User @relation(fields: [customerId], references: [id])
+  shop                Shop @relation(fields: [shopId], references: [id])
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   @@map("followers")
 }
 
 model Review {
-  id              String @id @default(uuid())
-  customerId      String
-  customer        User @relation(fields: [customerId], references: [id])
-  productId       String
-  product         Product @relation(fields: [productId], references: [id])
-  rating          Int @default(5)
-  comment         String?
-  reviewStatus    ActiveStatus @default(PENDING)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String @id @default(uuid())
+  customerId          String
+  customer            User @relation(fields: [customerId], references: [id])
+  productId           String
+  product             Product @relation(fields: [productId], references: [id])
+  rating              Int @default(5)
+  comment             String?
+  reviewStatus        ActiveStatus @default(PENDING)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }
 
 model Coupon {
-  id             String      @id @default(uuid())
-  name           String
-  code           String      @unique
-  discount       Float
-  expiryDate     DateTime
-  isActive       Boolean     @default(true)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                  String      @id @default(uuid())
+  name                String
+  code                String      @unique
+  discount            Float
+  expiryDate          DateTime
+  isActive            Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 }
 
 model Comparison{
-  id             String @id @default(uuid())
-  userId         String
-  user           User @relation(fields: [userId], references: [id])
-  productId      String
-  product        Product @relation(fields: [productId], references: [id])
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                  String @id @default(uuid())
+  userId              String
+  user                User @relation(fields: [userId], references: [id])
+  productId           String
+  product             Product @relation(fields: [productId], references: [id])
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
   @@map("comparisons")
 }
 
 model RecentProduct{
-  id             String @id @default(uuid())
-  userId         String
-  user           User @relation(fields: [userId], references: [id])
-  productId      String
-  product        Product @relation(fields: [productId], references: [id])
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                  String @id @default(uuid())
+  userId              String
+  user                User @relation(fields: [userId], references: [id])
+  productId           String
+  product             Product @relation(fields: [productId], references: [id])
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
   @@map("recentProducts")
 }
