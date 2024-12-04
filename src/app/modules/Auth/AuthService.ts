@@ -5,11 +5,12 @@ import { AppError } from '../../utils/AppError'
 import { TLogin } from './AuthInterface'
 import { getAccessToken } from '../../helpers/AccessToken'
 import config from '../../config'
-
+import jwt, { JwtPayload } from 'jsonwebtoken'
 const userLogin = async (payload: TLogin) => {
   const isExistUser = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
+      status: 'ACTIVE',
     },
   })
 
@@ -46,6 +47,38 @@ const userLogin = async (payload: TLogin) => {
   }
 }
 
+const refreshToken = async (token: string) => {
+  const decoded = jwt.verify(
+    token,
+    config.refresh_token as string,
+  ) as JwtPayload
+
+  const { email, role } = decoded
+
+  const isExistUser = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: email,
+      status: 'ACTIVE',
+    },
+  })
+
+  const accessTokenData = {
+    email: isExistUser.email,
+    role: isExistUser.role,
+  }
+  const accessToken = await getAccessToken(
+    accessTokenData,
+    config.access_token as string,
+    config.access_expiresIn as string,
+  )
+
+  return {
+    email: isExistUser.email,
+    role: isExistUser.role,
+    token: accessToken,
+  }
+}
+
 const userSignUp = async (payload: any) => {}
 
-export const authService = { userSignUp, userLogin }
+export const authService = { userSignUp, userLogin, refreshToken }

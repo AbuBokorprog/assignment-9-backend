@@ -14,9 +14,15 @@ const Auth = (...userRole: any) => {
     // checking if the given token is valid
     const decoded = jwt.verify(token, 'secret') as JwtPayload
 
-    const { email, role } = decoded
+    const { email, role, exp } = decoded
 
-    const user = await prisma.user.findUniqueOrThrow({
+    const currentTime = Math.floor(Date.now() / 1000)
+
+    if (exp! < currentTime) {
+      throw new AppError(498, 'Access token are expired!')
+    }
+
+    await prisma.user.findUniqueOrThrow({
       where: {
         email: email,
         status: 'ACTIVE',
