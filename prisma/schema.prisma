@@ -31,7 +31,8 @@ model User {
   following       Follower[]
   reviews         Review[]
   comparison      Comparison[]
-
+  recentProducts        RecentProduct[]
+  
   @@map("users")
 }
 
@@ -79,16 +80,22 @@ model Customer {
 }
 
 model Shop {
-  id              String   @id @default(uuid())
-  shopName        String @unique
-  shopLogo        String
-  description     String?
-  vendorId        String   @unique
-  vendor          Vendor   @relation(fields: [vendorId], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  products        Product[]
-  followers       Follower[]
+  shopName            String @unique
+  id                  String   @id @default(uuid())
+  shopLogo            String
+  shopCover           String
+  description         String?
+  address             String
+  registrationNumber  String
+  categoryId          String
+  category            Category @relation(fields: [categoryId], references: [id])
+  vendorId            String   @unique
+  vendor              Vendor   @relation(fields: [vendorId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  products            Product[]
+  followers           Follower[]
+  orders              Order[]
   @@map("shops")
 }
 
@@ -97,45 +104,70 @@ model Category {
   name             String @unique
   image	           String
   description      String?
+  isActive         ActiveStatus @default(APPROVED)
   products         Product[]
+  shop             Shop[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
   @@map("categories")
 }
 
+model SizeOption {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  size      String
+    stock     Int
+}
+
+model ColorOption {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  color     String
+  stock     Int
+}
+
+
 model Product {
-  id           String          @id @default(uuid())
-  name         String
-  price        Float
-  description  String?
-  category     Category         @relation(fields: [categoryId], references: [id])
-  categoryId   String
-  vendor       Vendor           @relation(fields: [vendorId], references: [id])
-  vendorId     String
-  shopId       String
-  shop         Shop             @relation(fields: [shopId], references: [id])
-  images       String
-  inventory    Int
-  discount     Float?
-  carts        Cart[]
-  orders       ProductOrder[]   // Many-to-Many relationship via ProductOrder
-  reviews      Review[]
-  comparison   Comparison[]
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id                    String          @id @default(uuid())
+  name                  String
+  description           String
+  images                String
+  inventory             Int
+  regular_price         Float
+  discount_price        Float?
+  sizes                 SizeOption[]
+  colors                ColorOption[]
+  productStatus         ProductStatus @default(REGULAR)
+  stockStatus           StockStatus @default(IN_STOCK)
+  isActive              ActiveStatus @default(PENDING)
+  category              Category         @relation(fields: [categoryId], references: [id])
+  categoryId            String
+  vendor                Vendor           @relation(fields: [vendorId], references: [id])
+  vendorId              String
+  shopId                String
+  shop                  Shop             @relation(fields: [shopId], references: [id])
+  carts                 Cart[]
+  orders                ProductOrder[]   // Many-to-Many relationship via ProductOrder
+  reviews               Review[]
+  comparison            Comparison[]
+  recentProducts        RecentProduct[]
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
 
   @@map("products")
 }
 
 model Cart {
-  id           String          @id @default(uuid())
-  customerId   String
-  customer     User @relation(fields: [customerId], references: [id])
-  productId    String
-  product      Product @relation(fields: [productId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String          @id @default(uuid())
+  customerId      String
+  customer        User @relation(fields: [customerId], references: [id])
+  productId       String
+  product         Product @relation(fields: [productId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("carts")
 }
@@ -151,16 +183,39 @@ model ProductOrder {
   updatedAt  DateTime @updatedAt
 }
 
+// model ShippingInfo {
+//   id          String   @id @default(uuid())
+//   recipient   String   // Name of the person receiving the order
+//   addressLine String   // Main address line
+//   city        String   // City
+//   state       String?  // State/Province (optional)
+//   postalCode  String   // Postal/ZIP code
+//   // country     String   // Country
+//   phone       String?  // Contact number for delivery (optional)
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
 model Order {
-  id           String          @id @default(uuid())
-  customerId   String
-  customer     User         @relation(fields: [customerId], references: [id])
-  products     ProductOrder[]   // Relationship with join table
-  totalAmount  Float
-  status       OrderStatus      @default(PENDING)
-  payment      Payment?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id                String          @id @default(uuid())
+  customerId        String
+  customer          User            @relation(fields: [customerId], references: [id])
+  products          ProductOrder[]  // Relationship with join table
+  totalAmount       Float
+  status            OrderStatus     @default(PENDING)
+  fullName          String
+  phoneNumber       String
+  email             String
+  deliveryAddress   String
+  city              String
+  postalCode        Int
+  payment           Payment?
+  // shippingInfoId String?
+  // shippingInfo ShippingInfo?   @relation(fields: [shippingInfoId], references: [id])
+  shopId            String
+  shop              Shop @relation(fields: [shopId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
 model Payment {
@@ -169,8 +224,9 @@ model Payment {
   order           Order @relation(fields: [orderId], references: [id])
   amount          Float
   paymentMethod   String
-  status          PaymentStatus @default(PENDING)
+  status          PaymentStatus @default(UNPAID)
   transactionId   String?
+  paidAt          DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -179,8 +235,8 @@ model Payment {
 model Follower {
   id              String @id @default(uuid())
   customerId      String
-  customer        User @relation(fields: [customerId], references: [id])
   shopId          String
+  customer        User @relation(fields: [customerId], references: [id])
   shop            Shop @relation(fields: [shopId], references: [id])
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -196,6 +252,7 @@ model Review {
   product         Product @relation(fields: [productId], references: [id])
   rating          Int @default(5)
   comment         String?
+  reviewStatus    ActiveStatus @default(PENDING)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
@@ -223,28 +280,66 @@ model Comparison{
   @@map("comparisons")
 }
 
+model RecentProduct{
+  id             String @id @default(uuid())
+  userId         String
+  user           User @relation(fields: [userId], references: [id])
+  productId      String
+  product        Product @relation(fields: [productId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@map("recentProducts")
+}
+
+
 // enums
 enum UserRole {
   ADMIN
   VENDOR
   CUSTOMER
+  SUPER_ADMIN
 }
 
 enum UserStatus {
   ACTIVE
   BLOCKED
+  SUSPEND
   DELETED
+}
+
+enum ProductStatus {
+  REGULAR
+  FLASH_SALE
+  FEATURED
+  NEW
+  HOT
+  DISCOUNT
+}
+
+enum StockStatus {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
+enum ActiveStatus {
+  PENDING
+  APPROVED
+  REJECT
+  DELETE
 }
 
 enum OrderStatus {
   PENDING
+  PROCESSING
   COMPLETED
   CANCELLED
-  REFUNDED
 }
+
 enum PaymentStatus {
-  PENDING
-  SUCCESS
+  PAID
+  UNPAID
   FAILED
   REFUNDED
 }
