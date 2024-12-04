@@ -18,10 +18,13 @@ const ComparePassword_1 = require("../../helpers/ComparePassword");
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const AppError_1 = require("../../utils/AppError");
 const AccessToken_1 = require("../../helpers/AccessToken");
+const config_1 = __importDefault(require("../../config"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,
+            status: 'ACTIVE',
         },
     });
     const isMatchedPassword = yield (0, ComparePassword_1.ComparePassword)(payload.password, isExistUser.password);
@@ -32,7 +35,29 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         email: isExistUser.email,
         role: isExistUser.role,
     };
-    const accessToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData);
+    const accessToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.access_token, config_1.default.access_expiresIn);
+    const refreshToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.refresh_token, config_1.default.refresh_expiresIn);
+    return {
+        email: isExistUser.email,
+        role: isExistUser.role,
+        token: accessToken,
+        refreshToken: refreshToken,
+    };
+});
+const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const decoded = jsonwebtoken_1.default.verify(token, config_1.default.refresh_token);
+    const { email, role } = decoded;
+    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: email,
+            status: 'ACTIVE',
+        },
+    });
+    const accessTokenData = {
+        email: isExistUser.email,
+        role: isExistUser.role,
+    };
+    const accessToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.access_token, config_1.default.access_expiresIn);
     return {
         email: isExistUser.email,
         role: isExistUser.role,
@@ -40,4 +65,4 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 const userSignUp = (payload) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.authService = { userSignUp, userLogin };
+exports.authService = { userSignUp, userLogin, refreshToken };

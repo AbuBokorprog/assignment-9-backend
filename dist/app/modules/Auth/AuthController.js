@@ -17,13 +17,29 @@ const http_status_1 = __importDefault(require("http-status"));
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const AuthService_1 = require("./AuthService");
+const config_1 = __importDefault(require("../../config"));
 const userLogin = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield AuthService_1.authService.userLogin(req.body);
+    const { refreshToken } = data;
+    req.cookies('refreshToken', refreshToken, {
+        secure: config_1.default.node_env === 'production',
+        httpOnly: true,
+    });
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
         message: 'Login successfully!',
         data,
+    });
+}));
+const refreshToken = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { refreshToken } = req.cookies;
+    const result = yield AuthService_1.authService.refreshToken(refreshToken);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Access token is retrieved successfully!',
+        data: result,
     });
 }));
 const userSignUp = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,4 +51,4 @@ const userSignUp = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data,
     });
 }));
-exports.authController = { userLogin, userSignUp };
+exports.authController = { userLogin, userSignUp, refreshToken };

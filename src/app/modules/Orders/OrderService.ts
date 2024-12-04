@@ -10,10 +10,7 @@ const createOrder = async (payload: TOrder) => {
 
   const result = await prisma.$transaction(async transactionalClient => {
     const orderData = await transactionalClient.order.create({
-      data: {
-        customerId: payload.customerId,
-        totalAmount: payload.totalAmount,
-      },
+      data: payload,
     })
 
     await transactionalClient.productOrder.create({

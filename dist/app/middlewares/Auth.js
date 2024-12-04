@@ -26,8 +26,12 @@ const Auth = (...userRole) => {
         }
         // checking if the given token is valid
         const decoded = jsonwebtoken_1.default.verify(token, 'secret');
-        const { email, role } = decoded;
-        const user = yield prisma_1.default.user.findUniqueOrThrow({
+        const { email, role, exp } = decoded;
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (exp < currentTime) {
+            throw new AppError_1.AppError(498, 'Access token are expired!');
+        }
+        yield prisma_1.default.user.findUniqueOrThrow({
             where: {
                 email: email,
                 status: 'ACTIVE',

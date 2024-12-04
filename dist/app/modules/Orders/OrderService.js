@@ -22,10 +22,7 @@ const createOrder = (payload) => __awaiter(void 0, void 0, void 0, function* () 
     });
     const result = yield prisma_1.default.$transaction((transactionalClient) => __awaiter(void 0, void 0, void 0, function* () {
         const orderData = yield transactionalClient.order.create({
-            data: {
-                customerId: payload.customerId,
-                totalAmount: payload.totalAmount,
-            },
+            data: payload,
         });
         yield transactionalClient.productOrder.create({
             data: {

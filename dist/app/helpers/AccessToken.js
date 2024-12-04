@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAccessToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const getAccessToken = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const accessToken = jsonwebtoken_1.default.sign(payload, 'secret', { expiresIn: '10d' });
+const getAccessToken = (payload, secret, expiresIn) => __awaiter(void 0, void 0, void 0, function* () {
+    const accessToken = jsonwebtoken_1.default.sign(payload, secret, { expiresIn: expiresIn });
     return accessToken;
 });
 exports.getAccessToken = getAccessToken;

@@ -80,8 +80,8 @@ model Customer {
 }
 
 model Shop {
-  shopName              String @unique
   id                    String   @id @default(uuid())
+  shopName              String @unique
   shopLogo              String
   shopCover             String
   description           String?
