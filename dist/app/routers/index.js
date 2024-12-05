@@ -40,7 +40,7 @@ const moduleRoutes = [
         route: ProductsRoute_1.productRouter,
     },
     {
-        path: '/recent-products',
+        path: '/recently-viewed',
         route: RecentProductsRoute_1.recentProductsRouter,
     },
     {
