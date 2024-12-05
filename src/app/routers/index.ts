@@ -10,6 +10,7 @@ import { authRouter } from '../modules/Auth/AuthRoute'
 import { comparisonRouter } from '../modules/Comparison/ComparisonRoute'
 import { cartRouter } from '../modules/Carts/CartsRoute'
 import { orderRouter } from '../modules/Orders/OrderRoute'
+import { reportsRoute } from '../modules/dashboard-reports/reports.route'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -56,6 +57,10 @@ const moduleRoutes = [
   {
     path: '/comparison',
     route: comparisonRouter,
+  },
+  {
+    path: '/dashboard-reports',
+    route: reportsRoute,
   },
 ]
 

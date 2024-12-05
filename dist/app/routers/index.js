@@ -15,6 +15,7 @@ const AuthRoute_1 = require("../modules/Auth/AuthRoute");
 const ComparisonRoute_1 = require("../modules/Comparison/ComparisonRoute");
 const CartsRoute_1 = require("../modules/Carts/CartsRoute");
 const OrderRoute_1 = require("../modules/Orders/OrderRoute");
+const reports_route_1 = require("../modules/dashboard-reports/reports.route");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -60,6 +61,10 @@ const moduleRoutes = [
     {
         path: '/comparison',
         route: ComparisonRoute_1.comparisonRouter,
+    },
+    {
+        path: '/dashboard-reports',
+        route: reports_route_1.reportsRoute,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
