@@ -4,7 +4,7 @@ import CatchAsync from '../../utils/CatchAsync'
 import { categoryServices } from './CategoriesServices'
 
 const createCategory = CatchAsync(async (req, res) => {
-  const data = await categoryServices.createCategory(req.body)
+  const data = await categoryServices.createCategory(req.file, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.CREATED,

@@ -41,43 +41,44 @@ const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () 
     }));
     return result;
 });
-const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const password = yield (0, HashPassword_1.HashPassword)(payload.password);
-    const userData = {
-        email: payload.email,
-        password: password,
-        role: client_1.UserRole.VENDOR,
-        status: client_1.UserStatus.ACTIVE,
-    };
-    const vendorData = {
-        name: payload.name,
-        email: payload.email,
-        contactNumber: payload.contactNumber,
-        isDeleted: false,
-    };
-    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
-        yield transactionClient.user.create({
-            data: userData,
-        });
-        const vendor = yield transactionClient.vendor.create({
-            data: vendorData,
-        });
-        const shopData = {
-            shopName: payload.shopName,
-            shopLogo: payload.shopLogo,
-            shopCover: payload.shopCover,
-            description: payload.description,
-            vendorId: vendor.id,
-            address: payload.address,
-            registrationNumber: payload.registrationNumber,
-            categoryId: payload.categoryId,
-        };
-        yield transactionClient.shop.create({
-            data: shopData,
-        });
-        return vendor;
-    }));
-    return result;
+const createVendor = (files, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(files);
+    // const password = await HashPassword(payload.password)
+    // const userData = {
+    //   email: payload.email,
+    //   password: password,
+    //   role: UserRole.VENDOR,
+    //   status: UserStatus.ACTIVE,
+    // }
+    // const vendorData = {
+    //   name: payload.name,
+    //   email: payload.email,
+    //   contactNumber: payload.contactNumber,
+    //   isDeleted: false,
+    // }
+    // const result = await prisma.$transaction(async transactionClient => {
+    //   await transactionClient.user.create({
+    //     data: userData,
+    //   })
+    //   const vendor = await transactionClient.vendor.create({
+    //     data: vendorData,
+    //   })
+    //   const shopData = {
+    //     shopName: payload.shopName,
+    //     shopLogo: payload.shopLogo,
+    //     shopCover: payload.shopCover,
+    //     description: payload.description,
+    //     vendorId: vendor.id,
+    //     address: payload.address,
+    //     registrationNumber: payload.registrationNumber,
+    //     categoryId: payload.categoryId,
+    //   }
+    //   await transactionClient.shop.create({
+    //     data: shopData,
+    //   })
+    //   return vendor
+    // })
+    // return result
 });
 const createCustomer = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const password = yield (0, HashPassword_1.HashPassword)(payload.password);
@@ -112,7 +113,27 @@ const retrieveAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
             vendor: true,
         },
     });
-    return result;
+    const data = result === null || result === void 0 ? void 0 : result.map(u => {
+        var _a, _b, _c, _d, _e, _f;
+        return ({
+            email: u.email,
+            id: u.id,
+            role: u.role,
+            status: u.status,
+            name: u.admin ? u.admin.name : u.vendor ? (_a = u.vendor) === null || _a === void 0 ? void 0 : _a.name : (_b = u.customer) === null || _b === void 0 ? void 0 : _b.name,
+            profile: u.admin
+                ? u.admin.profilePhoto
+                : u.vendor
+                    ? (_c = u.vendor) === null || _c === void 0 ? void 0 : _c.profilePhoto
+                    : (_d = u.customer) === null || _d === void 0 ? void 0 : _d.profilePhoto,
+            phone: u.admin
+                ? u.admin.contactNumber
+                : u.vendor
+                    ? (_e = u.vendor) === null || _e === void 0 ? void 0 : _e.contactNumber
+                    : (_f = u.customer) === null || _f === void 0 ? void 0 : _f.contactNumber,
+        });
+    });
+    return data;
 });
 const retrieveUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.user.findUniqueOrThrow({
@@ -127,10 +148,24 @@ const retrieveUserById = (id) => __awaiter(void 0, void 0, void 0, function* () 
     });
     return result;
 });
+const myProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user.email,
+        },
+        include: {
+            admin: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN',
+            customer: user.role === 'CUSTOMER',
+            vendor: user.role === 'VENDOR',
+        },
+    });
+    return result;
+});
 exports.userServices = {
     createAdmin,
     createVendor,
     createCustomer,
     retrieveAllUsers,
     retrieveUserById,
+    myProfile,
 };

@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import CatchAsync from '../../utils/CatchAsync'
 import SuccessResponse from '../../utils/SuccessResponse'
 import { userServices } from './user.service'
+import { Request, Response } from 'express'
 
 const createAdmin = CatchAsync(async (req, res) => {
   const data = await userServices.createAdmin(req.body)
@@ -14,7 +15,7 @@ const createAdmin = CatchAsync(async (req, res) => {
   })
 })
 const createVendor = CatchAsync(async (req, res) => {
-  const data = await userServices.createVendor(req.body)
+  const data = await userServices.createVendor(req.files, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.CREATED,
@@ -56,6 +57,18 @@ const retrieveUserById = CatchAsync(async (req, res) => {
     data,
   })
 })
+// const myProfile = CatchAsync(async (req, res: Response) => {
+//   const user = req.user
+//   const data = await userServices.myProfile(user)
+
+//   SuccessResponse(res, {
+//     status: httpStatus.OK,
+//     success: true,
+//     message: 'Retrieve users by id successfully!',
+//     data,
+//   })
+//   res.json(user)
+// })
 
 export const userControllers = {
   createAdmin,
@@ -63,4 +76,5 @@ export const userControllers = {
   createCustomer,
   retrieveAllUsers,
   retrieveUserById,
+  // myProfile,
 }

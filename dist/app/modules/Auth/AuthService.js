@@ -27,28 +27,22 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             status: 'ACTIVE',
         },
     });
-    let user;
-    if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
-        user = yield prisma_1.default.admin.findUniqueOrThrow({
-            where: {
-                email: isExistUser.email,
-            },
+    function getUserByRole(role, email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            switch (role) {
+                case 'ADMIN':
+                case 'SUPER_ADMIN': // Both ADMIN and SUPER_ADMIN query the `admin` table
+                    return yield prisma_1.default.admin.findUniqueOrThrow({ where: { email } });
+                case 'VENDOR':
+                    return yield prisma_1.default.vendor.findUniqueOrThrow({ where: { email } });
+                case 'CUSTOMER':
+                    return yield prisma_1.default.customer.findUniqueOrThrow({ where: { email } });
+                default:
+                    throw new Error('Invalid role');
+            }
         });
     }
-    else if (isExistUser.role === 'VENDOR') {
-        user = yield prisma_1.default.vendor.findUniqueOrThrow({
-            where: {
-                email: isExistUser.email,
-            },
-        });
-    }
-    else {
-        user = yield prisma_1.default.customer.findUniqueOrThrow({
-            where: {
-                email: isExistUser.email,
-            },
-        });
-    }
+    const user = yield getUserByRole(isExistUser.role, isExistUser.email);
     const isMatchedPassword = yield (0, ComparePassword_1.ComparePassword)(payload.password, isExistUser.password);
     if (!isMatchedPassword) {
         throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, 'You are unauthorized!');

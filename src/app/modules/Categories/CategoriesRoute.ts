@@ -1,12 +1,18 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import ValidationRequest from '../../utils/ValidationRequest'
 import { categoryController } from './CategoriesController'
 import { categoryValidation } from './CategoriesValidation'
+import { upload } from '../../utils/ImageUpload'
 
 const router = express.Router()
 
 router.post(
   '/',
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data)
+    next()
+  },
   ValidationRequest(categoryValidation.CreateCategorySchema),
   categoryController.createCategory,
 )

@@ -7,7 +7,7 @@ const createCoupon = zod_1.z.object({
     code: zod_1.z
         .string({ required_error: 'Code is required.' })
         .regex(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase.'),
-    discount: zod_1.z.number().positive('Discount must be a positive number.'),
+    discount: zod_1.z.string().min(1, 'Discount must be a positive number.'),
     expiryDate: zod_1.z.string(),
 });
 exports.couponValidation = { createCoupon };

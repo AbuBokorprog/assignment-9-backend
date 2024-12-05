@@ -14,11 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.categoryServices = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createCategory = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const category = yield prisma_1.default.category.create({
-        data: payload,
-    });
-    return category;
+const ImageUpload_1 = require("../../utils/ImageUpload");
+const createCategory = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    if (file) {
+        const path = file.path;
+        const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, path);
+        const secureUrl = response.secure_url;
+        payload.image = secureUrl;
+        const data = {
+            name: payload.name,
+            image: secureUrl,
+            description: payload.description || null,
+        };
+        const category = yield prisma_1.default.category.create({
+            data: data,
+        });
+        return category;
+    }
 });
 const retrieveAllCategory = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.category.findMany({});

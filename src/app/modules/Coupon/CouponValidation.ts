@@ -5,7 +5,7 @@ const createCoupon = z.object({
   code: z
     .string({ required_error: 'Code is required.' })
     .regex(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase.'),
-  discount: z.number().positive('Discount must be a positive number.'),
+  discount: z.string().min(1, 'Discount must be a positive number.'),
   expiryDate: z.string(),
 })
 

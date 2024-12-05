@@ -15,26 +15,21 @@ const userLogin = async (payload: TLogin) => {
     },
   })
 
-  let user
-  if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
-    user = await prisma.admin.findUniqueOrThrow({
-      where: {
-        email: isExistUser.email,
-      },
-    })
-  } else if (isExistUser.role === 'VENDOR') {
-    user = await prisma.vendor.findUniqueOrThrow({
-      where: {
-        email: isExistUser.email,
-      },
-    })
-  } else {
-    user = await prisma.customer.findUniqueOrThrow({
-      where: {
-        email: isExistUser.email,
-      },
-    })
+  async function getUserByRole(role: string, email: string) {
+    switch (role) {
+      case 'ADMIN':
+      case 'SUPER_ADMIN': // Both ADMIN and SUPER_ADMIN query the `admin` table
+        return await prisma.admin.findUniqueOrThrow({ where: { email } })
+      case 'VENDOR':
+        return await prisma.vendor.findUniqueOrThrow({ where: { email } })
+      case 'CUSTOMER':
+        return await prisma.customer.findUniqueOrThrow({ where: { email } })
+      default:
+        throw new Error('Invalid role')
+    }
   }
+
+  const user = await getUserByRole(isExistUser.role, isExistUser.email)
 
   const isMatchedPassword = await ComparePassword(
     payload.password,
@@ -50,6 +45,7 @@ const userLogin = async (payload: TLogin) => {
     name: user.name,
     role: isExistUser.role,
   }
+
   const accessToken = await getAccessToken(
     accessTokenData,
     config.access_token as string,

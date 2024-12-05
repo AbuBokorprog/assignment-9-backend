@@ -33,50 +33,51 @@ const createAdmin = async (payload: TAdmin) => {
 
   return result
 }
-const createVendor = async (payload: TVendor) => {
-  const password = await HashPassword(payload.password)
-  const userData = {
-    email: payload.email,
-    password: password,
-    role: UserRole.VENDOR,
-    status: UserStatus.ACTIVE,
-  }
+const createVendor = async (files: any, payload: TVendor) => {
+  console.log(files)
+  // const password = await HashPassword(payload.password)
+  // const userData = {
+  //   email: payload.email,
+  //   password: password,
+  //   role: UserRole.VENDOR,
+  //   status: UserStatus.ACTIVE,
+  // }
 
-  const vendorData = {
-    name: payload.name,
-    email: payload.email,
-    contactNumber: payload.contactNumber,
-    isDeleted: false,
-  }
+  // const vendorData = {
+  //   name: payload.name,
+  //   email: payload.email,
+  //   contactNumber: payload.contactNumber,
+  //   isDeleted: false,
+  // }
 
-  const result = await prisma.$transaction(async transactionClient => {
-    await transactionClient.user.create({
-      data: userData,
-    })
+  // const result = await prisma.$transaction(async transactionClient => {
+  //   await transactionClient.user.create({
+  //     data: userData,
+  //   })
 
-    const vendor = await transactionClient.vendor.create({
-      data: vendorData,
-    })
+  //   const vendor = await transactionClient.vendor.create({
+  //     data: vendorData,
+  //   })
 
-    const shopData = {
-      shopName: payload.shopName,
-      shopLogo: payload.shopLogo,
-      shopCover: payload.shopCover,
-      description: payload.description,
-      vendorId: vendor.id,
-      address: payload.address,
-      registrationNumber: payload.registrationNumber,
-      categoryId: payload.categoryId,
-    }
+  //   const shopData = {
+  //     shopName: payload.shopName,
+  //     shopLogo: payload.shopLogo,
+  //     shopCover: payload.shopCover,
+  //     description: payload.description,
+  //     vendorId: vendor.id,
+  //     address: payload.address,
+  //     registrationNumber: payload.registrationNumber,
+  //     categoryId: payload.categoryId,
+  //   }
 
-    await transactionClient.shop.create({
-      data: shopData,
-    })
+  //   await transactionClient.shop.create({
+  //     data: shopData,
+  //   })
 
-    return vendor
-  })
+  //   return vendor
+  // })
 
-  return result
+  // return result
 }
 const createCustomer = async (payload: TAdmin) => {
   const password = await HashPassword(payload.password)
@@ -118,7 +119,25 @@ const retrieveAllUsers = async () => {
     },
   })
 
-  return result
+  const data: any = result?.map(u => ({
+    email: u.email,
+    id: u.id,
+    role: u.role,
+    status: u.status,
+    name: u.admin ? u.admin.name : u.vendor ? u.vendor?.name : u.customer?.name,
+    profile: u.admin
+      ? u.admin.profilePhoto
+      : u.vendor
+        ? u.vendor?.profilePhoto
+        : u.customer?.profilePhoto,
+    phone: u.admin
+      ? u.admin.contactNumber
+      : u.vendor
+        ? u.vendor?.contactNumber
+        : u.customer?.contactNumber,
+  }))
+
+  return data
 }
 
 const retrieveUserById = async (id: string) => {
@@ -135,6 +154,20 @@ const retrieveUserById = async (id: string) => {
 
   return result
 }
+const myProfile = async (user: any) => {
+  const result = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+    },
+    include: {
+      admin: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN',
+      customer: user.role === 'CUSTOMER',
+      vendor: user.role === 'VENDOR',
+    },
+  })
+
+  return result
+}
 
 export const userServices = {
   createAdmin,
@@ -142,4 +175,5 @@ export const userServices = {
   createCustomer,
   retrieveAllUsers,
   retrieveUserById,
+  myProfile,
 }

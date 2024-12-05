@@ -1,12 +1,25 @@
 import prisma from '../../helpers/prisma'
+import { ImageUpload } from '../../utils/ImageUpload'
 import { TCategory } from './CategoriesInterface'
 
-const createCategory = async (payload: TCategory) => {
-  const category = await prisma.category.create({
-    data: payload,
-  })
+const createCategory = async (file: any, payload: TCategory) => {
+  if (file) {
+    const path = file.path
+    const response: any = await ImageUpload(payload.name as string, path)
+    const secureUrl = response.secure_url
+    payload.image = secureUrl
+    const data = {
+      name: payload.name,
+      image: secureUrl,
+      description: payload.description || null,
+    }
 
-  return category
+    const category = await prisma.category.create({
+      data: data,
+    })
+
+    return category
+  }
 }
 
 const retrieveAllCategory = async () => {

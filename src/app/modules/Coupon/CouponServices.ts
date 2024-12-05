@@ -5,7 +5,7 @@ const createCoupon = async (payload: TCoupon) => {
   const data = {
     name: payload.name,
     code: payload.code,
-    discount: payload.discount,
+    discount: Number(payload.discount),
     expiryDate: new Date(payload.expiryDate),
   }
   const coupon = await prisma.coupon.create({

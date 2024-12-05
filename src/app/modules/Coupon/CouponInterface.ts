@@ -1,6 +1,6 @@
 export type TCoupon = {
   name: string
   code: string
-  discount: number
+  discount: string
   expiryDate: Date
 }

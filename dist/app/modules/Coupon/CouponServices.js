@@ -18,7 +18,7 @@ const createCoupon = (payload) => __awaiter(void 0, void 0, void 0, function* ()
     const data = {
         name: payload.name,
         code: payload.code,
-        discount: payload.discount,
+        discount: Number(payload.discount),
         expiryDate: new Date(payload.expiryDate),
     };
     const coupon = yield prisma_1.default.coupon.create({
