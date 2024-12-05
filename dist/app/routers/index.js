@@ -16,6 +16,7 @@ const ComparisonRoute_1 = require("../modules/Comparison/ComparisonRoute");
 const CartsRoute_1 = require("../modules/Carts/CartsRoute");
 const OrderRoute_1 = require("../modules/Orders/OrderRoute");
 const reports_route_1 = require("../modules/dashboard-reports/reports.route");
+const RecentProductsRoute_1 = require("../modules/RecentProducts/RecentProductsRoute");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -37,6 +38,10 @@ const moduleRoutes = [
     {
         path: '/products',
         route: ProductsRoute_1.productRouter,
+    },
+    {
+        path: '/recent-products',
+        route: RecentProductsRoute_1.recentProductsRouter,
     },
     {
         path: '/carts',

@@ -11,6 +11,7 @@ import { comparisonRouter } from '../modules/Comparison/ComparisonRoute'
 import { cartRouter } from '../modules/Carts/CartsRoute'
 import { orderRouter } from '../modules/Orders/OrderRoute'
 import { reportsRoute } from '../modules/dashboard-reports/reports.route'
+import { recentProductsRouter } from '../modules/RecentProducts/RecentProductsRoute'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -33,6 +34,10 @@ const moduleRoutes = [
   {
     path: '/products',
     route: productRouter,
+  },
+  {
+    path: '/recent-products',
+    route: recentProductsRouter,
   },
   {
     path: '/carts',
