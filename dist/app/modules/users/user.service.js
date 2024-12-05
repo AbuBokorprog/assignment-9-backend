@@ -62,6 +62,19 @@ const createVendor = (payload) => __awaiter(void 0, void 0, void 0, function* ()
         const vendor = yield transactionClient.vendor.create({
             data: vendorData,
         });
+        const shopData = {
+            shopName: payload.shopName,
+            shopLogo: payload.shopLogo,
+            shopCover: payload.shopCover,
+            description: payload.description,
+            vendorId: vendor.id,
+            address: payload.address,
+            registrationNumber: payload.registrationNumber,
+            categoryId: payload.categoryId,
+        };
+        yield transactionClient.shop.create({
+            data: shopData,
+        });
         return vendor;
     }));
     return result;

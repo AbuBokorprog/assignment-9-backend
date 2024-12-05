@@ -6,7 +6,7 @@ export type TAdmin = {
   contactNumber: string
 }
 
-export type TVendor = {
+export interface TVendor extends TShop {
   name: string
   email: string
   password: string

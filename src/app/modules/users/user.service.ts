@@ -1,5 +1,5 @@
 import { UserRole, UserStatus } from '@prisma/client'
-import { TAdmin } from './user.interface'
+import { TAdmin, TVendor } from './user.interface'
 import prisma from '../../helpers/prisma'
 import { HashPassword } from '../../helpers/HashPassword'
 
@@ -33,7 +33,7 @@ const createAdmin = async (payload: TAdmin) => {
 
   return result
 }
-const createVendor = async (payload: TAdmin) => {
+const createVendor = async (payload: TVendor) => {
   const password = await HashPassword(payload.password)
   const userData = {
     email: payload.email,
@@ -56,6 +56,21 @@ const createVendor = async (payload: TAdmin) => {
 
     const vendor = await transactionClient.vendor.create({
       data: vendorData,
+    })
+
+    const shopData = {
+      shopName: payload.shopName,
+      shopLogo: payload.shopLogo,
+      shopCover: payload.shopCover,
+      description: payload.description,
+      vendorId: vendor.id,
+      address: payload.address,
+      registrationNumber: payload.registrationNumber,
+      categoryId: payload.categoryId,
+    }
+
+    await transactionClient.shop.create({
+      data: shopData,
     })
 
     return vendor
