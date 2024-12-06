@@ -32,10 +32,10 @@ export type VendorShop = {
   profilePhoto?: string
   contactNumber: string
   shopName: string
-  shopLogo: string
-  shopCover: string
+  shopLogo?: string
+  shopCover?: string
   description?: string
-  vendorId: string
+  vendorId?: string
   address: string
   registrationNumber: string
   categoryId: string

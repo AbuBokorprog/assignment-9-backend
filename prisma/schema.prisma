@@ -88,6 +88,7 @@ model Shop {
   address               String
   registrationNumber    String
   categoryId            String
+  isActive              ActiveStatus @default(PENDING)
   category              Category @relation(fields: [categoryId], references: [id])
   vendorId              String   @unique
   vendor                Vendor   @relation(fields: [vendorId], references: [id])
