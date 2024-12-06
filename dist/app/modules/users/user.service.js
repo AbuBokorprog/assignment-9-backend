@@ -16,6 +16,7 @@ exports.userServices = void 0;
 const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const HashPassword_1 = require("../../helpers/HashPassword");
+const ImageUpload_1 = require("../../utils/ImageUpload");
 const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const password = yield (0, HashPassword_1.HashPassword)(payload.password);
     const userData = {
@@ -42,43 +43,46 @@ const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () 
     return result;
 });
 const createVendor = (files, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(files);
-    // const password = await HashPassword(payload.password)
-    // const userData = {
-    //   email: payload.email,
-    //   password: password,
-    //   role: UserRole.VENDOR,
-    //   status: UserStatus.ACTIVE,
-    // }
-    // const vendorData = {
-    //   name: payload.name,
-    //   email: payload.email,
-    //   contactNumber: payload.contactNumber,
-    //   isDeleted: false,
-    // }
-    // const result = await prisma.$transaction(async transactionClient => {
-    //   await transactionClient.user.create({
-    //     data: userData,
-    //   })
-    //   const vendor = await transactionClient.vendor.create({
-    //     data: vendorData,
-    //   })
-    //   const shopData = {
-    //     shopName: payload.shopName,
-    //     shopLogo: payload.shopLogo,
-    //     shopCover: payload.shopCover,
-    //     description: payload.description,
-    //     vendorId: vendor.id,
-    //     address: payload.address,
-    //     registrationNumber: payload.registrationNumber,
-    //     categoryId: payload.categoryId,
-    //   }
-    //   await transactionClient.shop.create({
-    //     data: shopData,
-    //   })
-    //   return vendor
-    // })
-    // return result
+    const password = yield (0, HashPassword_1.HashPassword)(payload.password);
+    const userData = {
+        email: payload.email,
+        password: password,
+        role: client_1.UserRole.VENDOR,
+        status: client_1.UserStatus.ACTIVE,
+    };
+    const vendorData = {
+        name: payload.name,
+        email: payload.email,
+        contactNumber: payload.contactNumber,
+        isDeleted: false,
+    };
+    const logoResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-logo`, files.logo[0].path);
+    const shopLogo = logoResponse.secure_url;
+    const coverResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-cover`, files.cover[0].path);
+    const shopCover = coverResponse.secure_url;
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        yield transactionClient.user.create({
+            data: userData,
+        });
+        const vendor = yield transactionClient.vendor.create({
+            data: vendorData,
+        });
+        const shopData = {
+            shopName: payload.shopName,
+            shopLogo: shopLogo,
+            shopCover: shopCover,
+            description: payload.description,
+            vendorId: vendor.id,
+            address: payload.address,
+            registrationNumber: payload.registrationNumber,
+            categoryId: payload.categoryId,
+        };
+        yield transactionClient.shop.create({
+            data: shopData,
+        });
+        return vendor;
+    }));
+    return result;
 });
 const createCustomer = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const password = yield (0, HashPassword_1.HashPassword)(payload.password);

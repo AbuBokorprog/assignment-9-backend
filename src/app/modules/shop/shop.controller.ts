@@ -2,9 +2,10 @@ import httpStatus from 'http-status'
 import CatchAsync from '../../utils/CatchAsync'
 import SuccessResponse from '../../utils/SuccessResponse'
 import { shopServices } from './shop.services'
+import { Request, Response } from 'express'
 
 const createShop = CatchAsync(async (req, res) => {
-  const data = await shopServices.createShop(req.body)
+  const data = await shopServices.createShop(req.files, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.CREATED,
@@ -24,6 +25,21 @@ const retrieveAllShop = CatchAsync(async (req, res) => {
     data,
   })
 })
+
+const retrieveAllShopByVendor = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const user = req.user
+
+    const data = await shopServices.retrieveAllShopByVendor(user)
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Retrieve all shops successfully!',
+      data,
+    })
+  },
+)
 
 const retrieveShopById = CatchAsync(async (req, res) => {
   const { id } = req.params
@@ -67,4 +83,5 @@ export const shopController = {
   retrieveShopById,
   updateShopById,
   deleteShopById,
+  retrieveAllShopByVendor,
 }

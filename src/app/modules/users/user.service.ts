@@ -49,7 +49,7 @@ const createVendor = async (files: any, payload: TVendor) => {
     contactNumber: payload.contactNumber,
     isDeleted: false,
   }
-  const logoPath = files.logo[0].path
+
   const logoResponse: any = await ImageUpload(
     `${payload.shopName}-logo`,
     files.logo[0].path,

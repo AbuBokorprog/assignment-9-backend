@@ -1,39 +1,49 @@
 import { AppError } from './../utils/AppError'
 import httpStatus from 'http-status'
 import CatchAsync from '../utils/CatchAsync'
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken'
 import prisma from '../helpers/prisma'
-const Auth = (...userRole: any) => {
+import config from '../config'
+import { DecodedToken } from '../interface'
+
+const Auth = (...userRoles: string[]) => {
   return CatchAsync(async (req, res, next) => {
-    const token = req.headers.authorization?.split(',')[1]
+    const token = req.headers.authorization?.split(' ')[1]
 
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, "You're unauthorized!")
     }
 
-    // checking if the given token is valid
-    const decoded = jwt.verify(token, 'secret') as JwtPayload
+    // Verify token
+    const decoded = jwt.verify(
+      token,
+      config.access_token as Secret,
+    ) as JwtPayload
 
     const { email, role, exp } = decoded
 
+    // Check if token is expired
     const currentTime = Math.floor(Date.now() / 1000)
-
     if (exp! < currentTime) {
-      throw new AppError(498, 'Access token are expired!')
+      throw new AppError(498, 'Access token has expired!')
     }
 
-    await prisma.user.findUniqueOrThrow({
-      where: {
-        email: email,
-        status: 'ACTIVE',
-      },
+    // Verify user in the database
+    const user = await prisma.user.findUnique({
+      where: { email },
     })
 
-    if (userRole && !userRole.include(role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "You're unAuthorized!")
+    if (!user || user.status !== 'ACTIVE') {
+      throw new AppError(httpStatus.UNAUTHORIZED, "You're unauthorized!")
     }
 
-    req.user = decoded as JwtPayload
+    // Check role
+    if (userRoles.length > 0 && !userRoles.includes(role)) {
+      throw new AppError(httpStatus.FORBIDDEN, "You don't have permission!")
+    }
+
+    // Attach user to request
+    req.user = decoded as DecodedToken
 
     next()
   })

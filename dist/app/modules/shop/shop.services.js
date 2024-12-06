@@ -14,19 +14,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.shopServices = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createShop = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+const ImageUpload_1 = require("../../utils/ImageUpload");
+const createShop = (files, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const logoResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-logo`, files.logo[0].path);
+    const shopLogo = logoResponse.secure_url;
+    const coverResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-cover`, files.cover[0].path);
+    const shopCover = coverResponse.secure_url;
+    const shopData = {
+        shopName: payload.shopName,
+        shopLogo: shopLogo,
+        shopCover: shopCover,
+        description: payload.description,
+        vendorId: payload.vendorId,
+        address: payload.address,
+        registrationNumber: payload.registrationNumber,
+        categoryId: payload.categoryId,
+    };
     yield prisma_1.default.vendor.findUniqueOrThrow({
         where: {
             id: payload.vendorId,
         },
     });
     const shop = yield prisma_1.default.shop.create({
-        data: payload,
+        data: shopData,
     });
     return shop;
 });
 const retrieveAllShop = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.shop.findMany({});
+    const result = yield prisma_1.default.shop.findMany({
+        include: {
+            category: true,
+            followers: true,
+            orders: true,
+            products: true,
+            vendor: true,
+        },
+    });
+    return result;
+});
+const retrieveAllShopByVendor = (vendor) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistVendor = yield prisma_1.default.vendor.findUniqueOrThrow({
+        where: {
+            email: vendor.email,
+            isDeleted: false,
+        },
+    });
+    const result = yield prisma_1.default.shop.findMany({
+        where: {
+            vendorId: isExistVendor.id,
+        },
+        include: {
+            category: true,
+            followers: true,
+            orders: true,
+            products: true,
+            vendor: true,
+        },
+    });
     return result;
 });
 const retrieveShopById = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -69,5 +113,6 @@ exports.shopServices = {
     retrieveAllShop,
     retrieveShopById,
     updateShopById,
+    retrieveAllShopByVendor,
     deleteShopById,
 };

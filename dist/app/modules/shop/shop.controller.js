@@ -18,7 +18,7 @@ const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const shop_services_1 = require("./shop.services");
 const createShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield shop_services_1.shopServices.createShop(req.body);
+    const data = yield shop_services_1.shopServices.createShop(req.files, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.CREATED,
         success: true,
@@ -28,6 +28,17 @@ const createShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const retrieveAllShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield shop_services_1.shopServices.retrieveAllShop();
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all shops successfully!',
+        data,
+    });
+}));
+const retrieveAllShopByVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    console.log(user);
+    const data = yield shop_services_1.shopServices.retrieveAllShopByVendor(user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
@@ -71,4 +82,5 @@ exports.shopController = {
     retrieveShopById,
     updateShopById,
     deleteShopById,
+    retrieveAllShopByVendor,
 };

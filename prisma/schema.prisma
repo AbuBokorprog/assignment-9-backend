@@ -97,6 +97,7 @@ model Shop {
   products              Product[]
   followers             Follower[]
   orders                Order[]
+  reviews               Review[]
   @@map("shops")
 }
 
@@ -251,6 +252,8 @@ model Review {
   customer            User @relation(fields: [customerId], references: [id])
   productId           String
   product             Product @relation(fields: [productId], references: [id])
+  shopId              String
+  shop                Shop @relation(fields: [shopId], references: [id])
   rating              Int @default(5)
   comment             String?
   reviewStatus        ActiveStatus @default(PENDING)
