@@ -1,16 +1,27 @@
 import prisma from '../../helpers/prisma'
+import { ImageUpload } from '../../utils/ImageUpload'
 import { TProduct } from './ProductsInterface'
 
-const createProduct = async (payload: TProduct) => {
-  await prisma.vendor.findUniqueOrThrow({
+const createProduct = async (files: any, payload: TProduct) => {
+  // Upload files and collect their URLs
+  const images: string[] = []
+  if (files) {
+    for (const file of files) {
+      const response: any = await ImageUpload(payload.name, file.path) // Upload each file
+      images.push(response.secure_url) // Collect uploaded URLs
+    }
+  }
+
+  const shopData = await prisma.shop.findUniqueOrThrow({
     where: {
-      id: payload.vendorId,
+      id: payload.shopId,
     },
   })
 
-  await prisma.shop.findUniqueOrThrow({
+  await prisma.vendor.findUniqueOrThrow({
     where: {
-      id: payload.shopId,
+      id: shopData.vendorId,
+      isDeleted: false,
     },
   })
 
@@ -20,11 +31,53 @@ const createProduct = async (payload: TProduct) => {
     },
   })
 
-  const product = await prisma.product.create({
-    data: payload,
-  })
+  const result = await prisma.$transaction(async transactionClient => {
+    const product = await transactionClient.product.create({
+      data: {
+        name: payload?.name,
+        regular_price: Number(payload?.regular_price),
+        discount_price: Number(payload?.discount_price),
+        description: payload?.description,
+        images: images,
+        inventory: Number(payload?.inventory),
+        categoryId: payload?.categoryId,
+        vendorId: shopData?.vendorId,
+        shopId: payload?.shopId,
+      },
+    })
+    const productSize = payload.productSize?.map((s: any) => ({
+      size: s.size,
+      stock: Number(s.stock),
+      productId: product.id,
+    }))
 
-  return product
+    try {
+      await transactionClient.sizeOption.createMany({
+        data: productSize,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    const productColors = payload.productColor?.map((c: any) => ({
+      color: c.color,
+      stock: Number(c.colorStock),
+      code: c.colorCode,
+      productId: product.id,
+    }))
+
+    try {
+      await transactionClient.colorOption.createMany({
+        data: productColors,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    return {
+      product,
+    }
+  })
+  return result
 }
 
 const retrieveAllProduct = async () => {

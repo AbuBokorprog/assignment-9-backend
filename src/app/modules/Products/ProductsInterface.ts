@@ -1,11 +1,23 @@
 export type TProduct = {
   name: string
-  regular_price: number
-  discount_price: number
+  regular_price: string
+  discount_price: string
   description: string
+  images: string[]
   categoryId: string
-  vendorId: string
+  vendorId?: string
   shopId: string
-  images: string
-  inventory: number
+  inventory: string
+  productSize: productSize[]
+  productColor: productColor[]
+}
+
+type productSize = {
+  size: string
+  stock: string
+}
+type productColor = {
+  color: string
+  colorCode: string
+  colorStock: string
 }

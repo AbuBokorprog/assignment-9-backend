@@ -14,15 +14,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productServices = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createProduct = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.vendor.findUniqueOrThrow({
-        where: {
-            id: payload.vendorId,
-        },
-    });
-    yield prisma_1.default.shop.findUniqueOrThrow({
+const ImageUpload_1 = require("../../utils/ImageUpload");
+const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // Upload files and collect their URLs
+    const images = [];
+    if (files) {
+        for (const file of files) {
+            const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, file.path); // Upload each file
+            images.push(response.secure_url); // Collect uploaded URLs
+        }
+    }
+    const shopData = yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
             id: payload.shopId,
+        },
+    });
+    yield prisma_1.default.vendor.findUniqueOrThrow({
+        where: {
+            id: shopData.vendorId,
+            isDeleted: false,
         },
     });
     yield prisma_1.default.category.findUniqueOrThrow({
@@ -30,10 +40,53 @@ const createProduct = (payload) => __awaiter(void 0, void 0, void 0, function* (
             id: payload.categoryId,
         },
     });
-    const product = yield prisma_1.default.product.create({
-        data: payload,
-    });
-    return product;
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a, _b;
+        const product = yield transactionClient.product.create({
+            data: {
+                name: payload === null || payload === void 0 ? void 0 : payload.name,
+                regular_price: Number(payload === null || payload === void 0 ? void 0 : payload.regular_price),
+                discount_price: Number(payload === null || payload === void 0 ? void 0 : payload.discount_price),
+                description: payload === null || payload === void 0 ? void 0 : payload.description,
+                images: images,
+                inventory: Number(payload === null || payload === void 0 ? void 0 : payload.inventory),
+                categoryId: payload === null || payload === void 0 ? void 0 : payload.categoryId,
+                vendorId: shopData === null || shopData === void 0 ? void 0 : shopData.vendorId,
+                shopId: payload === null || payload === void 0 ? void 0 : payload.shopId,
+            },
+        });
+        const productSize = (_a = payload.productSize) === null || _a === void 0 ? void 0 : _a.map((s) => ({
+            size: s.size,
+            stock: Number(s.stock),
+            productId: product.id,
+        }));
+        try {
+            yield transactionClient.sizeOption.createMany({
+                data: productSize,
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
+        const productColors = (_b = payload.productColor) === null || _b === void 0 ? void 0 : _b.map((c) => ({
+            color: c.color,
+            stock: Number(c.colorStock),
+            code: c.colorCode,
+            productId: product.id,
+        }));
+        try {
+            yield transactionClient.colorOption.createMany({
+                data: productColors,
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
+        return {
+            product,
+        };
+    }));
+    return result;
 });
 const retrieveAllProduct = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.product.findMany({});

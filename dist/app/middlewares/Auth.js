@@ -18,29 +18,33 @@ const CatchAsync_1 = __importDefault(require("../utils/CatchAsync"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma_1 = __importDefault(require("../helpers/prisma"));
 const config_1 = __importDefault(require("../config"));
-const Auth = (...userRole) => {
+const Auth = (...userRoles) => {
     return (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         if (!token) {
             throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, "You're unauthorized!");
         }
-        // checking if the given token is valid
+        // Verify token
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.access_token);
         const { email, role, exp } = decoded;
+        // Check if token is expired
         const currentTime = Math.floor(Date.now() / 1000);
         if (exp < currentTime) {
-            throw new AppError_1.AppError(498, 'Access token are expired!');
+            throw new AppError_1.AppError(498, 'Access token has expired!');
         }
-        yield prisma_1.default.user.findUniqueOrThrow({
-            where: {
-                email: email,
-                status: 'ACTIVE',
-            },
+        // Verify user in the database
+        const user = yield prisma_1.default.user.findUnique({
+            where: { email },
         });
-        if (userRole && !userRole.include(role)) {
-            throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, "You're unAuthorized!");
+        if (!user || user.status !== 'ACTIVE') {
+            throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, "You're unauthorized!");
         }
+        // Check role
+        if (userRoles.length > 0 && !userRoles.includes(role)) {
+            throw new AppError_1.AppError(http_status_1.default.FORBIDDEN, "You don't have permission!");
+        }
+        // Attach user to request
         req.user = decoded;
         next();
     }));

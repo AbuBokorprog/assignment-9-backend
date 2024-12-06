@@ -128,6 +128,7 @@ model ColorOption {
   productId             String
   product               Product  @relation(fields: [productId], references: [id])
   color                 String
+  code                  String
   stock                 Int
 }
 
@@ -136,7 +137,7 @@ model Product {
   id                    String          @id @default(uuid())
   name                  String
   description           String
-  images                String
+  images                String[]
   inventory             Int
   regular_price         Float
   discount_price        Float?

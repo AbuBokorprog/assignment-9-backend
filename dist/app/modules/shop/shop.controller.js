@@ -37,7 +37,6 @@ const retrieveAllShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0
 }));
 const retrieveAllShopByVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    console.log(user);
     const data = yield shop_services_1.shopServices.retrieveAllShopByVendor(user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
