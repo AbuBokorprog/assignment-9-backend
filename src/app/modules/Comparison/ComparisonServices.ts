@@ -9,8 +9,18 @@ const createComparison = async (payload: TComparison) => {
   return comparison
 }
 
-const retrieveAllComparison = async () => {
-  const result = await prisma.comparison.findMany({})
+const retrieveAllMyComparison = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: 'ACTIVE',
+    },
+  })
+  const result = await prisma.comparison.findMany({
+    where: {
+      userId: userData.id,
+    },
+  })
 
   return result
 }
@@ -60,7 +70,7 @@ const deleteComparisonById = async (id: string) => {
 
 export const comparisonServices = {
   createComparison,
-  retrieveAllComparison,
+  retrieveAllMyComparison,
   retrieveComparisonById,
   updateComparisonById,
   deleteComparisonById,

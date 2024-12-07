@@ -24,6 +24,20 @@ const retrieveAllReview = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.review.findMany({});
     return result;
 });
+const retrieveAllMyReview = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user.email,
+            status: 'ACTIVE',
+        },
+    });
+    const result = yield prisma_1.default.review.findMany({
+        where: {
+            customerId: userData.id,
+        },
+    });
+    return result;
+});
 const retrieveReviewById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.review.findUniqueOrThrow({
         where: {
@@ -65,4 +79,5 @@ exports.reviewServices = {
     retrieveReviewById,
     updateReviewById,
     deleteReviewById,
+    retrieveAllMyReview,
 };

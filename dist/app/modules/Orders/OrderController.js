@@ -35,6 +35,15 @@ const retrieveOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, 
         data,
     });
 }));
+const retrieveMyOrders = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield OrderService_1.ordersService.retrieveMyOrders(req === null || req === void 0 ? void 0 : req.user);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve orders successfully!',
+        data,
+    });
+}));
 const retrieveOrderById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield OrderService_1.ordersService.retrieveOrderById(id);
@@ -45,16 +54,16 @@ const retrieveOrderById = (0, CatchAsync_1.default)((req, res) => __awaiter(void
         data,
     });
 }));
-// const updateOrder = CatchAsync(async (req, res) => {
-//   const { id } = req.params
-//   const data = await ordersService.retrieveOrderById(id)
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Update cart by id successfully!',
-//     data,
-//   })
-// })
+const updateOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const data = yield OrderService_1.ordersService.retrieveOrderById(id);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update cart by id successfully!',
+        data,
+    });
+}));
 const deleteOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield OrderService_1.ordersService.retrieveOrderById(id);
@@ -69,6 +78,7 @@ exports.ordersController = {
     createOrder,
     retrieveOrder,
     retrieveOrderById,
-    // updateOrder,
+    retrieveMyOrders,
+    updateOrder,
     deleteOrder,
 };

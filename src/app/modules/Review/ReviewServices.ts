@@ -15,6 +15,22 @@ const retrieveAllReview = async () => {
   return result
 }
 
+const retrieveAllMyReview = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: 'ACTIVE',
+    },
+  })
+  const result = await prisma.review.findMany({
+    where: {
+      customerId: userData.id,
+    },
+  })
+
+  return result
+}
+
 const retrieveReviewById = async (id: any) => {
   const result = await prisma.review.findUniqueOrThrow({
     where: {
@@ -64,4 +80,5 @@ export const reviewServices = {
   retrieveReviewById,
   updateReviewById,
   deleteReviewById,
+  retrieveAllMyReview,
 }

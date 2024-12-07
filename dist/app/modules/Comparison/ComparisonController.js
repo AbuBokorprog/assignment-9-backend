@@ -27,7 +27,7 @@ const createComparison = (0, CatchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const retrieveAllComparison = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield ComparisonServices_1.comparisonServices.retrieveAllComparison();
+    const data = yield ComparisonServices_1.comparisonServices.retrieveAllMyComparison(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,

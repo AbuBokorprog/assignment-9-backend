@@ -33,6 +33,27 @@ const retrieveOrder = async () => {
 
   return result
 }
+
+const retrieveMyOrders = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user?.email,
+      status: 'ACTIVE',
+    },
+  })
+
+  const result = await prisma.order.findMany({
+    where: {
+      customerId: userData.id,
+    },
+    include: {
+      products: true,
+    },
+  })
+
+  return result
+}
+
 const retrieveOrderById = async (id: string) => {
   const result = await prisma.order.findUniqueOrThrow({
     where: {
@@ -45,22 +66,22 @@ const retrieveOrderById = async (id: string) => {
 
   return result
 }
-// const updateOrder = async (id: string, payload: Partial<TOrder>) => {
-//   await prisma.order.findUniqueOrThrow({
-//     where: {
-//       id: id,
-//     },
-//   })
+const updateOrder = async (id: string, payload: Partial<TOrder>) => {
+  await prisma.order.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
 
-//   const result = await prisma.order.update({
-//     where: {
-//       id: id,
-//     },
-//     data: payload,
-//   })
+  const result = await prisma.order.update({
+    where: {
+      id: id,
+    },
+    data: payload,
+  })
 
-//   return result
-// }
+  return result
+}
 const deleteOrder = async (id: string) => {
   const result = await prisma.order.delete({
     where: {
@@ -75,6 +96,7 @@ export const ordersService = {
   createOrder,
   retrieveOrder,
   retrieveOrderById,
-  // updateOrder,
+  updateOrder,
+  retrieveMyOrders,
   deleteOrder,
 }

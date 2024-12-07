@@ -35,6 +35,15 @@ const retrieveAllReview = (0, CatchAsync_1.default)((req, res) => __awaiter(void
         data,
     });
 }));
+const retrieveAllMyReview = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield ReviewServices_1.reviewServices.retrieveAllMyReview(req === null || req === void 0 ? void 0 : req.user);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all reviews successfully!',
+        data,
+    });
+}));
 const retrieveReviewById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield ReviewServices_1.reviewServices.retrieveReviewById(id);
@@ -71,4 +80,5 @@ exports.reviewController = {
     retrieveReviewById,
     updateReviewById,
     deleteReviewById,
+    retrieveAllMyReview,
 };
