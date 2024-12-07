@@ -25,6 +25,17 @@ const retrieveAllReview = CatchAsync(async (req, res) => {
   })
 })
 
+const retrieveAllMyReview = CatchAsync(async (req, res) => {
+  const data = await reviewServices.retrieveAllMyReview(req?.user)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve all reviews successfully!',
+    data,
+  })
+})
+
 const retrieveReviewById = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await reviewServices.retrieveReviewById(id)
@@ -67,4 +78,5 @@ export const reviewController = {
   retrieveReviewById,
   updateReviewById,
   deleteReviewById,
+  retrieveAllMyReview,
 }

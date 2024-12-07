@@ -42,6 +42,23 @@ const retrieveOrder = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const retrieveMyOrders = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
+            status: 'ACTIVE',
+        },
+    });
+    const result = yield prisma_1.default.order.findMany({
+        where: {
+            customerId: userData.id,
+        },
+        include: {
+            products: true,
+        },
+    });
+    return result;
+});
 const retrieveOrderById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.order.findUniqueOrThrow({
         where: {
@@ -53,20 +70,20 @@ const retrieveOrderById = (id) => __awaiter(void 0, void 0, void 0, function* ()
     });
     return result;
 });
-// const updateOrder = async (id: string, payload: Partial<TOrder>) => {
-//   await prisma.order.findUniqueOrThrow({
-//     where: {
-//       id: id,
-//     },
-//   })
-//   const result = await prisma.order.update({
-//     where: {
-//       id: id,
-//     },
-//     data: payload,
-//   })
-//   return result
-// }
+const updateOrder = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.order.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.order.update({
+        where: {
+            id: id,
+        },
+        data: payload,
+    });
+    return result;
+});
 const deleteOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.order.delete({
         where: {
@@ -79,6 +96,7 @@ exports.ordersService = {
     createOrder,
     retrieveOrder,
     retrieveOrderById,
-    // updateOrder,
+    updateOrder,
+    retrieveMyOrders,
     deleteOrder,
 };

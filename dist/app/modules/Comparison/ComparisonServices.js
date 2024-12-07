@@ -20,8 +20,18 @@ const createComparison = (payload) => __awaiter(void 0, void 0, void 0, function
     });
     return comparison;
 });
-const retrieveAllComparison = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.comparison.findMany({});
+const retrieveAllMyComparison = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user.email,
+            status: 'ACTIVE',
+        },
+    });
+    const result = yield prisma_1.default.comparison.findMany({
+        where: {
+            userId: userData.id,
+        },
+    });
     return result;
 });
 const retrieveComparisonById = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,7 +71,7 @@ const deleteComparisonById = (id) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.comparisonServices = {
     createComparison,
-    retrieveAllComparison,
+    retrieveAllMyComparison,
     retrieveComparisonById,
     updateComparisonById,
     deleteComparisonById,

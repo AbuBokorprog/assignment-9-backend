@@ -15,7 +15,7 @@ const createComparison = CatchAsync(async (req, res) => {
 })
 
 const retrieveAllComparison = CatchAsync(async (req, res) => {
-  const data = await comparisonServices.retrieveAllComparison()
+  const data = await comparisonServices.retrieveAllMyComparison(req?.user)
 
   SuccessResponse(res, {
     status: httpStatus.OK,

@@ -169,6 +169,10 @@ model Cart {
   customer              User @relation(fields: [customerId], references: [id])
   productId             String
   product               Product @relation(fields: [productId], references: [id])
+  color                 String?
+  size                  String?
+  qty                   Int
+  price                 Float?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 

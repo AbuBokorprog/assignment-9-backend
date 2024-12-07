@@ -23,6 +23,18 @@ const retrieveOrder = CatchAsync(async (req, res) => {
     data,
   })
 })
+
+const retrieveMyOrders = CatchAsync(async (req, res) => {
+  const data = await ordersService.retrieveMyOrders(req?.user)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve orders successfully!',
+    data,
+  })
+})
+
 const retrieveOrderById = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await ordersService.retrieveOrderById(id)
@@ -34,17 +46,17 @@ const retrieveOrderById = CatchAsync(async (req, res) => {
     data,
   })
 })
-// const updateOrder = CatchAsync(async (req, res) => {
-//   const { id } = req.params
-//   const data = await ordersService.retrieveOrderById(id)
+const updateOrder = CatchAsync(async (req, res) => {
+  const { id } = req.params
+  const data = await ordersService.retrieveOrderById(id)
 
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Update cart by id successfully!',
-//     data,
-//   })
-// })
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Update cart by id successfully!',
+    data,
+  })
+})
 const deleteOrder = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await ordersService.retrieveOrderById(id)
@@ -61,6 +73,7 @@ export const ordersController = {
   createOrder,
   retrieveOrder,
   retrieveOrderById,
-  // updateOrder,
+  retrieveMyOrders,
+  updateOrder,
   deleteOrder,
 }
