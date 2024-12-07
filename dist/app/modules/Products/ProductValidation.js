@@ -5,6 +5,7 @@ const zod_1 = require("zod");
 const CreateProductSchema = zod_1.z.object({
     name: zod_1.z.string({ required_error: 'Name is required.' }),
     regular_price: zod_1.z.string().min(2, 'Price must be a positive string.'),
+    productStatus: zod_1.z.string(),
     discount_price: zod_1.z
         .string()
         .min(2, 'Discount Price must be a positive string.'),

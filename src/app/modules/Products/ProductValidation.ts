@@ -3,6 +3,7 @@ import { z } from 'zod'
 const CreateProductSchema = z.object({
   name: z.string({ required_error: 'Name is required.' }),
   regular_price: z.string().min(2, 'Price must be a positive string.'),
+  productStatus: z.string(),
   discount_price: z
     .string()
     .min(2, 'Discount Price must be a positive string.'),

@@ -49,6 +49,7 @@ const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, func
                 discount_price: Number(payload === null || payload === void 0 ? void 0 : payload.discount_price),
                 description: payload === null || payload === void 0 ? void 0 : payload.description,
                 images: images,
+                productStatus: payload.productStatus && payload.productStatus,
                 inventory: Number(payload === null || payload === void 0 ? void 0 : payload.inventory),
                 categoryId: payload === null || payload === void 0 ? void 0 : payload.categoryId,
                 vendorId: shopData === null || shopData === void 0 ? void 0 : shopData.vendorId,

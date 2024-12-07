@@ -7,6 +7,7 @@ export type TProduct = {
   categoryId: string
   vendorId?: string
   shopId: string
+  productStatus: 'REGULAR' | 'FLASH_SALE' | 'HOT' | 'NEW' | 'DISCOUNT'
   inventory: string
   productSize: productSize[]
   productColors: productColors[]

@@ -39,6 +39,7 @@ const createProduct = async (files: any, payload: TProduct) => {
         discount_price: Number(payload?.discount_price),
         description: payload?.description,
         images: images,
+        productStatus: payload.productStatus && payload.productStatus,
         inventory: Number(payload?.inventory),
         categoryId: payload?.categoryId,
         vendorId: shopData?.vendorId,
