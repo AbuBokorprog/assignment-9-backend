@@ -60,27 +60,31 @@ const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, func
             stock: Number(s.stock),
             productId: product.id,
         }));
-        try {
-            yield transactionClient.sizeOption.createMany({
-                data: productSize,
-            });
+        if (productSize) {
+            try {
+                yield transactionClient.sizeOption.createMany({
+                    data: productSize,
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
-        catch (error) {
-            console.log(error);
-        }
-        const productColors = (_b = payload.productColor) === null || _b === void 0 ? void 0 : _b.map((c) => ({
+        const productColors = (_b = payload.productColors) === null || _b === void 0 ? void 0 : _b.map((c) => ({
             color: c.color,
             stock: Number(c.colorStock),
             code: c.colorCode,
             productId: product.id,
         }));
-        try {
-            yield transactionClient.colorOption.createMany({
-                data: productColors,
-            });
-        }
-        catch (error) {
-            console.log(error);
+        if (productColors) {
+            try {
+                yield transactionClient.colorOption.createMany({
+                    data: productColors,
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
         return {
             product,
@@ -89,7 +93,25 @@ const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, func
     return result;
 });
 const retrieveAllProduct = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.product.findMany({});
+    const result = yield prisma_1.default.product.findMany({
+        include: {
+            colors: true,
+            sizes: true,
+        },
+    });
+    return result;
+});
+const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const vendorData = yield prisma_1.default.vendor.findUniqueOrThrow({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
+        },
+    });
+    const result = yield prisma_1.default.product.findMany({
+        where: {
+            vendorId: vendorData.id,
+        },
+    });
     return result;
 });
 const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -133,4 +155,5 @@ exports.productServices = {
     retrieveProductById,
     updateProductById,
     deleteProductById,
+    retrieveAllProductByVendor,
 };

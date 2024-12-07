@@ -172,7 +172,7 @@ model Cart {
   color                 String?
   size                  String?
   qty                   Int
-  price                 Float?
+  price                 Float
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 

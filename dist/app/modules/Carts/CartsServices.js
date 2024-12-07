@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cartsService = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createCart = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.user.findUniqueOrThrow({
+const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            id: payload.customerId,
+            email: user === null || user === void 0 ? void 0 : user.email,
         },
     });
+    payload.customerId = userData === null || userData === void 0 ? void 0 : userData.id;
     yield prisma_1.default.product.findUniqueOrThrow({
         where: {
             id: payload.productId,
@@ -32,6 +33,23 @@ const createCart = (payload) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const retrieveCart = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.cart.findMany({
+        include: {
+            product: true,
+        },
+    });
+    return result;
+});
+const retrieveMyCart = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
+            status: 'ACTIVE',
+        },
+    });
+    const result = yield prisma_1.default.cart.findMany({
+        where: {
+            customerId: userData === null || userData === void 0 ? void 0 : userData.id,
+        },
         include: {
             product: true,
         },
@@ -77,4 +95,5 @@ exports.cartsService = {
     retrieveCartById,
     updateCart,
     deleteCart,
+    retrieveMyCart,
 };

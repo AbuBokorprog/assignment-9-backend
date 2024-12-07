@@ -35,6 +35,15 @@ const retrieveAllProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(voi
         data,
     });
 }));
+const retrieveAllProductByVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield ProductsServices_1.productServices.retrieveAllProductByVendor(req === null || req === void 0 ? void 0 : req.user);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all products successfully!',
+        data,
+    });
+}));
 const retrieveProductById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield ProductsServices_1.productServices.retrieveProductById(id);
@@ -71,4 +80,5 @@ exports.productController = {
     retrieveProductById,
     updateProductById,
     deleteProductById,
+    retrieveAllProductByVendor,
 };

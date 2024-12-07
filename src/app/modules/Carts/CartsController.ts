@@ -5,7 +5,7 @@ import { cartsService } from './CartsServices'
 import { Request, Response } from 'express'
 
 const createCart = CatchAsync(async (req, res) => {
-  const data = await cartsService.createCart(req.body)
+  const data = await cartsService.createCart(req.user, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.CREATED,

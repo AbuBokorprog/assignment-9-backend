@@ -9,14 +9,14 @@ export type TProduct = {
   shopId: string
   inventory: string
   productSize: productSize[]
-  productColor: productColor[]
+  productColors: productColors[]
 }
 
 type productSize = {
   size: string
   stock: string
 }
-type productColor = {
+type productColors = {
   color: string
   colorCode: string
   colorStock: string

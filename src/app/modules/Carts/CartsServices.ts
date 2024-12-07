@@ -1,12 +1,13 @@
 import prisma from '../../helpers/prisma'
 import { TCart } from './CartsInterface'
 
-const createCart = async (payload: TCart) => {
-  await prisma.user.findUniqueOrThrow({
+const createCart = async (user: any, payload: TCart) => {
+  const userData = await prisma.user.findUniqueOrThrow({
     where: {
-      id: payload.customerId,
+      email: user?.email,
     },
   })
+  payload.customerId = userData?.id
   await prisma.product.findUniqueOrThrow({
     where: {
       id: payload.productId,

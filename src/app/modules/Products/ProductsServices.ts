@@ -45,32 +45,40 @@ const createProduct = async (files: any, payload: TProduct) => {
         shopId: payload?.shopId,
       },
     })
-    const productSize = payload.productSize?.map((s: any) => ({
-      size: s.size,
-      stock: Number(s.stock),
-      productId: product.id,
-    }))
+    const productSize = payload.productSize?.map(
+      (s: { size: string; stock: string }) => ({
+        size: s.size,
+        stock: Number(s.stock),
+        productId: product.id,
+      }),
+    )
 
-    try {
-      await transactionClient.sizeOption.createMany({
-        data: productSize,
-      })
-    } catch (error) {
-      console.log(error)
+    if (productSize) {
+      try {
+        await transactionClient.sizeOption.createMany({
+          data: productSize,
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
-    const productColors = payload.productColor?.map((c: any) => ({
-      color: c.color,
-      stock: Number(c.colorStock),
-      code: c.colorCode,
-      productId: product.id,
-    }))
+    const productColors = payload.productColors?.map(
+      (c: { color: string; colorStock: string; colorCode: string }) => ({
+        color: c.color,
+        stock: Number(c.colorStock),
+        code: c.colorCode,
+        productId: product.id,
+      }),
+    )
 
-    try {
-      await transactionClient.colorOption.createMany({
-        data: productColors,
-      })
-    } catch (error) {
-      console.log(error)
+    if (productColors) {
+      try {
+        await transactionClient.colorOption.createMany({
+          data: productColors,
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     return {
@@ -81,7 +89,12 @@ const createProduct = async (files: any, payload: TProduct) => {
 }
 
 const retrieveAllProduct = async () => {
-  const result = await prisma.product.findMany({})
+  const result = await prisma.product.findMany({
+    include: {
+      colors: true,
+      sizes: true,
+    },
+  })
 
   return result
 }
