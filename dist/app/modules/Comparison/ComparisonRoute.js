@@ -11,7 +11,7 @@ const ComparisonController_1 = require("./ComparisonController");
 const Auth_1 = __importDefault(require("../../middlewares/Auth"));
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
-router.post('/', (0, ValidationRequest_1.default)(ComparisonValidation_1.comparisonValidation.createComparison), ComparisonController_1.comparisonController.createComparison);
+router.post('/', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), (0, ValidationRequest_1.default)(ComparisonValidation_1.comparisonValidation.createComparison), ComparisonController_1.comparisonController.createComparison);
 router.get('/user/my-comparison', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), ComparisonController_1.comparisonController.retrieveAllComparison);
 router.get('/:id', ComparisonController_1.comparisonController.retrieveComparisonById);
 router.patch('/:id', ComparisonController_1.comparisonController.updateComparisonById);

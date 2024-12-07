@@ -12,51 +12,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.comparisonServices = void 0;
+exports.wishlistServices = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createComparison = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const createWishlist = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: user === null || user === void 0 ? void 0 : user.email,
         },
     });
-    const comparison = yield prisma_1.default.comparison.create({
+    const wishlist = yield prisma_1.default.wishlist.create({
         data: {
             userId: userData.id,
             productId: payload.productId,
         },
     });
-    return comparison;
+    return wishlist;
 });
-const retrieveAllMyComparison = (user) => __awaiter(void 0, void 0, void 0, function* () {
+const retrieveAllMyWishlist = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: user.email,
             status: 'ACTIVE',
         },
     });
-    const result = yield prisma_1.default.comparison.findMany({
+    const result = yield prisma_1.default.wishlist.findMany({
         where: {
             userId: userData.id,
         },
     });
     return result;
 });
-const retrieveComparisonById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.comparison.findUniqueOrThrow({
+const retrieveWishlistById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.wishlist.findUniqueOrThrow({
         where: {
             id: id,
         },
     });
     return result;
 });
-const updateComparisonById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.comparison.findUniqueOrThrow({
+const updateWishlistById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.wishlist.findUniqueOrThrow({
         where: {
             id: id,
         },
     });
-    const result = yield prisma_1.default.comparison.update({
+    const result = yield prisma_1.default.wishlist.update({
         where: {
             id: id,
         },
@@ -64,23 +64,23 @@ const updateComparisonById = (id, payload) => __awaiter(void 0, void 0, void 0, 
     });
     return result;
 });
-const deleteComparisonById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.comparison.findUniqueOrThrow({
+const deleteWishlistById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.wishlist.findUniqueOrThrow({
         where: {
             id: id,
         },
     });
-    const result = yield prisma_1.default.comparison.delete({
+    const result = yield prisma_1.default.wishlist.delete({
         where: {
             id: id,
         },
     });
     return result;
 });
-exports.comparisonServices = {
-    createComparison,
-    retrieveAllMyComparison,
-    retrieveComparisonById,
-    updateComparisonById,
-    deleteComparisonById,
+exports.wishlistServices = {
+    createWishlist,
+    retrieveAllMyWishlist,
+    retrieveWishlistById,
+    updateWishlistById,
+    deleteWishlistById,
 };

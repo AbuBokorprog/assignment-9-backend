@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.post(
   '/',
+  Auth(UserRole.CUSTOMER),
   ValidationRequest(orderValidation.createOrder),
   ordersController.createOrder,
 )

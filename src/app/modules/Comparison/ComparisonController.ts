@@ -4,7 +4,7 @@ import CatchAsync from '../../utils/CatchAsync'
 import { comparisonServices } from './ComparisonServices'
 
 const createComparison = CatchAsync(async (req, res) => {
-  const data = await comparisonServices.createComparison(req.body)
+  const data = await comparisonServices.createComparison(req.user, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.CREATED,

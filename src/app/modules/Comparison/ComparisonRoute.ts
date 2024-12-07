@@ -9,6 +9,7 @@ const router = express.Router()
 
 router.post(
   '/',
+  Auth(UserRole.CUSTOMER),
   ValidationRequest(comparisonValidation.createComparison),
   comparisonController.createComparison,
 )

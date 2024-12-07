@@ -1,9 +1,18 @@
 import prisma from '../../helpers/prisma'
 import { TComparison } from './ComparisonInterface'
 
-const createComparison = async (payload: TComparison) => {
+const createComparison = async (user: any, payload: TComparison) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user?.email,
+    },
+  })
+
   const comparison = await prisma.comparison.create({
-    data: payload,
+    data: {
+      userId: userData.id,
+      productId: payload.productId,
+    },
   })
 
   return comparison

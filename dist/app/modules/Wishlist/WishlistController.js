@@ -12,63 +12,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.comparisonController = void 0;
+exports.wishlistController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
-const ComparisonServices_1 = require("./ComparisonServices");
-const createComparison = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield ComparisonServices_1.comparisonServices.createComparison(req.user, req.body);
+const WishlistServices_1 = require("./WishlistServices");
+const createWishlist = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield WishlistServices_1.wishlistServices.createWishlist(req.user, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.CREATED,
         success: true,
-        message: 'Create comparison successfully!',
+        message: 'Create wi successfully!',
         data,
     });
 }));
-const retrieveAllComparison = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield ComparisonServices_1.comparisonServices.retrieveAllMyComparison(req === null || req === void 0 ? void 0 : req.user);
+const retrieveAllWishlist = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield WishlistServices_1.wishlistServices.retrieveAllMyWishlist(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Retrieve all comparisons successfully!',
+        message: 'Retrieve all wis successfully!',
         data,
     });
 }));
-const retrieveComparisonById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const retrieveWishlistById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const data = yield ComparisonServices_1.comparisonServices.retrieveComparisonById(id);
+    const data = yield WishlistServices_1.wishlistServices.retrieveWishlistById(id);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Retrieve comparison by id successfully!',
+        message: 'Retrieve wi by id successfully!',
         data,
     });
 }));
-const updateComparisonById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateWishlistById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const data = yield ComparisonServices_1.comparisonServices.updateComparisonById(id, req.body);
+    const data = yield WishlistServices_1.wishlistServices.updateWishlistById(id, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Update comparison by id successfully!',
+        message: 'Update wi by id successfully!',
         data,
     });
 }));
-const deleteComparisonById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteWishlistById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const data = yield ComparisonServices_1.comparisonServices.deleteComparisonById(id);
+    const data = yield WishlistServices_1.wishlistServices.deleteWishlistById(id);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Delete comparison by id successfully!',
+        message: 'Delete wi by id successfully!',
         data,
     });
 }));
-exports.comparisonController = {
-    createComparison,
-    retrieveAllComparison,
-    retrieveComparisonById,
-    updateComparisonById,
-    deleteComparisonById,
+exports.wishlistController = {
+    createWishlist,
+    retrieveAllWishlist,
+    retrieveWishlistById,
+    updateWishlistById,
+    deleteWishlistById,
 };
