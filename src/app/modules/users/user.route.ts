@@ -35,15 +35,15 @@ router.post(
 router.get('/', userControllers.retrieveAllUsers)
 
 router.get('/:id', userControllers.retrieveUserById)
-// router.get(
-//   '/my-profile',
-//   Auth(
-//     UserRole.ADMIN,
-//     UserRole.CUSTOMER,
-//     UserRole.SUPER_ADMIN,
-//     UserRole.VENDOR,
-//   ),
-//   userControllers.myProfile,
-// )
+router.get(
+  '/profile/my-profile',
+  Auth(
+    UserRole.ADMIN,
+    UserRole.CUSTOMER,
+    UserRole.SUPER_ADMIN,
+    UserRole.VENDOR,
+  ),
+  userControllers.myProfile,
+)
 
 export const userRouter = router

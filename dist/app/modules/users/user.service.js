@@ -153,15 +153,22 @@ const retrieveUserById = (id) => __awaiter(void 0, void 0, void 0, function* () 
     return result;
 });
 const myProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const includeOptions = {};
+    // Dynamically set include options based on the role
+    if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
+        includeOptions.admin = true;
+    }
+    else if (user.role === 'CUSTOMER') {
+        includeOptions.customer = true;
+    }
+    else if (user.role === 'VENDOR') {
+        includeOptions.vendor = true;
+    }
     const result = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: user.email,
         },
-        include: {
-            admin: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN',
-            customer: user.role === 'CUSTOMER',
-            vendor: user.role === 'VENDOR',
-        },
+        include: includeOptions,
     });
     return result;
 });

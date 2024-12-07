@@ -28,6 +28,24 @@ const retrieveCart = async () => {
 
   return result
 }
+const retrieveMyCart = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user?.email,
+      status: 'ACTIVE',
+    },
+  })
+  const result = await prisma.cart.findMany({
+    where: {
+      customerId: userData?.id,
+    },
+    include: {
+      product: true,
+    },
+  })
+
+  return result
+}
 const retrieveCartById = async (id: string) => {
   const result = await prisma.cart.findUniqueOrThrow({
     where: {
@@ -72,4 +90,5 @@ export const cartsService = {
   retrieveCartById,
   updateCart,
   deleteCart,
+  retrieveMyCart,
 }

@@ -85,6 +85,20 @@ const retrieveAllProduct = async () => {
 
   return result
 }
+const retrieveAllProductByVendor = async (user: any) => {
+  const vendorData = await prisma.vendor.findUniqueOrThrow({
+    where: {
+      email: user?.email,
+    },
+  })
+  const result = await prisma.product.findMany({
+    where: {
+      vendorId: vendorData.id,
+    },
+  })
+
+  return result
+}
 
 const retrieveProductById = async (id: any) => {
   const result = await prisma.product.findUniqueOrThrow({
@@ -135,4 +149,5 @@ export const productServices = {
   retrieveProductById,
   updateProductById,
   deleteProductById,
+  retrieveAllProductByVendor,
 }

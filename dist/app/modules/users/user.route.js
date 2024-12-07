@@ -8,6 +8,8 @@ const express_1 = __importDefault(require("express"));
 const user_controller_1 = require("./user.controller");
 const ValidationRequest_1 = __importDefault(require("../../utils/ValidationRequest"));
 const user_validation_1 = require("./user.validation");
+const Auth_1 = __importDefault(require("../../middlewares/Auth"));
+const client_1 = require("@prisma/client");
 const ImageUpload_1 = require("../../utils/ImageUpload");
 const router = express_1.default.Router();
 router.post('/create-admin', (0, ValidationRequest_1.default)(user_validation_1.userValidation.createAdmin), user_controller_1.userControllers.createAdmin);
@@ -21,14 +23,5 @@ router.post('/create-vendor', ImageUpload_1.upload.fields([
 router.post('/create-customer', (0, ValidationRequest_1.default)(user_validation_1.userValidation.createAdmin), user_controller_1.userControllers.createCustomer);
 router.get('/', user_controller_1.userControllers.retrieveAllUsers);
 router.get('/:id', user_controller_1.userControllers.retrieveUserById);
-// router.get(
-//   '/my-profile',
-//   Auth(
-//     UserRole.ADMIN,
-//     UserRole.CUSTOMER,
-//     UserRole.SUPER_ADMIN,
-//     UserRole.VENDOR,
-//   ),
-//   userControllers.myProfile,
-// )
+router.get('/profile/my-profile', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), user_controller_1.userControllers.myProfile);
 exports.userRouter = router;

@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import CatchAsync from '../../utils/CatchAsync'
 import SuccessResponse from '../../utils/SuccessResponse'
 import { cartsService } from './CartsServices'
+import { Request, Response } from 'express'
 
 const createCart = CatchAsync(async (req, res) => {
   const data = await cartsService.createCart(req.body)
@@ -23,6 +24,18 @@ const retrieveCart = CatchAsync(async (req, res) => {
     data,
   })
 })
+const retrieveMyCart = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await cartsService.retrieveMyCart(req?.user)
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Retrieve carts successfully!',
+      data,
+    })
+  },
+)
 const retrieveCartById = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await cartsService.retrieveCartById(id)
@@ -63,4 +76,5 @@ export const cartsController = {
   retrieveCartById,
   updateCart,
   deleteCart,
+  retrieveMyCart,
 }

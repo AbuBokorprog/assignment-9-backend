@@ -166,15 +166,22 @@ const retrieveUserById = async (id: string) => {
   return result
 }
 const myProfile = async (user: any) => {
+  const includeOptions: any = {}
+
+  // Dynamically set include options based on the role
+  if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
+    includeOptions.admin = true
+  } else if (user.role === 'CUSTOMER') {
+    includeOptions.customer = true
+  } else if (user.role === 'VENDOR') {
+    includeOptions.vendor = true
+  }
+
   const result = await prisma.user.findUniqueOrThrow({
     where: {
       email: user.email,
     },
-    include: {
-      admin: user.role === 'ADMIN' || user.role === 'SUPER_ADMIN',
-      customer: user.role === 'CUSTOMER',
-      vendor: user.role === 'VENDOR',
-    },
+    include: includeOptions,
   })
 
   return result

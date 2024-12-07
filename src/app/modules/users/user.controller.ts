@@ -57,18 +57,21 @@ const retrieveUserById = CatchAsync(async (req, res) => {
     data,
   })
 })
-// const myProfile = CatchAsync(async (req, res: Response) => {
-//   const user = req.user
-//   const data = await userServices.myProfile(user)
+const myProfile = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const user = req.user
 
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Retrieve users by id successfully!',
-//     data,
-//   })
-//   res.json(user)
-// })
+    const data = await userServices.myProfile(user)
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Retrieve my profile successfully!',
+      data,
+    })
+    res.json(user)
+  },
+)
 
 export const userControllers = {
   createAdmin,
@@ -76,5 +79,5 @@ export const userControllers = {
   createCustomer,
   retrieveAllUsers,
   retrieveUserById,
-  // myProfile,
+  myProfile,
 }

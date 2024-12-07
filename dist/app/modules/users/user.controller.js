@@ -63,22 +63,22 @@ const retrieveUserById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 
         data,
     });
 }));
-// const myProfile = CatchAsync(async (req, res: Response) => {
-//   const user = req.user
-//   const data = await userServices.myProfile(user)
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Retrieve users by id successfully!',
-//     data,
-//   })
-//   res.json(user)
-// })
+const myProfile = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const data = yield user_service_1.userServices.myProfile(user);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve my profile successfully!',
+        data,
+    });
+    res.json(user);
+}));
 exports.userControllers = {
     createAdmin,
     createVendor,
     createCustomer,
     retrieveAllUsers,
     retrieveUserById,
-    // myProfile,
+    myProfile,
 };

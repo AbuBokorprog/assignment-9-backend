@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import SuccessResponse from '../../utils/SuccessResponse'
 import CatchAsync from '../../utils/CatchAsync'
 import { productServices } from './ProductsServices'
+import { Request, Response } from 'express'
 
 const createProduct = CatchAsync(async (req, res) => {
   const data = await productServices.createProduct(req.files, req.body)
@@ -24,6 +25,19 @@ const retrieveAllProduct = CatchAsync(async (req, res) => {
     data,
   })
 })
+
+const retrieveAllProductByVendor = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await productServices.retrieveAllProductByVendor(req?.user)
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Retrieve all products successfully!',
+      data,
+    })
+  },
+)
 
 const retrieveProductById = CatchAsync(async (req, res) => {
   const { id } = req.params
@@ -67,4 +81,5 @@ export const productController = {
   retrieveProductById,
   updateProductById,
   deleteProductById,
+  retrieveAllProductByVendor,
 }

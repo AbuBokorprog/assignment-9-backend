@@ -21,6 +21,11 @@ router.post(
   productController.createProduct,
 )
 router.get('/', productController.retrieveAllProduct)
+router.get(
+  '/vendor/my-product',
+  Auth(UserRole.VENDOR),
+  productController.retrieveAllProductByVendor,
+)
 router.get('/:id', productController.retrieveProductById)
 router.patch('/:id', productController.updateProductById)
 router.delete('/:id', productController.deleteProductById)
