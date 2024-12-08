@@ -83,6 +83,17 @@ const myProfile = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void
     });
     res.json(user);
 }));
+const updateMyProfile = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const data = yield user_service_1.userServices.updateMyProfile(user, req.file, req.body);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update my profile successfully!',
+        data,
+    });
+    res.json(user);
+}));
 exports.userControllers = {
     createAdmin,
     createVendor,
@@ -91,4 +102,5 @@ exports.userControllers = {
     retrieveUserById,
     myProfile,
     userStatusChanged,
+    updateMyProfile,
 };

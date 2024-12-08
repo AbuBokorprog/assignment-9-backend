@@ -39,6 +39,10 @@ const retrieveAllMyWishlist = (user) => __awaiter(void 0, void 0, void 0, functi
         where: {
             userId: userData.id,
         },
+        include: {
+            product: true,
+            user: true,
+        },
     });
     return result;
 });

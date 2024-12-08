@@ -187,6 +187,58 @@ const myProfile = async (user: any) => {
   return result
 }
 
+const updateMyProfile = async (user: any, file: any, payload: any) => {
+  const isExistUser = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user?.email,
+    },
+  })
+
+  if (file) {
+    const response: any = await ImageUpload(payload.name, file.path)
+    const secureUrl = response.secureUrl as string
+    payload.profilePhoto = secureUrl
+  }
+
+  if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
+    const result = await prisma.admin.update({
+      where: {
+        email: isExistUser.email,
+      },
+      data: {
+        name: payload.name,
+        contactNumber: payload.contactNumber,
+        profilePhoto: payload.profilePhoto,
+      },
+    })
+    return result
+  } else if (isExistUser.role === 'VENDOR') {
+    const result = await prisma.vendor.update({
+      where: {
+        email: isExistUser.email,
+      },
+      data: {
+        name: payload.name,
+        contactNumber: payload.contactNumber,
+        profilePhoto: payload.profilePhoto,
+      },
+    })
+    return result
+  } else {
+    const result = await prisma.customer.update({
+      where: {
+        email: isExistUser.email,
+      },
+      data: {
+        name: payload.name,
+        contactNumber: payload.contactNumber,
+        profilePhoto: payload.profilePhoto,
+      },
+    })
+    return result
+  }
+}
+
 const userStatusChanged = async (
   id: string,
   status: 'ACTIVE' | 'SUSPEND' | 'BLOCKED' | 'DELETED',
@@ -290,4 +342,5 @@ export const userServices = {
   retrieveUserById,
   myProfile,
   userStatusChanged,
+  updateMyProfile,
 }

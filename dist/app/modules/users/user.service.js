@@ -172,6 +172,57 @@ const myProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const updateMyProfile = (user, file, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
+        },
+    });
+    if (file) {
+        const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, file.path);
+        const secureUrl = response.secureUrl;
+        payload.profilePhoto = secureUrl;
+    }
+    if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
+        const result = yield prisma_1.default.admin.update({
+            where: {
+                email: isExistUser.email,
+            },
+            data: {
+                name: payload.name,
+                contactNumber: payload.contactNumber,
+                profilePhoto: payload.profilePhoto,
+            },
+        });
+        return result;
+    }
+    else if (isExistUser.role === 'VENDOR') {
+        const result = yield prisma_1.default.vendor.update({
+            where: {
+                email: isExistUser.email,
+            },
+            data: {
+                name: payload.name,
+                contactNumber: payload.contactNumber,
+                profilePhoto: payload.profilePhoto,
+            },
+        });
+        return result;
+    }
+    else {
+        const result = yield prisma_1.default.customer.update({
+            where: {
+                email: isExistUser.email,
+            },
+            data: {
+                name: payload.name,
+                contactNumber: payload.contactNumber,
+                profilePhoto: payload.profilePhoto,
+            },
+        });
+        return result;
+    }
+});
 const userStatusChanged = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
@@ -264,4 +315,5 @@ exports.userServices = {
     retrieveUserById,
     myProfile,
     userStatusChanged,
+    updateMyProfile,
 };

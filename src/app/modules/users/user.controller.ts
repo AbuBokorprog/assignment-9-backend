@@ -88,6 +88,22 @@ const myProfile = CatchAsync(
   },
 )
 
+const updateMyProfile = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const user = req.user
+
+    const data = await userServices.updateMyProfile(user, req.file, req.body)
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Update my profile successfully!',
+      data,
+    })
+    res.json(user)
+  },
+)
+
 export const userControllers = {
   createAdmin,
   createVendor,
@@ -96,4 +112,5 @@ export const userControllers = {
   retrieveUserById,
   myProfile,
   userStatusChanged,
+  updateMyProfile,
 }

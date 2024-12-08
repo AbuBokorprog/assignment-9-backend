@@ -54,5 +54,15 @@ router.get(
   ),
   userControllers.myProfile,
 )
+router.patch(
+  '/profile/my-profile',
+  Auth(
+    UserRole.ADMIN,
+    UserRole.CUSTOMER,
+    UserRole.SUPER_ADMIN,
+    UserRole.VENDOR,
+  ),
+  userControllers.updateMyProfile,
+)
 
 export const userRouter = router

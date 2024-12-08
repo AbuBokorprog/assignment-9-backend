@@ -29,6 +29,10 @@ const retrieveAllMyWishlist = async (user: any) => {
     where: {
       userId: userData.id,
     },
+    include: {
+      product: true,
+      user: true,
+    },
   })
 
   return result
