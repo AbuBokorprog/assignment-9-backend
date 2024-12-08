@@ -27,7 +27,7 @@ const Auth = (...userRoles) => {
         }
         // Verify token
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.access_token);
-        const { email, role, exp } = decoded;
+        const { email, role, exp, id } = decoded;
         // Check if token is expired
         const currentTime = Math.floor(Date.now() / 1000);
         if (exp < currentTime) {

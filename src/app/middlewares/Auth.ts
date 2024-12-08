@@ -20,7 +20,7 @@ const Auth = (...userRoles: string[]) => {
       config.access_token as Secret,
     ) as JwtPayload
 
-    const { email, role, exp } = decoded
+    const { email, role, exp, id } = decoded
 
     // Check if token is expired
     const currentTime = Math.floor(Date.now() / 1000)

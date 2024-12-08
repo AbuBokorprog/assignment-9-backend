@@ -28,6 +28,11 @@ router.get(
 )
 router.get('/:id', productController.retrieveProductById)
 router.patch('/:id', productController.updateProductById)
+router.patch(
+  '/status/update-status',
+  Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  productController.updateProductStatusId,
+)
 router.delete('/:id', productController.deleteProductById)
 
 export const productRouter = router

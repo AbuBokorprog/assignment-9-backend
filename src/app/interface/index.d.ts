@@ -11,6 +11,7 @@ declare global {
 export interface DecodedToken {
   email: string
   role: string
+  id: string
   exp: number
   [key: string]: any // If there are additional fields
 }

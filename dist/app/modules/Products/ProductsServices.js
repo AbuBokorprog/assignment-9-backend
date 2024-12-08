@@ -96,8 +96,13 @@ const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, func
 const retrieveAllProduct = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.product.findMany({
         include: {
+            category: true,
             colors: true,
             sizes: true,
+            shop: true,
+            reviews: true,
+            orders: true,
+            wishlist: true,
         },
     });
     return result;
@@ -112,6 +117,15 @@ const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, f
         where: {
             vendorId: vendorData.id,
         },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            reviews: true,
+            orders: true,
+            wishlist: true,
+        },
     });
     return result;
 });
@@ -119,6 +133,15 @@ const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* 
     const result = yield prisma_1.default.product.findUniqueOrThrow({
         where: {
             id: id,
+        },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            reviews: true,
+            orders: true,
+            wishlist: true,
         },
     });
     return result;
@@ -134,6 +157,22 @@ const updateProductById = (id, payload) => __awaiter(void 0, void 0, void 0, fun
             id: id,
         },
         data: payload,
+    });
+    return result;
+});
+const updateProductStatusId = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.product.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.product.update({
+        where: {
+            id: id,
+        },
+        data: {
+            isActive: status,
+        },
     });
     return result;
 });
@@ -156,5 +195,6 @@ exports.productServices = {
     retrieveProductById,
     updateProductById,
     deleteProductById,
+    updateProductStatusId,
     retrieveAllProductByVendor,
 };

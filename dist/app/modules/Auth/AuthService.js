@@ -51,6 +51,7 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         email: isExistUser.email,
         name: user.name,
         role: isExistUser.role,
+        id: isExistUser.id,
     };
     const accessToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.access_token, config_1.default.access_expiresIn);
     const refreshToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.refresh_token, config_1.default.refresh_expiresIn);
@@ -74,11 +75,13 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     const accessTokenData = {
         email: isExistUser.email,
         role: isExistUser.role,
+        id: isExistUser.id,
     };
     const accessToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.access_token, config_1.default.access_expiresIn);
     return {
         email: isExistUser.email,
         role: isExistUser.role,
+        id: isExistUser.id,
         token: accessToken,
     };
 });

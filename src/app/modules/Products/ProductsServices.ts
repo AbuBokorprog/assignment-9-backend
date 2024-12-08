@@ -1,5 +1,6 @@
 import prisma from '../../helpers/prisma'
 import { ImageUpload } from '../../utils/ImageUpload'
+import { TActive } from '../users/user.containts'
 import { TProduct } from './ProductsInterface'
 
 const createProduct = async (files: any, payload: TProduct) => {
@@ -92,8 +93,13 @@ const createProduct = async (files: any, payload: TProduct) => {
 const retrieveAllProduct = async () => {
   const result = await prisma.product.findMany({
     include: {
+      category: true,
       colors: true,
       sizes: true,
+      shop: true,
+      reviews: true,
+      orders: true,
+      wishlist: true,
     },
   })
 
@@ -109,6 +115,15 @@ const retrieveAllProductByVendor = async (user: any) => {
     where: {
       vendorId: vendorData.id,
     },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      reviews: true,
+      orders: true,
+      wishlist: true,
+    },
   })
 
   return result
@@ -118,6 +133,15 @@ const retrieveProductById = async (id: any) => {
   const result = await prisma.product.findUniqueOrThrow({
     where: {
       id: id,
+    },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      reviews: true,
+      orders: true,
+      wishlist: true,
     },
   })
 
@@ -136,6 +160,25 @@ const updateProductById = async (id: string, payload: any) => {
       id: id,
     },
     data: payload,
+  })
+
+  return result
+}
+
+const updateProductStatusId = async (id: string, status: TActive) => {
+  await prisma.product.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
+
+  const result = await prisma.product.update({
+    where: {
+      id: id,
+    },
+    data: {
+      isActive: status,
+    },
   })
 
   return result
@@ -163,5 +206,6 @@ export const productServices = {
   retrieveProductById,
   updateProductById,
   deleteProductById,
+  updateProductStatusId,
   retrieveAllProductByVendor,
 }

@@ -32,10 +32,18 @@ router.post(
   userControllers.createCustomer,
 )
 
-router.get('/', userControllers.retrieveAllUsers)
+router.get(
+  '/',
+  Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  userControllers.retrieveAllUsers,
+)
 
 router.get('/:id', userControllers.retrieveUserById)
-router.patch('/status/user-status', userControllers.userStatusChanged)
+router.patch(
+  '/status/user-status',
+  Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  userControllers.userStatusChanged,
+)
 router.get(
   '/profile/my-profile',
   Auth(

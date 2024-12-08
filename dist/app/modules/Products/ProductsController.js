@@ -64,6 +64,15 @@ const updateProductById = (0, CatchAsync_1.default)((req, res) => __awaiter(void
         data,
     });
 }));
+const updateProductStatusId = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield ProductsServices_1.productServices.updateProductStatusId(req.body.id, req.body.status);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update product status by id successfully!',
+        data,
+    });
+}));
 const deleteProductById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield ProductsServices_1.productServices.deleteProductById(id);
@@ -81,4 +90,5 @@ exports.productController = {
     updateProductById,
     deleteProductById,
     retrieveAllProductByVendor,
+    updateProductStatusId,
 };

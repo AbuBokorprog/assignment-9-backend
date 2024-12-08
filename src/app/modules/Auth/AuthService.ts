@@ -44,6 +44,7 @@ const userLogin = async (payload: TLogin) => {
     email: isExistUser.email,
     name: user.name,
     role: isExistUser.role,
+    id: isExistUser.id,
   }
 
   const accessToken = await getAccessToken(
@@ -85,6 +86,7 @@ const refreshToken = async (token: string) => {
   const accessTokenData = {
     email: isExistUser.email,
     role: isExistUser.role,
+    id: isExistUser.id,
   }
   const accessToken = await getAccessToken(
     accessTokenData,
@@ -95,6 +97,7 @@ const refreshToken = async (token: string) => {
   return {
     email: isExistUser.email,
     role: isExistUser.role,
+    id: isExistUser.id,
     token: accessToken,
   }
 }

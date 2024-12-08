@@ -10,7 +10,13 @@ const createReview = async (payload: TReview) => {
 }
 
 const retrieveAllReview = async () => {
-  const result = await prisma.review.findMany({})
+  const result = await prisma.review.findMany({
+    include: {
+      product: true,
+      shop: true,
+      customer: true,
+    },
+  })
 
   return result
 }
@@ -26,6 +32,11 @@ const retrieveAllMyReview = async (user: any) => {
     where: {
       customerId: userData.id,
     },
+    include: {
+      product: true,
+      shop: true,
+      customer: true,
+    },
   })
 
   return result
@@ -35,6 +46,11 @@ const retrieveReviewById = async (id: any) => {
   const result = await prisma.review.findUniqueOrThrow({
     where: {
       id: id,
+    },
+    include: {
+      product: true,
+      shop: true,
+      customer: true,
     },
   })
 

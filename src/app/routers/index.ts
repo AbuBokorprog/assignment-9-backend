@@ -12,6 +12,7 @@ import { cartRouter } from '../modules/Carts/CartsRoute'
 import { orderRouter } from '../modules/Orders/OrderRoute'
 import { reportsRoute } from '../modules/dashboard-reports/reports.route'
 import { recentProductsRouter } from '../modules/RecentProducts/RecentProductsRoute'
+import { wishlistRouter } from '../modules/Wishlist/WishlistRoute'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -66,6 +67,10 @@ const moduleRoutes = [
   {
     path: '/dashboard-reports',
     route: reportsRoute,
+  },
+  {
+    path: 'wishlist',
+    route: wishlistRouter,
   },
 ]
 

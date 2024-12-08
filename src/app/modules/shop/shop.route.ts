@@ -9,6 +9,7 @@ const router = express.Router()
 
 router.post(
   '/',
+  Auth(UserRole.VENDOR),
   upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'cover', maxCount: 1 },
@@ -27,8 +28,16 @@ router.get(
   shopController.retrieveAllShopByVendor,
 )
 router.get('/:id', shopController.retrieveShopById)
-router.patch('/:id', shopController.updateShopById)
-router.patch('/status/update-status', shopController.updateShopById)
-router.delete('/:id', shopController.deleteShopById)
+router.patch('/:id', Auth(UserRole.VENDOR), shopController.updateShopById)
+router.patch(
+  '/status/update-status',
+  Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  shopController.updateStatus,
+)
+router.delete(
+  '/:id',
+  Auth(UserRole.ADMIN, UserRole.VENDOR, UserRole.SUPER_ADMIN),
+  shopController.deleteShopById,
+)
 
 export const shopRouter = router

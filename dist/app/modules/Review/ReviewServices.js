@@ -21,7 +21,13 @@ const createReview = (payload) => __awaiter(void 0, void 0, void 0, function* ()
     return review;
 });
 const retrieveAllReview = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.review.findMany({});
+    const result = yield prisma_1.default.review.findMany({
+        include: {
+            product: true,
+            shop: true,
+            customer: true,
+        },
+    });
     return result;
 });
 const retrieveAllMyReview = (user) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,6 +41,11 @@ const retrieveAllMyReview = (user) => __awaiter(void 0, void 0, void 0, function
         where: {
             customerId: userData.id,
         },
+        include: {
+            product: true,
+            shop: true,
+            customer: true,
+        },
     });
     return result;
 });
@@ -42,6 +53,11 @@ const retrieveReviewById = (id) => __awaiter(void 0, void 0, void 0, function* (
     const result = yield prisma_1.default.review.findUniqueOrThrow({
         where: {
             id: id,
+        },
+        include: {
+            product: true,
+            shop: true,
+            customer: true,
         },
     });
     return result;
