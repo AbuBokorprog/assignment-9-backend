@@ -2,17 +2,23 @@ import httpStatus from 'http-status'
 import SuccessResponse from '../../utils/SuccessResponse'
 import CatchAsync from '../../utils/CatchAsync'
 import { RecentProductsServices } from './RecentProductsService'
+import { Request, Response } from 'express'
 
-const createRecentProducts = CatchAsync(async (req, res) => {
-  const data = await RecentProductsServices.createRecentProducts(req.body)
+const createRecentProducts = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await RecentProductsServices.createRecentProducts(
+      req.user,
+      req.body,
+    )
 
-  SuccessResponse(res, {
-    status: httpStatus.CREATED,
-    success: true,
-    message: 'Create recentProducts successfully!',
-    data,
-  })
-})
+    SuccessResponse(res, {
+      status: httpStatus.CREATED,
+      success: true,
+      message: 'Create recentProducts successfully!',
+      data,
+    })
+  },
+)
 
 const retrieveAllRecentProducts = CatchAsync(async (req, res) => {
   const data = await RecentProductsServices.retrieveAllRecentProducts()
@@ -24,6 +30,20 @@ const retrieveAllRecentProducts = CatchAsync(async (req, res) => {
     data,
   })
 })
+const retrieveMyAllRecentProducts = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await RecentProductsServices.retrieveMyAllRecentProducts(
+      req?.user,
+    )
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Retrieve all my recent Products successfully!',
+      data,
+    })
+  },
+)
 
 const retrieveRecentProductsById = CatchAsync(async (req, res) => {
   const { id } = req.params
@@ -70,4 +90,5 @@ export const recentProductsController = {
   retrieveRecentProductsById,
   updateRecentProductsById,
   deleteRecentProductsById,
+  retrieveMyAllRecentProducts,
 }

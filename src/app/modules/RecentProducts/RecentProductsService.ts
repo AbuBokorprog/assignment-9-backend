@@ -1,16 +1,57 @@
 import prisma from '../../helpers/prisma'
 import { TRecentProducts } from './RecentProductsInterface'
 
-const createRecentProducts = async (payload: TRecentProducts) => {
-  const recentProduct = await prisma.recentProduct.create({
-    data: payload,
+const createRecentProducts = async (user: any, payload: TRecentProducts) => {
+  const isExistUser = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: user.id,
+    },
   })
 
-  return recentProduct
+  const isAlreadyExist = await prisma.recentProduct.findFirst({
+    where: {
+      userId: isExistUser.id,
+      productId: payload.productId,
+    },
+  })
+
+  if (isAlreadyExist) {
+    const result = await prisma.recentProduct.update({
+      where: {
+        id: isAlreadyExist.id,
+      },
+      data: {
+        productId: isAlreadyExist.productId,
+      },
+    })
+
+    return result
+  } else {
+    const recentProduct = await prisma.recentProduct.create({
+      data: {
+        userId: user.id,
+        productId: payload.productId,
+      },
+    })
+
+    return recentProduct
+  }
 }
 
 const retrieveAllRecentProducts = async () => {
   const result = await prisma.recentProduct.findMany({})
+
+  return result
+}
+const retrieveMyAllRecentProducts = async (user: any) => {
+  const result = await prisma.recentProduct.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      product: true,
+    },
+  })
 
   return result
 }
@@ -64,4 +105,5 @@ export const RecentProductsServices = {
   retrieveRecentProductsById,
   updateRecentProductsById,
   deleteRecentProductsById,
+  retrieveMyAllRecentProducts,
 }

@@ -18,7 +18,7 @@ const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse")
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const RecentProductsService_1 = require("./RecentProductsService");
 const createRecentProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield RecentProductsService_1.RecentProductsServices.createRecentProducts(req.body);
+    const data = yield RecentProductsService_1.RecentProductsServices.createRecentProducts(req.user, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.CREATED,
         success: true,
@@ -32,6 +32,15 @@ const retrieveAllRecentProducts = (0, CatchAsync_1.default)((req, res) => __awai
         status: http_status_1.default.OK,
         success: true,
         message: 'Retrieve all recent Products successfully!',
+        data,
+    });
+}));
+const retrieveMyAllRecentProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield RecentProductsService_1.RecentProductsServices.retrieveMyAllRecentProducts(req === null || req === void 0 ? void 0 : req.user);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all my recent Products successfully!',
         data,
     });
 }));
@@ -71,4 +80,5 @@ exports.recentProductsController = {
     retrieveRecentProductsById,
     updateRecentProductsById,
     deleteRecentProductsById,
+    retrieveMyAllRecentProducts,
 };

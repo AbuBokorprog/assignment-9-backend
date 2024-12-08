@@ -14,14 +14,52 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RecentProductsServices = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createRecentProducts = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const recentProduct = yield prisma_1.default.recentProduct.create({
-        data: payload,
+const createRecentProducts = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: user.id,
+        },
     });
-    return recentProduct;
+    const isAlreadyExist = yield prisma_1.default.recentProduct.findFirst({
+        where: {
+            userId: isExistUser.id,
+            productId: payload.productId,
+        },
+    });
+    if (isAlreadyExist) {
+        const result = yield prisma_1.default.recentProduct.update({
+            where: {
+                id: isAlreadyExist.id,
+            },
+            data: {
+                productId: isAlreadyExist.productId,
+            },
+        });
+        return result;
+    }
+    else {
+        const recentProduct = yield prisma_1.default.recentProduct.create({
+            data: {
+                userId: user.id,
+                productId: payload.productId,
+            },
+        });
+        return recentProduct;
+    }
 });
 const retrieveAllRecentProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.recentProduct.findMany({});
+    return result;
+});
+const retrieveMyAllRecentProducts = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.recentProduct.findMany({
+        where: {
+            userId: user.id,
+        },
+        include: {
+            product: true,
+        },
+    });
     return result;
 });
 const retrieveRecentProductsById = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,4 +103,5 @@ exports.RecentProductsServices = {
     retrieveRecentProductsById,
     updateRecentProductsById,
     deleteRecentProductsById,
+    retrieveMyAllRecentProducts,
 };
