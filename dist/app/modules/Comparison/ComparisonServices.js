@@ -13,20 +13,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.comparisonServices = void 0;
+const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
+const AppError_1 = require("../../utils/AppError");
 const createComparison = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: user === null || user === void 0 ? void 0 : user.email,
         },
     });
-    const comparison = yield prisma_1.default.comparison.create({
-        data: {
-            userId: userData.id,
+    const isAlreadyExist = yield prisma_1.default.comparison.findFirst({
+        where: {
             productId: payload.productId,
+            userId: userData.id,
         },
     });
-    return comparison;
+    const usersCompare = yield prisma_1.default.comparison.findMany({
+        where: {
+            userId: userData.id,
+        },
+    });
+    if (isAlreadyExist || (usersCompare === null || usersCompare === void 0 ? void 0 : usersCompare.length) > 3) {
+        throw new AppError_1.AppError(http_status_1.default.ALREADY_REPORTED, 'Already exist!');
+    }
+    else {
+        const comparison = yield prisma_1.default.comparison.create({
+            data: {
+                userId: userData.id,
+                productId: payload.productId,
+            },
+        });
+        return comparison;
+    }
 });
 const retrieveAllMyComparison = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({

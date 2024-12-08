@@ -60,7 +60,7 @@ const updateCart = CatchAsync(async (req, res) => {
 })
 const deleteCart = CatchAsync(async (req, res) => {
   const { id } = req.params
-  const data = await cartsService.retrieveCartById(id)
+  const data = await cartsService.deleteCart(id)
 
   SuccessResponse(res, {
     status: httpStatus.OK,

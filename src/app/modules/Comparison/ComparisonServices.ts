@@ -1,4 +1,6 @@
+import httpStatus from 'http-status'
 import prisma from '../../helpers/prisma'
+import { AppError } from '../../utils/AppError'
 import { TComparison } from './ComparisonInterface'
 
 const createComparison = async (user: any, payload: TComparison) => {
@@ -8,14 +10,31 @@ const createComparison = async (user: any, payload: TComparison) => {
     },
   })
 
-  const comparison = await prisma.comparison.create({
-    data: {
-      userId: userData.id,
+  const isAlreadyExist = await prisma.comparison.findFirst({
+    where: {
       productId: payload.productId,
+      userId: userData.id,
     },
   })
 
-  return comparison
+  const usersCompare = await prisma.comparison.findMany({
+    where: {
+      userId: userData.id,
+    },
+  })
+
+  if (isAlreadyExist || usersCompare?.length > 3) {
+    throw new AppError(httpStatus.ALREADY_REPORTED, 'Already exist!')
+  } else {
+    const comparison = await prisma.comparison.create({
+      data: {
+        userId: userData.id,
+        productId: payload.productId,
+      },
+    })
+
+    return comparison
+  }
 }
 
 const retrieveAllMyComparison = async (user: any) => {

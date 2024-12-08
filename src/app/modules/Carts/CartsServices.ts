@@ -14,11 +14,34 @@ const createCart = async (user: any, payload: TCart) => {
     },
   })
 
-  const result = await prisma.cart.create({
-    data: payload,
+  const isAlreadyExist = await prisma.cart.findFirst({
+    where: {
+      customerId: userData?.id,
+      productId: payload.productId,
+    },
   })
 
-  return result
+  if (isAlreadyExist) {
+    const result = await prisma.cart.update({
+      where: {
+        id: isAlreadyExist.id,
+      },
+      data: {
+        color: payload.color,
+        size: payload.size,
+        price: payload.price,
+        productId: payload.productId,
+        qty: isAlreadyExist.qty + 1,
+      },
+    })
+    return result
+  } else {
+    const result = await prisma.cart.create({
+      data: payload,
+    })
+
+    return result
+  }
 }
 const retrieveCart = async () => {
   const result = await prisma.cart.findMany({

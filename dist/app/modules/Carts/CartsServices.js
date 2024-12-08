@@ -26,10 +26,33 @@ const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function
             id: payload.productId,
         },
     });
-    const result = yield prisma_1.default.cart.create({
-        data: payload,
+    const isAlreadyExist = yield prisma_1.default.cart.findFirst({
+        where: {
+            customerId: userData === null || userData === void 0 ? void 0 : userData.id,
+            productId: payload.productId,
+        },
     });
-    return result;
+    if (isAlreadyExist) {
+        const result = yield prisma_1.default.cart.update({
+            where: {
+                id: isAlreadyExist.id,
+            },
+            data: {
+                color: payload.color,
+                size: payload.size,
+                price: payload.price,
+                productId: payload.productId,
+                qty: isAlreadyExist.qty + 1,
+            },
+        });
+        return result;
+    }
+    else {
+        const result = yield prisma_1.default.cart.create({
+            data: payload,
+        });
+        return result;
+    }
 });
 const retrieveCart = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.cart.findMany({

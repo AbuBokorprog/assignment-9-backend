@@ -66,7 +66,7 @@ const updateCart = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const deleteCart = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const data = yield CartsServices_1.cartsService.retrieveCartById(id);
+    const data = yield CartsServices_1.cartsService.deleteCart(id);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
