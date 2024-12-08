@@ -22,7 +22,7 @@ const createWishlist = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0,
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.CREATED,
         success: true,
-        message: 'Create wi successfully!',
+        message: 'Create wishlist successfully!',
         data,
     });
 }));
@@ -31,7 +31,7 @@ const retrieveAllWishlist = (0, CatchAsync_1.default)((req, res) => __awaiter(vo
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Retrieve all wis successfully!',
+        message: 'Retrieve all wishlist successfully!',
         data,
     });
 }));
@@ -41,7 +41,7 @@ const retrieveWishlistById = (0, CatchAsync_1.default)((req, res) => __awaiter(v
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Retrieve wi by id successfully!',
+        message: 'Retrieve wishlist by id successfully!',
         data,
     });
 }));
@@ -51,17 +51,16 @@ const updateWishlistById = (0, CatchAsync_1.default)((req, res) => __awaiter(voi
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Update wi by id successfully!',
+        message: 'Update wishlist by id successfully!',
         data,
     });
 }));
 const deleteWishlistById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const data = yield WishlistServices_1.wishlistServices.deleteWishlistById(id);
+    const data = yield WishlistServices_1.wishlistServices.deleteWishlistById(req.user, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Delete wi by id successfully!',
+        message: 'Delete wishlist by id successfully!',
         data,
     });
 }));

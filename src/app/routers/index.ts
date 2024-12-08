@@ -69,7 +69,7 @@ const moduleRoutes = [
     route: reportsRoute,
   },
   {
-    path: 'wishlist',
+    path: '/wishlist',
     route: wishlistRouter,
   },
 ]

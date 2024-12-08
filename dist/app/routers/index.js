@@ -73,7 +73,7 @@ const moduleRoutes = [
         route: reports_route_1.reportsRoute,
     },
     {
-        path: 'wishlist',
+        path: '/wishlist',
         route: WishlistRoute_1.wishlistRouter,
     },
 ];

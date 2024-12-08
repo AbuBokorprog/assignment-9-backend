@@ -64,6 +64,7 @@ const userLogin = async (payload: TLogin) => {
     name: user.name,
     role: isExistUser.role,
     token: accessToken,
+    id: isExistUser.id,
     refreshToken: refreshToken,
   }
 }

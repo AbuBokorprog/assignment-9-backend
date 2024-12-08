@@ -20,6 +20,15 @@ router.get(
 )
 router.get('/:id', wishlistController.retrieveWishlistById)
 router.patch('/:id', wishlistController.updateWishlistById)
-router.delete('/:id', wishlistController.deleteWishlistById)
+router.delete(
+  '/user/wishlist-delete',
+  Auth(
+    UserRole.ADMIN,
+    UserRole.CUSTOMER,
+    UserRole.SUPER_ADMIN,
+    UserRole.VENDOR,
+  ),
+  wishlistController.deleteWishlistById,
+)
 
 export const wishlistRouter = router

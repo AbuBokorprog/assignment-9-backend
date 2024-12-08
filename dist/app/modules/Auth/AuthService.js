@@ -60,6 +60,7 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         name: user.name,
         role: isExistUser.role,
         token: accessToken,
+        id: isExistUser.id,
         refreshToken: refreshToken,
     };
 });

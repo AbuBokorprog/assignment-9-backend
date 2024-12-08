@@ -65,16 +65,17 @@ const updateWishlistById = async (id: string, payload: any) => {
   return result
 }
 
-const deleteWishlistById = async (id: string) => {
-  await prisma.wishlist.findUniqueOrThrow({
+const deleteWishlistById = async (user: any, productId: string) => {
+  const isExistProduct = await prisma.wishlist.findFirstOrThrow({
     where: {
-      id: id,
+      productId: productId,
+      userId: user.id,
     },
   })
 
   const result = await prisma.wishlist.delete({
     where: {
-      id: id,
+      id: isExistProduct.id,
     },
   })
 

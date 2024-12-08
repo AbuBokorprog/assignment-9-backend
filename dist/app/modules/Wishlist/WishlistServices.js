@@ -68,15 +68,16 @@ const updateWishlistById = (id, payload) => __awaiter(void 0, void 0, void 0, fu
     });
     return result;
 });
-const deleteWishlistById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.wishlist.findUniqueOrThrow({
+const deleteWishlistById = (user, productId) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistProduct = yield prisma_1.default.wishlist.findFirstOrThrow({
         where: {
-            id: id,
+            productId: productId,
+            userId: user.id,
         },
     });
     const result = yield prisma_1.default.wishlist.delete({
         where: {
-            id: id,
+            id: isExistProduct.id,
         },
     });
     return result;
