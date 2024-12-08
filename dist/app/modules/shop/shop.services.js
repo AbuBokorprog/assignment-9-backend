@@ -95,6 +95,22 @@ const updateShopById = (id, payload) => __awaiter(void 0, void 0, void 0, functi
     });
     return result;
 });
+const updateStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.shop.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.shop.update({
+        where: {
+            id: id,
+        },
+        data: {
+            isActive: status,
+        },
+    });
+    return result;
+});
 const deleteShopById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
@@ -115,4 +131,5 @@ exports.shopServices = {
     updateShopById,
     retrieveAllShopByVendor,
     deleteShopById,
+    updateStatus,
 };

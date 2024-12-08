@@ -28,6 +28,7 @@ router.get(
 )
 router.get('/:id', shopController.retrieveShopById)
 router.patch('/:id', shopController.updateShopById)
+router.patch('/status/update-status', shopController.updateShopById)
 router.delete('/:id', shopController.deleteShopById)
 
 export const shopRouter = router

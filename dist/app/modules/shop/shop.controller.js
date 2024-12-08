@@ -65,6 +65,15 @@ const updateShopById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0,
         data,
     });
 }));
+const updateStatus = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield shop_services_1.shopServices.updateShopById(req.body.id, req.body.status);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update shop status successfully!',
+        data,
+    });
+}));
 const deleteShopById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield shop_services_1.shopServices.deleteShopById(id);
@@ -81,5 +90,6 @@ exports.shopController = {
     retrieveShopById,
     updateShopById,
     deleteShopById,
+    updateStatus,
     retrieveAllShopByVendor,
 };

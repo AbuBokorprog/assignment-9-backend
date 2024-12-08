@@ -65,6 +65,17 @@ const updateShopById = CatchAsync(async (req, res) => {
   })
 })
 
+const updateStatus = CatchAsync(async (req, res) => {
+  const data = await shopServices.updateShopById(req.body.id, req.body.status)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Update shop status successfully!',
+    data,
+  })
+})
+
 const deleteShopById = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await shopServices.deleteShopById(id)
@@ -83,5 +94,6 @@ export const shopController = {
   retrieveShopById,
   updateShopById,
   deleteShopById,
+  updateStatus,
   retrieveAllShopByVendor,
 }

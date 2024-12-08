@@ -187,6 +187,101 @@ const myProfile = async (user: any) => {
   return result
 }
 
+const userStatusChanged = async (
+  id: string,
+  status: 'ACTIVE' | 'SUSPEND' | 'BLOCKED' | 'DELETED',
+) => {
+  const isExistUser = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
+
+  const result = await prisma.$transaction(async transactionClient => {
+    const userData = await transactionClient.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
+    })
+
+    // is admin and status deleted
+    if (
+      (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') &&
+      status === UserStatus.DELETED
+    ) {
+      await transactionClient.admin.update({
+        where: {
+          email: isExistUser.email,
+        },
+        data: {
+          isDeleted: true,
+        },
+      })
+    } else if (
+      (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') &&
+      status === UserStatus.ACTIVE
+    ) {
+      await transactionClient.vendor.update({
+        where: {
+          email: isExistUser.email,
+        },
+        data: {
+          isDeleted: false,
+        },
+      })
+    } else if (isExistUser.role === 'VENDOR' && status === UserStatus.DELETED) {
+      await transactionClient.vendor.update({
+        where: {
+          email: isExistUser.email,
+        },
+        data: {
+          isDeleted: true,
+        },
+      })
+    } else if (isExistUser.role === 'VENDOR' && status === UserStatus.ACTIVE) {
+      await transactionClient.vendor.update({
+        where: {
+          email: isExistUser.email,
+        },
+        data: {
+          isDeleted: false,
+        },
+      })
+    } else if (
+      isExistUser.role === 'CUSTOMER' &&
+      status === UserStatus.DELETED
+    ) {
+      await transactionClient.customer.update({
+        where: {
+          email: isExistUser.email,
+        },
+        data: {
+          isDeleted: true,
+        },
+      })
+    } else if (
+      isExistUser.role === 'CUSTOMER' &&
+      status === UserStatus.ACTIVE
+    ) {
+      await transactionClient.customer.update({
+        where: {
+          email: isExistUser.email,
+        },
+        data: {
+          isDeleted: false,
+        },
+      })
+    }
+
+    return userData
+  })
+
+  return result
+}
+
 export const userServices = {
   createAdmin,
   createVendor,
@@ -194,4 +289,5 @@ export const userServices = {
   retrieveAllUsers,
   retrieveUserById,
   myProfile,
+  userStatusChanged,
 }

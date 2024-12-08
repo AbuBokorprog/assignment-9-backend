@@ -35,6 +35,7 @@ router.post(
 router.get('/', userControllers.retrieveAllUsers)
 
 router.get('/:id', userControllers.retrieveUserById)
+router.patch('/status/user-status', userControllers.userStatusChanged)
 router.get(
   '/profile/my-profile',
   Auth(

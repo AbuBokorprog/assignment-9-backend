@@ -23,5 +23,6 @@ router.get('/', shop_controller_1.shopController.retrieveAllShop);
 router.get('/vendor-shops', (0, Auth_1.default)(client_1.UserRole.VENDOR), shop_controller_1.shopController.retrieveAllShopByVendor);
 router.get('/:id', shop_controller_1.shopController.retrieveShopById);
 router.patch('/:id', shop_controller_1.shopController.updateShopById);
+router.patch('/status/update-status', shop_controller_1.shopController.updateShopById);
 router.delete('/:id', shop_controller_1.shopController.deleteShopById);
 exports.shopRouter = router;

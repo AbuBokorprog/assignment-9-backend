@@ -57,6 +57,21 @@ const retrieveUserById = CatchAsync(async (req, res) => {
     data,
   })
 })
+
+const userStatusChanged = CatchAsync(async (req, res) => {
+  const data = await userServices.userStatusChanged(
+    req.body.id,
+    req.body.status,
+  )
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'User status changed!',
+    data,
+  })
+})
+
 const myProfile = CatchAsync(
   async (req: Request & { user?: any }, res: Response) => {
     const user = req.user
@@ -80,4 +95,5 @@ export const userControllers = {
   retrieveAllUsers,
   retrieveUserById,
   myProfile,
+  userStatusChanged,
 }

@@ -1,5 +1,6 @@
 import prisma from '../../helpers/prisma'
 import { ImageUpload } from '../../utils/ImageUpload'
+import { TActive } from '../users/user.containts'
 import { TShop } from './shop.interface'
 
 const createShop = async (files: any, payload: TShop) => {
@@ -103,6 +104,25 @@ const updateShopById = async (id: string, payload: any) => {
   return result
 }
 
+const updateStatus = async (id: string, status: TActive) => {
+  await prisma.shop.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
+
+  const result = await prisma.shop.update({
+    where: {
+      id: id,
+    },
+    data: {
+      isActive: status,
+    },
+  })
+
+  return result
+}
+
 const deleteShopById = async (id: string) => {
   await prisma.shop.findUniqueOrThrow({
     where: {
@@ -126,4 +146,5 @@ export const shopServices = {
   updateShopById,
   retrieveAllShopByVendor,
   deleteShopById,
+  updateStatus,
 }

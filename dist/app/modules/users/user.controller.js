@@ -63,6 +63,15 @@ const retrieveUserById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 
         data,
     });
 }));
+const userStatusChanged = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield user_service_1.userServices.userStatusChanged(req.body.id, req.body.status);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'User status changed!',
+        data,
+    });
+}));
 const myProfile = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const data = yield user_service_1.userServices.myProfile(user);
@@ -81,4 +90,5 @@ exports.userControllers = {
     retrieveAllUsers,
     retrieveUserById,
     myProfile,
+    userStatusChanged,
 };

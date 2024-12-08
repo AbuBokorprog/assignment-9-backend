@@ -172,6 +172,90 @@ const myProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const userStatusChanged = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        const userData = yield transactionClient.user.update({
+            where: {
+                id: id,
+            },
+            data: {
+                status: status,
+            },
+        });
+        // is admin and status deleted
+        if ((isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') &&
+            status === client_1.UserStatus.DELETED) {
+            yield transactionClient.admin.update({
+                where: {
+                    email: isExistUser.email,
+                },
+                data: {
+                    isDeleted: true,
+                },
+            });
+        }
+        else if ((isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') &&
+            status === client_1.UserStatus.ACTIVE) {
+            yield transactionClient.vendor.update({
+                where: {
+                    email: isExistUser.email,
+                },
+                data: {
+                    isDeleted: false,
+                },
+            });
+        }
+        else if (isExistUser.role === 'VENDOR' && status === client_1.UserStatus.DELETED) {
+            yield transactionClient.vendor.update({
+                where: {
+                    email: isExistUser.email,
+                },
+                data: {
+                    isDeleted: true,
+                },
+            });
+        }
+        else if (isExistUser.role === 'VENDOR' && status === client_1.UserStatus.ACTIVE) {
+            yield transactionClient.vendor.update({
+                where: {
+                    email: isExistUser.email,
+                },
+                data: {
+                    isDeleted: false,
+                },
+            });
+        }
+        else if (isExistUser.role === 'CUSTOMER' &&
+            status === client_1.UserStatus.DELETED) {
+            yield transactionClient.customer.update({
+                where: {
+                    email: isExistUser.email,
+                },
+                data: {
+                    isDeleted: true,
+                },
+            });
+        }
+        else if (isExistUser.role === 'CUSTOMER' &&
+            status === client_1.UserStatus.ACTIVE) {
+            yield transactionClient.customer.update({
+                where: {
+                    email: isExistUser.email,
+                },
+                data: {
+                    isDeleted: false,
+                },
+            });
+        }
+        return userData;
+    }));
+    return result;
+});
 exports.userServices = {
     createAdmin,
     createVendor,
@@ -179,4 +263,5 @@ exports.userServices = {
     retrieveAllUsers,
     retrieveUserById,
     myProfile,
+    userStatusChanged,
 };
