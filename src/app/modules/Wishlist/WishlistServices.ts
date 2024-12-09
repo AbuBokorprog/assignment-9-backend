@@ -8,14 +8,25 @@ const createWishlist = async (user: any, payload: TWishlist) => {
     },
   })
 
-  const wishlist = await prisma.wishlist.create({
-    data: {
+  const isAlreadyExist = await prisma.wishlist.findFirst({
+    where: {
       userId: userData.id,
       productId: payload.productId,
     },
   })
 
-  return wishlist
+  if (isAlreadyExist) {
+    return
+  } else {
+    const wishlist = await prisma.wishlist.create({
+      data: {
+        userId: userData.id,
+        productId: payload.productId,
+      },
+    })
+
+    return wishlist
+  }
 }
 
 const retrieveAllMyWishlist = async (user: any) => {

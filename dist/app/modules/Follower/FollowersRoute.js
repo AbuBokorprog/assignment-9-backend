@@ -12,5 +12,5 @@ const Auth_1 = __importDefault(require("../../middlewares/Auth"));
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.post('/shop-follow', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), (0, ValidationRequest_1.default)(FollowersValidation_1.followerValidation.createFollower), FollowersController_1.followerController.FollowShop);
-router.post('/my', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), FollowersController_1.followerController.retrieveMyFollowingShop);
+router.get('/my', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), FollowersController_1.followerController.retrieveMyFollowingShop);
 exports.followerRouter = router;

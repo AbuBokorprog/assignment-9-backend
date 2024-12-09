@@ -20,13 +20,24 @@ const createWishlist = (user, payload) => __awaiter(void 0, void 0, void 0, func
             email: user === null || user === void 0 ? void 0 : user.email,
         },
     });
-    const wishlist = yield prisma_1.default.wishlist.create({
-        data: {
+    const isAlreadyExist = yield prisma_1.default.wishlist.findFirst({
+        where: {
             userId: userData.id,
             productId: payload.productId,
         },
     });
-    return wishlist;
+    if (isAlreadyExist) {
+        return;
+    }
+    else {
+        const wishlist = yield prisma_1.default.wishlist.create({
+            data: {
+                userId: userData.id,
+                productId: payload.productId,
+            },
+        });
+        return wishlist;
+    }
 });
 const retrieveAllMyWishlist = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({

@@ -14,7 +14,7 @@ router.post(
   followerController.FollowShop,
 )
 
-router.post(
+router.get(
   '/my',
   Auth(UserRole.CUSTOMER),
   followerController.retrieveMyFollowingShop,

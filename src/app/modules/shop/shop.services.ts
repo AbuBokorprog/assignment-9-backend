@@ -69,7 +69,12 @@ const retrieveAllShopByVendor = async (vendor: {
       category: true,
       followers: true,
       orders: true,
-      products: true,
+      products: {
+        include: {
+          reviews: true,
+          wishlist: true,
+        },
+      },
       reviews: true,
       vendor: true,
     },

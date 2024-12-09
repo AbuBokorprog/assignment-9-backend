@@ -67,7 +67,12 @@ const retrieveAllShopByVendor = (vendor) => __awaiter(void 0, void 0, void 0, fu
             category: true,
             followers: true,
             orders: true,
-            products: true,
+            products: {
+                include: {
+                    reviews: true,
+                    wishlist: true,
+                },
+            },
             reviews: true,
             vendor: true,
         },

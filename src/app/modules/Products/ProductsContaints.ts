@@ -1,7 +1,7 @@
 // pick
-const adminFilterableFields = ['name', 'email']
+const adminFilterableFields = ['name']
 
 // searchTerm
-const searchableFields = ['name', 'email']
+const searchableFields = ['name', 'description']
 
 export { adminFilterableFields, searchableFields }

@@ -59,6 +59,14 @@ const retrieveMyFollowingShop = async (user: any) => {
     where: {
       customerId: user?.id,
     },
+    include: {
+      shop: {
+        include: {
+          category: true,
+          vendor: true,
+        },
+      },
+    },
   })
 
   return result

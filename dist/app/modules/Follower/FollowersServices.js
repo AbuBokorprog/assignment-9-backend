@@ -66,6 +66,14 @@ const retrieveMyFollowingShop = (user) => __awaiter(void 0, void 0, void 0, func
         where: {
             customerId: user === null || user === void 0 ? void 0 : user.id,
         },
+        include: {
+            shop: {
+                include: {
+                    category: true,
+                    vendor: true,
+                },
+            },
+        },
     });
     return result;
 });
