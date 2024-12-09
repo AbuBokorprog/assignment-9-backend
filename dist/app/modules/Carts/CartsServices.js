@@ -21,11 +21,12 @@ const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function
         },
     });
     payload.customerId = userData === null || userData === void 0 ? void 0 : userData.id;
-    yield prisma_1.default.product.findUniqueOrThrow({
+    const isExistProduct = yield prisma_1.default.product.findUniqueOrThrow({
         where: {
             id: payload.productId,
         },
     });
+    payload.vendorId = isExistProduct.vendorId;
     const isAlreadyExist = yield prisma_1.default.cart.findFirst({
         where: {
             customerId: userData === null || userData === void 0 ? void 0 : userData.id,

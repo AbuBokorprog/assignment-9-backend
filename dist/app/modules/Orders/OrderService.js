@@ -14,30 +14,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordersService = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const createOrder = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+const createOrder = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            id: payload.customerId,
+            id: user.id,
         },
     });
+    payload.customerId = user.id;
     const result = yield prisma_1.default.$transaction((transactionalClient) => __awaiter(void 0, void 0, void 0, function* () {
         const orderData = yield transactionalClient.order.create({
-            data: payload,
-        });
-        yield transactionalClient.productOrder.create({
             data: {
-                orderId: orderData.id,
-                productId: payload.productId,
-                quantity: payload.quantity,
+                customerId: payload.customerId,
+                fullName: payload.fullName,
+                phoneNumber: payload.phoneNumber,
+                email: payload.email,
+                city: payload.city,
+                deliveryAddress: payload.deliveryAddress,
+                deliveryArea: payload.deliveryArea === '60' ? 'Inside Dhaka' : 'Outside Dhaka',
+                postalCode: Number(payload.postalCode),
+                quantity: Number(payload.quantity),
+                totalAmount: payload.totalAmount,
+                paymentType: payload.paymentType,
+                deliveryCharge: Number(payload.deliveryArea),
             },
         });
+        // Create product orders
+        yield Promise.all(payload.products.map((product) => __awaiter(void 0, void 0, void 0, function* () {
+            yield transactionalClient.productOrder.create({
+                data: {
+                    orderId: orderData.id,
+                    productId: product.productId,
+                    price: product.price,
+                    size: product.size || null, // Handle optional fields
+                    color: product.color || null, // Handle optional fields
+                    quantity: product.quantity,
+                },
+            });
+        })));
+        yield transactionalClient.cart.deleteMany({
+            where: {
+                customerId: payload.customerId,
+            },
+        });
+        return orderData;
     }));
     return result;
 });
 const retrieveOrder = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.order.findMany({
         include: {
-            products: true,
+            products: {
+                include: {
+                    product: true,
+                },
+            },
         },
     });
     return result;
@@ -54,7 +84,11 @@ const retrieveMyOrders = (user) => __awaiter(void 0, void 0, void 0, function* (
             customerId: userData.id,
         },
         include: {
-            products: true,
+            products: {
+                include: {
+                    product: true,
+                },
+            },
         },
     });
     return result;

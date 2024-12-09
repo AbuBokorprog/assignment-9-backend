@@ -18,7 +18,7 @@ const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const OrderService_1 = require("./OrderService");
 const createOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield OrderService_1.ordersService.createOrder(req.body);
+    const data = yield OrderService_1.ordersService.createOrder(req.user, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.CREATED,
         success: true,

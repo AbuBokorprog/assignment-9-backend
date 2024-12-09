@@ -45,7 +45,6 @@ const retrieveAllShop = () => __awaiter(void 0, void 0, void 0, function* () {
         include: {
             category: true,
             followers: true,
-            orders: true,
             products: true,
             vendor: true,
         },
@@ -66,7 +65,6 @@ const retrieveAllShopByVendor = (vendor) => __awaiter(void 0, void 0, void 0, fu
         include: {
             category: true,
             followers: true,
-            orders: true,
             products: {
                 include: {
                     reviews: true,
@@ -87,7 +85,6 @@ const retrieveShopById = (id) => __awaiter(void 0, void 0, void 0, function* () 
         include: {
             category: true,
             followers: true,
-            orders: true,
             products: true,
             reviews: true,
             vendor: true,

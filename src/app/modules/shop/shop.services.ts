@@ -42,7 +42,6 @@ const retrieveAllShop = async () => {
     include: {
       category: true,
       followers: true,
-      orders: true,
       products: true,
       vendor: true,
     },
@@ -68,7 +67,6 @@ const retrieveAllShopByVendor = async (vendor: {
     include: {
       category: true,
       followers: true,
-      orders: true,
       products: {
         include: {
           reviews: true,
@@ -91,7 +89,6 @@ const retrieveShopById = async (id: any) => {
     include: {
       category: true,
       followers: true,
-      orders: true,
       products: true,
       reviews: true,
       vendor: true,

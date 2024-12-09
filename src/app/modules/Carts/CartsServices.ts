@@ -8,12 +8,13 @@ const createCart = async (user: any, payload: TCart) => {
     },
   })
   payload.customerId = userData?.id
-  await prisma.product.findUniqueOrThrow({
+  const isExistProduct = await prisma.product.findUniqueOrThrow({
     where: {
       id: payload.productId,
     },
   })
 
+  payload.vendorId = isExistProduct.vendorId
   const isAlreadyExist = await prisma.cart.findFirst({
     where: {
       customerId: userData?.id,

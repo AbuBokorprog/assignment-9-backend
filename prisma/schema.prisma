@@ -63,6 +63,7 @@ model Vendor {
   updatedAt             DateTime @updatedAt
   shop                  Shop?
   products              Product[]
+  carts                 Cart[]
 @@map("vendors")
 }
 
@@ -97,7 +98,6 @@ model Shop {
   updatedAt             DateTime @updatedAt
   products              Product[]
   followers             Follower[]
-  orders                Order[]
   reviews               Review[]
 
   @@map("shops")
@@ -172,6 +172,8 @@ model Cart {
   customer              User @relation(fields: [customerId], references: [id])
   productId             String
   product               Product @relation(fields: [productId], references: [id])
+  vendorId              String
+  vendor                Vendor @relation(fields: [vendorId], references: [id])
   color                 String?
   size                  String?
   qty                   Int
@@ -189,6 +191,9 @@ model ProductOrder {
   productId             String
   product               Product  @relation(fields: [productId], references: [id])
   quantity              Int      // Quantity of products in the order
+  price                 Float
+  size                  String?
+  color                 String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }
@@ -217,13 +222,15 @@ model Order {
   phoneNumber         String
   email               String
   deliveryAddress     String
+  deliveryArea        String
+  deliveryCharge      Int
   city                String
+  quantity            Int
   postalCode          Int
+  paymentType         PaymentType
   payment             Payment?
   // shippingInfoId   String?
   // shippingInfo   ShippingInfo?   @relation(fields: [shippingInfoId], references: [id])
-  shopId              String
-  shop                Shop @relation(fields: [shopId], references: [id])
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
 }
@@ -356,7 +363,8 @@ enum ActiveStatus {
 enum OrderStatus {
   PENDING
   PROCESSING
-  COMPLETED
+  DELIVERED
+  SHIPPED
   CANCELLED
 }
 
@@ -365,4 +373,9 @@ enum PaymentStatus {
   UNPAID
   FAILED
   REFUNDED
+}
+
+enum PaymentType {
+  COD
+  ADV
 }

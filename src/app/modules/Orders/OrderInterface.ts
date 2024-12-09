@@ -1,13 +1,23 @@
 export type TOrder = {
   customerId: string
-  productId: string
-  shopId: string
+  city: string
+  deliveryAddress: string
+  deliveryArea: string
+  email: string
+  fullName: string
+  paymentType: 'COD' | 'ADV'
+  phoneNumber: string
+  postalCode: number
+  products: Products[]
   quantity: number
   totalAmount: number
-  fullName: string
-  email: string
-  phoneNumber: string
-  deliveryAddress: string
-  city: string
-  postalCode: number
+}
+
+type Products = {
+  orderId: string
+  productId: string
+  price: number
+  size?: string
+  color?: string
+  quantity: number
 }

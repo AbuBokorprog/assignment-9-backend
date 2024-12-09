@@ -2,17 +2,20 @@ import httpStatus from 'http-status'
 import CatchAsync from '../../utils/CatchAsync'
 import SuccessResponse from '../../utils/SuccessResponse'
 import { ordersService } from './OrderService'
+import { Request, Response } from 'express'
 
-const createOrder = CatchAsync(async (req, res) => {
-  const data = await ordersService.createOrder(req.body)
+const createOrder = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await ordersService.createOrder(req.user, req.body)
 
-  SuccessResponse(res, {
-    status: httpStatus.CREATED,
-    success: true,
-    message: 'Order created successfully!',
-    data,
-  })
-})
+    SuccessResponse(res, {
+      status: httpStatus.CREATED,
+      success: true,
+      message: 'Order created successfully!',
+      data,
+    })
+  },
+)
 const retrieveOrder = CatchAsync(async (req, res) => {
   const data = await ordersService.retrieveOrder()
 
