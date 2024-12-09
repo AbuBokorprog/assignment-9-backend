@@ -8,13 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productServices = void 0;
+const PaginationHelpers_1 = require("../../helpers/PaginationHelpers");
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const ImageUpload_1 = require("../../utils/ImageUpload");
+const ProductsContaints_1 = require("./ProductsContaints");
 const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // Upload files and collect their URLs
     const images = [];
@@ -93,8 +106,44 @@ const createProduct = (files, payload) => __awaiter(void 0, void 0, void 0, func
     }));
     return result;
 });
-const retrieveAllProduct = () => __awaiter(void 0, void 0, void 0, function* () {
+const retrieveAllProduct = (fieldParams, paginationOption) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { limit, page, skip, sortBy, sortOrder } = PaginationHelpers_1.paginationHelpers.calculatePagination(paginationOption);
+    const { searchTerm } = fieldParams, filterData = __rest(fieldParams, ["searchTerm"]);
+    const andCondition = [];
+    // search params
+    if (fieldParams.searchTerm) {
+        andCondition.push({
+            OR: ProductsContaints_1.searchableFields.map(field => ({
+                [field]: {
+                    contains: fieldParams.searchTerm,
+                    mode: 'insensitive',
+                },
+            })),
+        });
+    }
+    // specific field
+    if (((_a = Object.keys(filterData)) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+        andCondition.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: filterData[key],
+                },
+            })),
+        });
+    }
+    const whereCondition = { AND: andCondition };
     const result = yield prisma_1.default.product.findMany({
+        where: whereCondition,
+        skip: skip,
+        take: limit,
+        orderBy: sortBy && sortOrder
+            ? {
+                [sortBy]: sortOrder,
+            }
+            : {
+                createdAt: 'desc',
+            },
         include: {
             category: true,
             colors: true,
@@ -105,7 +154,17 @@ const retrieveAllProduct = () => __awaiter(void 0, void 0, void 0, function* () 
             wishlist: true,
         },
     });
-    return result;
+    const total = yield prisma_1.default.product.count({
+        where: whereCondition,
+    });
+    return {
+        meta: {
+            page,
+            limit,
+            total,
+        },
+        data: result,
+    };
 });
 const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const vendorData = yield prisma_1.default.vendor.findUniqueOrThrow({

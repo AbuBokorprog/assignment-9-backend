@@ -1,7 +1,10 @@
+import { Prisma } from '@prisma/client'
+import { paginationHelpers } from '../../helpers/PaginationHelpers'
 import prisma from '../../helpers/prisma'
 import { ImageUpload } from '../../utils/ImageUpload'
 import { TActive } from '../users/user.containts'
 import { TProduct } from './ProductsInterface'
+import { searchableFields } from './ProductsContaints'
 
 const createProduct = async (files: any, payload: TProduct) => {
   // Upload files and collect their URLs
@@ -90,8 +93,50 @@ const createProduct = async (files: any, payload: TProduct) => {
   return result
 }
 
-const retrieveAllProduct = async () => {
+const retrieveAllProduct = async (fieldParams: any, paginationOption: any) => {
+  const { limit, page, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOption)
+  const { searchTerm, ...filterData } = fieldParams
+
+  const andCondition: Prisma.ProductWhereInput[] = []
+
+  // search params
+  if (fieldParams.searchTerm) {
+    andCondition.push({
+      OR: searchableFields.map(field => ({
+        [field]: {
+          contains: fieldParams.searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    })
+  }
+
+  // specific field
+  if (Object.keys(filterData)?.length > 0) {
+    andCondition.push({
+      AND: Object.keys(filterData).map(key => ({
+        [key]: {
+          equals: filterData[key],
+        },
+      })),
+    })
+  }
+
+  const whereCondition: Prisma.ProductWhereInput = { AND: andCondition }
+
   const result = await prisma.product.findMany({
+    where: whereCondition,
+    skip: skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : {
+            createdAt: 'desc',
+          },
     include: {
       category: true,
       colors: true,
@@ -103,7 +148,18 @@ const retrieveAllProduct = async () => {
     },
   })
 
-  return result
+  const total = await prisma.product.count({
+    where: whereCondition,
+  })
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  }
 }
 const retrieveAllProductByVendor = async (user: any) => {
   const vendorData = await prisma.vendor.findUniqueOrThrow({

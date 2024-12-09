@@ -17,6 +17,8 @@ const http_status_1 = __importDefault(require("http-status"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const ProductsServices_1 = require("./ProductsServices");
+const Pick_1 = __importDefault(require("../../helpers/Pick"));
+const ProductsContaints_1 = require("./ProductsContaints");
 const createProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield ProductsServices_1.productServices.createProduct(req.files, req.body);
     (0, SuccessResponse_1.default)(res, {
@@ -27,7 +29,16 @@ const createProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const retrieveAllProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield ProductsServices_1.productServices.retrieveAllProduct();
+    // pick
+    const filterFields = (0, Pick_1.default)(req.query, ProductsContaints_1.adminFilterableFields);
+    // pagination pick
+    const paginationOption = (0, Pick_1.default)(req.query, [
+        'limit',
+        'page',
+        'sortBy',
+        'sortOrder',
+    ]);
+    const data = yield ProductsServices_1.productServices.retrieveAllProduct(filterFields, paginationOption);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,

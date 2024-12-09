@@ -3,6 +3,8 @@ import SuccessResponse from '../../utils/SuccessResponse'
 import CatchAsync from '../../utils/CatchAsync'
 import { productServices } from './ProductsServices'
 import { Request, Response } from 'express'
+import pick from '../../helpers/Pick'
+import { adminFilterableFields } from './ProductsContaints'
 
 const createProduct = CatchAsync(async (req, res) => {
   const data = await productServices.createProduct(req.files, req.body)
@@ -16,7 +18,19 @@ const createProduct = CatchAsync(async (req, res) => {
 })
 
 const retrieveAllProduct = CatchAsync(async (req, res) => {
-  const data = await productServices.retrieveAllProduct()
+  // pick
+  const filterFields = pick(req.query, adminFilterableFields)
+  // pagination pick
+  const paginationOption = pick(req.query, [
+    'limit',
+    'page',
+    'sortBy',
+    'sortOrder',
+  ])
+  const data = await productServices.retrieveAllProduct(
+    filterFields,
+    paginationOption,
+  )
 
   SuccessResponse(res, {
     status: httpStatus.OK,
