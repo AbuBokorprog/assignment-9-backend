@@ -68,6 +68,7 @@ const retrieveAllShopByVendor = (vendor) => __awaiter(void 0, void 0, void 0, fu
             followers: true,
             orders: true,
             products: true,
+            reviews: true,
             vendor: true,
         },
     });
@@ -77,6 +78,14 @@ const retrieveShopById = (id) => __awaiter(void 0, void 0, void 0, function* () 
     const result = yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
             id: id,
+        },
+        include: {
+            category: true,
+            followers: true,
+            orders: true,
+            products: true,
+            reviews: true,
+            vendor: true,
         },
     });
     return result;

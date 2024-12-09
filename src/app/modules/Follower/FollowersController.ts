@@ -2,81 +2,35 @@ import httpStatus from 'http-status'
 import SuccessResponse from '../../utils/SuccessResponse'
 import CatchAsync from '../../utils/CatchAsync'
 import { followerServices } from './FollowersServices'
+import { Request, Response } from 'express'
 
-const FollowShop = CatchAsync(async (req, res) => {
-  const data = await followerServices.FollowShop(req.body)
+const FollowShop = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await followerServices.FollowShop(req.user, req.body)
 
-  SuccessResponse(res, {
-    status: httpStatus.CREATED,
-    success: true,
-    message: 'Following successfully!',
-    data,
-  })
-})
+    SuccessResponse(res, {
+      status: httpStatus.CREATED,
+      success: true,
+      message: 'Following successfully!',
+      data,
+    })
+  },
+)
 
-const unFollowShop = CatchAsync(async (req, res) => {
-  const data = await followerServices.unFollowShop(req.body)
+const retrieveMyFollowingShop = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await followerServices.retrieveMyFollowingShop(req.user)
 
-  SuccessResponse(res, {
-    status: httpStatus.CREATED,
-    success: true,
-    message: 'Unfollow the shop successfully!',
-    // data,
-  })
-})
-
-// const retrieveAllFollower = CatchAsync(async (req, res) => {
-//   const data = await followerServices.retrieveAllFollower()
-
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Retrieve all followers successfully!',
-//     data,
-//   })
-// })
-
-// const retrieveFollowerById = CatchAsync(async (req, res) => {
-//   const { id } = req.params
-//   const data = await followerServices.retrieveFollowerById(id)
-
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Retrieve follower by id successfully!',
-//     data,
-//   })
-// })
-
-// const updateFollowerById = CatchAsync(async (req, res) => {
-//   const { id } = req.params
-//   const data = await followerServices.updateFollowerById(id, req.body)
-
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Update follower by id successfully!',
-//     data,
-//   })
-// })
-
-// const deleteFollowerById = CatchAsync(async (req, res) => {
-//   const { id } = req.params
-//   const data = await followerServices.deleteFollowerById(id)
-
-//   SuccessResponse(res, {
-//     status: httpStatus.OK,
-//     success: true,
-//     message: 'Delete follower by id successfully!',
-//     data,
-//   })
-// })
+    SuccessResponse(res, {
+      status: httpStatus.CREATED,
+      success: true,
+      message: 'Retrieve my following shop successfully!',
+      data,
+    })
+  },
+)
 
 export const followerController = {
   FollowShop,
-  unFollowShop,
-  // retrieveAllFollower,
-  // retrieveFollowerById,
-  // updateFollowerById,
-  // deleteFollowerById,
+  retrieveMyFollowingShop,
 }

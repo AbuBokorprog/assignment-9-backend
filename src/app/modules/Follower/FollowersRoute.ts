@@ -13,14 +13,11 @@ router.post(
   ValidationRequest(followerValidation.createFollower),
   followerController.FollowShop,
 )
+
 router.post(
-  '/shop-unfollow',
-  ValidationRequest(followerValidation.createFollower),
-  followerController.unFollowShop,
+  '/my',
+  Auth(UserRole.CUSTOMER),
+  followerController.retrieveMyFollowingShop,
 )
-// router.get('/', followerController.retrieveAllFollower)
-// router.get('/:id', followerController.retrieveFollowerById)
-// router.patch('/:id', followerController.updateFollowerById)
-// router.delete('/:id', followerController.deleteFollowerById)
 
 export const followerRouter = router

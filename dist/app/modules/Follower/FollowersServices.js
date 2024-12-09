@@ -13,108 +13,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.followerServices = void 0;
-const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const AppError_1 = require("../../utils/AppError");
-const FollowShop = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+const FollowShop = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            id: payload.customerId,
+            id: user === null || user === void 0 ? void 0 : user.id,
             status: 'ACTIVE',
         },
     });
-    const isExistShop = yield prisma_1.default.shop.findUniqueOrThrow({
+    yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
             id: payload.shopId,
         },
     });
     const isAlreadyFollow = yield prisma_1.default.follower.findFirst({
         where: {
-            customerId: payload.customerId,
+            customerId: user === null || user === void 0 ? void 0 : user.id,
             shopId: payload.shopId,
         },
     });
     if (isAlreadyFollow) {
-        throw new AppError_1.AppError(http_status_1.default.OK, 'Already following the shop!');
-    }
-    const follower = yield prisma_1.default.follower.create({
-        data: payload,
-    });
-    return follower;
-});
-const unFollowShop = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            id: payload.customerId,
-            status: 'ACTIVE',
-        },
-    });
-    const isExistShop = yield prisma_1.default.shop.findUniqueOrThrow({
-        where: {
-            id: payload.shopId,
-        },
-    });
-    const isAlreadyFollow = yield prisma_1.default.follower.findFirst({
-        where: {
-            customerId: payload.customerId,
+        // If already following, unfollow
+        yield prisma_1.default.follower.delete({
+            where: {
+                id: isAlreadyFollow.id,
+            },
+        });
+        return {
+            status: 'unfollowed',
             shopId: payload.shopId,
-        },
-    });
-    if (!isAlreadyFollow) {
-        throw new AppError_1.AppError(http_status_1.default.OK, "You're not following the shop!");
+            customerId: user === null || user === void 0 ? void 0 : user.id,
+        };
     }
-    const unfollow = yield prisma_1.default.follower.deleteMany({
+    else {
+        // If not following, follow
+        yield prisma_1.default.follower.create({
+            data: {
+                customerId: user === null || user === void 0 ? void 0 : user.id,
+                shopId: payload.shopId,
+            },
+        });
+        return { status: 'followed', shopId: payload.shopId, customerId: user === null || user === void 0 ? void 0 : user.id };
+    }
+});
+const retrieveMyFollowingShop = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            customerId: payload.customerId,
-            shopId: payload.shopId,
+            id: user === null || user === void 0 ? void 0 : user.id,
         },
     });
-    return unfollow;
+    const result = yield prisma_1.default.follower.findMany({
+        where: {
+            customerId: user === null || user === void 0 ? void 0 : user.id,
+        },
+    });
+    return result;
 });
-// const retrieveAllFollower = async () => {
-//   const result = await prisma.follower.findMany({})
-//   return result
-// }
-// const retrieveFollowerById = async (id: any) => {
-//   const result = await prisma.follower.findUniqueOrThrow({
-//     where: {
-//       id: id,
-//     },
-//   })
-//   return result
-// }
-// const updateFollowerById = async (id: string, payload: any) => {
-//   await prisma.follower.findUniqueOrThrow({
-//     where: {
-//       id: id,
-//     },
-//   })
-//   const result = await prisma.follower.update({
-//     where: {
-//       id: id,
-//     },
-//     data: payload,
-//   })
-//   return result
-// }
-// const deleteFollowerById = async (id: string) => {
-//   await prisma.follower.findUniqueOrThrow({
-//     where: {
-//       id: id,
-//     },
-//   })
-//   const result = await prisma.follower.delete({
-//     where: {
-//       id: id,
-//     },
-//   })
-//   return result
-// }
 exports.followerServices = {
     FollowShop,
-    unFollowShop,
-    // retrieveAllFollower,
-    // retrieveFollowerById,
-    // updateFollowerById,
-    // deleteFollowerById,
+    retrieveMyFollowingShop,
 };
