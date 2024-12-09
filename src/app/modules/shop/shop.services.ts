@@ -70,6 +70,7 @@ const retrieveAllShopByVendor = async (vendor: {
       followers: true,
       orders: true,
       products: true,
+      reviews: true,
       vendor: true,
     },
   })
@@ -81,6 +82,14 @@ const retrieveShopById = async (id: any) => {
   const result = await prisma.shop.findUniqueOrThrow({
     where: {
       id: id,
+    },
+    include: {
+      category: true,
+      followers: true,
+      orders: true,
+      products: true,
+      reviews: true,
+      vendor: true,
     },
   })
 
