@@ -50,7 +50,7 @@ const retrieveOrderById = (0, CatchAsync_1.default)((req, res) => __awaiter(void
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Retrieve cart by id successfully!',
+        message: 'Retrieve order by id successfully!',
         data,
     });
 }));
@@ -60,7 +60,7 @@ const updateOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, vo
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Update cart by id successfully!',
+        message: 'Update order by id successfully!',
         data,
     });
 }));
@@ -70,7 +70,7 @@ const deleteOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, vo
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Delete cart by id successfully!',
+        message: 'Delete order by id successfully!',
         data,
     });
 }));

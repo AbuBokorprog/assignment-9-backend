@@ -45,7 +45,7 @@ const retrieveOrderById = CatchAsync(async (req, res) => {
   SuccessResponse(res, {
     status: httpStatus.OK,
     success: true,
-    message: 'Retrieve cart by id successfully!',
+    message: 'Retrieve order by id successfully!',
     data,
   })
 })
@@ -56,7 +56,7 @@ const updateOrder = CatchAsync(async (req, res) => {
   SuccessResponse(res, {
     status: httpStatus.OK,
     success: true,
-    message: 'Update cart by id successfully!',
+    message: 'Update order by id successfully!',
     data,
   })
 })
@@ -67,7 +67,7 @@ const deleteOrder = CatchAsync(async (req, res) => {
   SuccessResponse(res, {
     status: httpStatus.OK,
     success: true,
-    message: 'Delete cart by id successfully!',
+    message: 'Delete order by id successfully!',
     data,
   })
 })
