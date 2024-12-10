@@ -194,6 +194,15 @@ const allAvailableProducts = () => __awaiter(void 0, void 0, void 0, function* (
             isActive: 'APPROVED',
             stockStatus: 'IN_STOCK',
         },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            reviews: true,
+            orders: true,
+            wishlist: true,
+        },
     });
     return result;
 });
@@ -203,14 +212,6 @@ const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* (
             productStatus: 'FLASH_SALE',
             isActive: 'APPROVED',
             stockStatus: 'IN_STOCK',
-        },
-    });
-    return result;
-});
-const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.product.findUniqueOrThrow({
-        where: {
-            id: id,
         },
         include: {
             category: true,
@@ -223,6 +224,39 @@ const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* 
         },
     });
     return result;
+});
+const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield prisma_1.default.product.findUniqueOrThrow({
+        where: { id },
+        include: {
+            category: { select: { id: true, name: true } }, // Fetch only relevant fields
+            colors: true,
+            sizes: true,
+            shop: { select: { id: true, shopName: true } },
+            reviews: true,
+            orders: false, // Include only if needed
+            wishlist: false, // Include only if needed
+        },
+    });
+    // Fetch related products
+    const relatedProducts = yield prisma_1.default.product.findMany({
+        where: {
+            categoryId: product.categoryId,
+            NOT: { id: product.id },
+        },
+        select: {
+            id: true,
+            name: true,
+            regular_price: true,
+            discount_price: true,
+            images: true,
+            productStatus: true,
+        },
+    });
+    return {
+        product,
+        relatedProducts,
+    };
 });
 const updateProductById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.product.findUniqueOrThrow({

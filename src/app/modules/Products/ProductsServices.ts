@@ -191,6 +191,15 @@ const allAvailableProducts = async () => {
       isActive: 'APPROVED',
       stockStatus: 'IN_STOCK',
     },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      reviews: true,
+      orders: true,
+      wishlist: true,
+    },
   })
 
   return result
@@ -202,16 +211,6 @@ const allFlashSaleProducts = async () => {
       productStatus: 'FLASH_SALE',
       isActive: 'APPROVED',
       stockStatus: 'IN_STOCK',
-    },
-  })
-
-  return result
-}
-
-const retrieveProductById = async (id: any) => {
-  const result = await prisma.product.findUniqueOrThrow({
-    where: {
-      id: id,
     },
     include: {
       category: true,
@@ -225,6 +224,42 @@ const retrieveProductById = async (id: any) => {
   })
 
   return result
+}
+
+const retrieveProductById = async (id: any) => {
+  const product = await prisma.product.findUniqueOrThrow({
+    where: { id },
+    include: {
+      category: { select: { id: true, name: true } }, // Fetch only relevant fields
+      colors: true,
+      sizes: true,
+      shop: { select: { id: true, shopName: true } },
+      reviews: true,
+      orders: false, // Include only if needed
+      wishlist: false, // Include only if needed
+    },
+  })
+
+  // Fetch related products
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      categoryId: product.categoryId,
+      NOT: { id: product.id },
+    },
+    select: {
+      id: true,
+      name: true,
+      regular_price: true,
+      discount_price: true,
+      images: true,
+      productStatus: true,
+    },
+  })
+
+  return {
+    product,
+    relatedProducts,
+  }
 }
 
 const updateProductById = async (id: string, payload: any) => {
