@@ -16,5 +16,6 @@ router.get('/', OrderController_1.ordersController.retrieveOrder);
 router.get('/users/my-orders', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), OrderController_1.ordersController.retrieveMyOrders);
 router.get('/:id', OrderController_1.ordersController.retrieveOrderById);
 router.patch('/:id', OrderController_1.ordersController.updateOrder);
+router.patch('/update/order-status', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), OrderController_1.ordersController.updateStatus);
 router.delete('/:id', OrderController_1.ordersController.deleteOrder);
 exports.orderRouter = router;

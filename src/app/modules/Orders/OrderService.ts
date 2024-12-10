@@ -147,11 +147,34 @@ const deleteOrder = async (id: string) => {
   return result
 }
 
+const updateStatus = async (
+  id: string,
+  status: 'PENDING' | 'PROCESSING' | 'DELIVERED' | 'SHIPPED' | 'CANCELLED',
+) => {
+  const isExistOrder = await prisma.order.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
+
+  const result = await prisma.order.update({
+    where: {
+      id: isExistOrder.id,
+    },
+    data: {
+      status: status,
+    },
+  })
+
+  return result
+}
+
 export const ordersService = {
   createOrder,
   retrieveOrder,
   retrieveOrderById,
   updateOrder,
   retrieveMyOrders,
+  updateStatus,
   deleteOrder,
 }

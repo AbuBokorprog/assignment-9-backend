@@ -40,6 +40,28 @@ const retrieveAllProduct = CatchAsync(async (req, res) => {
   })
 })
 
+const allAvailableProducts = CatchAsync(async (req, res) => {
+  const data = await productServices.allAvailableProducts()
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve all available products successfully!',
+    data,
+  })
+})
+
+const allFlashSaleProducts = CatchAsync(async (req, res) => {
+  const data = await productServices.allFlashSaleProducts()
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve all flash sale products successfully!',
+    data,
+  })
+})
+
 const retrieveAllProductByVendor = CatchAsync(
   async (req: Request & { user?: any }, res: Response) => {
     const data = await productServices.retrieveAllProductByVendor(req?.user)
@@ -106,6 +128,8 @@ const deleteProductById = CatchAsync(async (req, res) => {
 export const productController = {
   createProduct,
   retrieveAllProduct,
+  allAvailableProducts,
+  allFlashSaleProducts,
   retrieveProductById,
   updateProductById,
   deleteProductById,

@@ -74,9 +74,19 @@ const deleteOrder = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data,
     });
 }));
+const updateStatus = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield OrderService_1.ordersService.updateStatus(req.body.id, req.body.status);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update order status successfully!',
+        data,
+    });
+}));
 exports.ordersController = {
     createOrder,
     retrieveOrder,
+    updateStatus,
     retrieveOrderById,
     retrieveMyOrders,
     updateOrder,

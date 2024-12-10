@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cartsService = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
+const AppError_1 = require("../../utils/AppError");
 const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
@@ -33,27 +34,60 @@ const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function
             productId: payload.productId,
         },
     });
-    if (isAlreadyExist) {
-        const result = yield prisma_1.default.cart.update({
-            where: {
-                id: isAlreadyExist.id,
-            },
-            data: {
-                color: payload.color,
-                size: payload.size,
-                price: payload.price,
-                productId: payload.productId,
-                qty: isAlreadyExist.qty + 1,
-            },
-        });
-        return result;
+    if ((isExistProduct === null || isExistProduct === void 0 ? void 0 : isExistProduct.inventory) === 0) {
+        throw new AppError_1.AppError(400, 'The product is out of stock!');
     }
-    else {
-        const result = yield prisma_1.default.cart.create({
-            data: payload,
-        });
-        return result;
-    }
+    const productInventory = isExistProduct.inventory - 1;
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        if (isAlreadyExist) {
+            const result = yield transactionClient.cart.update({
+                where: {
+                    id: isAlreadyExist.id,
+                },
+                data: {
+                    color: payload.color,
+                    size: payload.size,
+                    price: payload.price,
+                    productId: payload.productId,
+                    qty: isAlreadyExist.qty + 1,
+                },
+            });
+            yield transactionClient.product.update({
+                where: {
+                    id: payload.productId,
+                },
+                data: {
+                    inventory: productInventory,
+                    stockStatus: productInventory > 10
+                        ? 'IN_STOCK'
+                        : productInventory <= 10
+                            ? 'LOW_STOCK'
+                            : 'OUT_OF_STOCK',
+                },
+            });
+            return result;
+        }
+        else {
+            const result = yield transactionClient.cart.create({
+                data: payload,
+            });
+            yield transactionClient.product.update({
+                where: {
+                    id: payload.productId,
+                },
+                data: {
+                    inventory: productInventory,
+                    stockStatus: productInventory > 10
+                        ? 'IN_STOCK'
+                        : productInventory <= 10
+                            ? 'LOW_STOCK'
+                            : 'OUT_OF_STOCK',
+                },
+            });
+            return result;
+        }
+    }));
+    return result;
 });
 const retrieveCart = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.cart.findMany({
@@ -106,11 +140,33 @@ const updateCart = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
     return result;
 });
 const deleteCart = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.cart.delete({
+    const isExitCart = yield prisma_1.default.cart.findUniqueOrThrow({
         where: {
             id: id,
         },
     });
+    const product = yield prisma_1.default.product.findUniqueOrThrow({
+        where: {
+            id: isExitCart.productId,
+        },
+    });
+    const productInventory = (product === null || product === void 0 ? void 0 : product.inventory) + isExitCart.qty;
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield transactionClient.cart.delete({
+            where: {
+                id: id,
+            },
+        });
+        yield transactionClient.product.update({
+            where: {
+                id: product === null || product === void 0 ? void 0 : product.id,
+            },
+            data: {
+                inventory: productInventory,
+            },
+        });
+        return result;
+    }));
     return result;
 });
 exports.cartsService = {

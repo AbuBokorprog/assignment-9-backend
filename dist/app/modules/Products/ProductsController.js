@@ -46,6 +46,24 @@ const retrieveAllProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(voi
         data,
     });
 }));
+const allAvailableProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield ProductsServices_1.productServices.allAvailableProducts();
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all available products successfully!',
+        data,
+    });
+}));
+const allFlashSaleProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield ProductsServices_1.productServices.allFlashSaleProducts();
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all flash sale products successfully!',
+        data,
+    });
+}));
 const retrieveAllProductByVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield ProductsServices_1.productServices.retrieveAllProductByVendor(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
@@ -97,6 +115,8 @@ const deleteProductById = (0, CatchAsync_1.default)((req, res) => __awaiter(void
 exports.productController = {
     createProduct,
     retrieveAllProduct,
+    allAvailableProducts,
+    allFlashSaleProducts,
     retrieveProductById,
     updateProductById,
     deleteProductById,

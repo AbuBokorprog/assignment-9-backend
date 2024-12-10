@@ -185,6 +185,29 @@ const retrieveAllProductByVendor = async (user: any) => {
   return result
 }
 
+const allAvailableProducts = async () => {
+  const result = await prisma.product.findMany({
+    where: {
+      isActive: 'APPROVED',
+      stockStatus: 'IN_STOCK',
+    },
+  })
+
+  return result
+}
+
+const allFlashSaleProducts = async () => {
+  const result = await prisma.product.findMany({
+    where: {
+      productStatus: 'FLASH_SALE',
+      isActive: 'APPROVED',
+      stockStatus: 'IN_STOCK',
+    },
+  })
+
+  return result
+}
+
 const retrieveProductById = async (id: any) => {
   const result = await prisma.product.findUniqueOrThrow({
     where: {
@@ -259,6 +282,8 @@ const deleteProductById = async (id: string) => {
 export const productServices = {
   createProduct,
   retrieveAllProduct,
+  allAvailableProducts,
+  allFlashSaleProducts,
   retrieveProductById,
   updateProductById,
   deleteProductById,

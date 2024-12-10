@@ -20,6 +20,11 @@ router.get(
 )
 router.get('/:id', ordersController.retrieveOrderById)
 router.patch('/:id', ordersController.updateOrder)
+router.patch(
+  '/update/order-status',
+  Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.VENDOR),
+  ordersController.updateStatus,
+)
 router.delete('/:id', ordersController.deleteOrder)
 
 export const orderRouter = router

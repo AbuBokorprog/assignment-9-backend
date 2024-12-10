@@ -188,6 +188,25 @@ const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, f
     });
     return result;
 });
+const allAvailableProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.product.findMany({
+        where: {
+            isActive: 'APPROVED',
+            stockStatus: 'IN_STOCK',
+        },
+    });
+    return result;
+});
+const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.product.findMany({
+        where: {
+            productStatus: 'FLASH_SALE',
+            isActive: 'APPROVED',
+            stockStatus: 'IN_STOCK',
+        },
+    });
+    return result;
+});
 const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.product.findUniqueOrThrow({
         where: {
@@ -251,6 +270,8 @@ const deleteProductById = (id) => __awaiter(void 0, void 0, void 0, function* ()
 exports.productServices = {
     createProduct,
     retrieveAllProduct,
+    allAvailableProducts,
+    allFlashSaleProducts,
     retrieveProductById,
     updateProductById,
     deleteProductById,

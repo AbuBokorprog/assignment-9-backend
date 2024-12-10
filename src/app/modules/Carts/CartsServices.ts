@@ -1,4 +1,6 @@
+import httpStatus from 'http-status'
 import prisma from '../../helpers/prisma'
+import { AppError } from '../../utils/AppError'
 import { TCart } from './CartsInterface'
 
 const createCart = async (user: any, payload: TCart) => {
@@ -22,27 +24,67 @@ const createCart = async (user: any, payload: TCart) => {
     },
   })
 
-  if (isAlreadyExist) {
-    const result = await prisma.cart.update({
-      where: {
-        id: isAlreadyExist.id,
-      },
-      data: {
-        color: payload.color,
-        size: payload.size,
-        price: payload.price,
-        productId: payload.productId,
-        qty: isAlreadyExist.qty + 1,
-      },
-    })
-    return result
-  } else {
-    const result = await prisma.cart.create({
-      data: payload,
-    })
-
-    return result
+  if (isExistProduct?.inventory === 0) {
+    throw new AppError(400, 'The product is out of stock!')
   }
+
+  const productInventory = isExistProduct.inventory - 1
+
+  const result = await prisma.$transaction(async transactionClient => {
+    if (isAlreadyExist) {
+      const result = await transactionClient.cart.update({
+        where: {
+          id: isAlreadyExist.id,
+        },
+        data: {
+          color: payload.color,
+          size: payload.size,
+          price: payload.price,
+          productId: payload.productId,
+          qty: isAlreadyExist.qty + 1,
+        },
+      })
+
+      await transactionClient.product.update({
+        where: {
+          id: payload.productId,
+        },
+        data: {
+          inventory: productInventory,
+          stockStatus:
+            productInventory > 10
+              ? 'IN_STOCK'
+              : productInventory <= 10
+                ? 'LOW_STOCK'
+                : 'OUT_OF_STOCK',
+        },
+      })
+      return result
+    } else {
+      const result = await transactionClient.cart.create({
+        data: payload,
+      })
+
+      await transactionClient.product.update({
+        where: {
+          id: payload.productId,
+        },
+        data: {
+          inventory: productInventory,
+          stockStatus:
+            productInventory > 10
+              ? 'IN_STOCK'
+              : productInventory <= 10
+                ? 'LOW_STOCK'
+                : 'OUT_OF_STOCK',
+        },
+      })
+
+      return result
+    }
+  })
+
+  return result
 }
 const retrieveCart = async () => {
   const result = await prisma.cart.findMany({
@@ -100,10 +142,37 @@ const updateCart = async (id: string, payload: Partial<TCart>) => {
   return result
 }
 const deleteCart = async (id: string) => {
-  const result = await prisma.cart.delete({
+  const isExitCart = await prisma.cart.findUniqueOrThrow({
     where: {
       id: id,
     },
+  })
+
+  const product = await prisma.product.findUniqueOrThrow({
+    where: {
+      id: isExitCart.productId,
+    },
+  })
+
+  const productInventory = product?.inventory + isExitCart.qty
+
+  const result = await prisma.$transaction(async transactionClient => {
+    const result = await transactionClient.cart.delete({
+      where: {
+        id: id,
+      },
+    })
+
+    await transactionClient.product.update({
+      where: {
+        id: product?.id,
+      },
+      data: {
+        inventory: productInventory,
+      },
+    })
+
+    return result
   })
 
   return result

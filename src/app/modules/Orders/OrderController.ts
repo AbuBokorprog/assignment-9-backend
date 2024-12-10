@@ -72,9 +72,21 @@ const deleteOrder = CatchAsync(async (req, res) => {
   })
 })
 
+const updateStatus = CatchAsync(async (req, res) => {
+  const data = await ordersService.updateStatus(req.body.id, req.body.status)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Update order status successfully!',
+    data,
+  })
+})
+
 export const ordersController = {
   createOrder,
   retrieveOrder,
+  updateStatus,
   retrieveOrderById,
   retrieveMyOrders,
   updateOrder,

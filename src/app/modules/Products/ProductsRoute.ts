@@ -21,6 +21,8 @@ router.post(
   productController.createProduct,
 )
 router.get('/', productController.retrieveAllProduct)
+router.get('/all-products/available', productController.allAvailableProducts)
+router.get('/all-products/flash-sale', productController.allFlashSaleProducts)
 router.get(
   '/vendor/my-product',
   Auth(UserRole.VENDOR),

@@ -140,11 +140,28 @@ const deleteOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const updateStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistOrder = yield prisma_1.default.order.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.order.update({
+        where: {
+            id: isExistOrder.id,
+        },
+        data: {
+            status: status,
+        },
+    });
+    return result;
+});
 exports.ordersService = {
     createOrder,
     retrieveOrder,
     retrieveOrderById,
     updateOrder,
     retrieveMyOrders,
+    updateStatus,
     deleteOrder,
 };
