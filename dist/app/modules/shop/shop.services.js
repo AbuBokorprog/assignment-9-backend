@@ -84,9 +84,17 @@ const retrieveShopById = (id) => __awaiter(void 0, void 0, void 0, function* () 
         },
         include: {
             category: true,
-            followers: true,
+            followers: {
+                select: {
+                    id: true,
+                },
+            },
             products: true,
-            reviews: true,
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
             vendor: true,
         },
     });

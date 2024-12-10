@@ -13,7 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.couponServices = void 0;
+const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
+const AppError_1 = require("../../utils/AppError");
 const createCoupon = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const data = {
         name: payload.name,
@@ -25,6 +27,31 @@ const createCoupon = (payload) => __awaiter(void 0, void 0, void 0, function* ()
         data: data,
     });
     return coupon;
+});
+const applyCoupon = (user, couponCode, cartTotal) => __awaiter(void 0, void 0, void 0, function* () {
+    // Find the coupon
+    const coupon = yield prisma_1.default.coupon.findUnique({
+        where: { code: couponCode },
+    });
+    // Validate the coupon
+    if (!coupon) {
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, 'Invalid coupon code.');
+    }
+    if (!coupon.isActive) {
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, 'This coupon is not active.');
+    }
+    if (new Date(coupon.expiryDate) < new Date()) {
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, 'This coupon has expired.');
+    }
+    // Calculate the discounted total
+    const discountAmount = (cartTotal * coupon.discount) / 100;
+    const discountedTotal = Math.max(cartTotal - discountAmount, 0); // Ensure the total isn't negative
+    return {
+        originalTotal: cartTotal,
+        discountAmount,
+        discountedTotal,
+        appliedCoupon: coupon.code,
+    };
 });
 const retrieveAllCoupon = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.coupon.findMany({});
@@ -70,5 +97,6 @@ exports.couponServices = {
     retrieveAllCoupon,
     retrieveCouponById,
     updateCouponById,
+    applyCoupon,
     deleteCouponById,
 };

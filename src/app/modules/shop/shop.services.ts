@@ -88,9 +88,17 @@ const retrieveShopById = async (id: any) => {
     },
     include: {
       category: true,
-      followers: true,
+      followers: {
+        select: {
+          id: true,
+        },
+      },
       products: true,
-      reviews: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
       vendor: true,
     },
   })

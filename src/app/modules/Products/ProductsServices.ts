@@ -141,8 +141,17 @@ const retrieveAllProduct = async (fieldParams: any, paginationOption: any) => {
       category: true,
       colors: true,
       sizes: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
       shop: true,
-      reviews: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
       orders: true,
       wishlist: true,
     },
@@ -176,7 +185,16 @@ const retrieveAllProductByVendor = async (user: any) => {
       colors: true,
       sizes: true,
       shop: true,
-      reviews: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
       orders: true,
       wishlist: true,
     },
@@ -239,7 +257,16 @@ const allAvailableProducts = async (
       colors: true,
       sizes: true,
       shop: true,
-      reviews: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
       orders: true,
       wishlist: true,
     },
@@ -270,7 +297,16 @@ const allFlashSaleProducts = async () => {
       colors: true,
       sizes: true,
       shop: true,
-      reviews: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
       orders: true,
       wishlist: true,
     },
@@ -286,8 +322,17 @@ const retrieveProductById = async (id: any) => {
       category: { select: { id: true, name: true } }, // Fetch only relevant fields
       colors: true,
       sizes: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
       shop: { select: { id: true, shopName: true } },
-      reviews: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
       orders: false, // Include only if needed
       wishlist: false, // Include only if needed
     },

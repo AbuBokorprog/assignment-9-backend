@@ -26,6 +26,15 @@ const createCoupon = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, v
         data,
     });
 }));
+const applyCoupon = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield CouponServices_1.couponServices.applyCoupon(req === null || req === void 0 ? void 0 : req.user, req.body.couponCode, req.body.cartTotal);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all coupons successfully!',
+        data,
+    });
+}));
 const retrieveAllCoupon = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield CouponServices_1.couponServices.retrieveAllCoupon();
     (0, SuccessResponse_1.default)(res, {
@@ -71,4 +80,5 @@ exports.couponController = {
     retrieveCouponById,
     updateCouponById,
     deleteCouponById,
+    applyCoupon,
 };

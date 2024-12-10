@@ -21,7 +21,7 @@ const createRecentProducts = async (user: any, payload: TRecentProducts) => {
         id: isAlreadyExist.id,
       },
       data: {
-        productId: isAlreadyExist.productId,
+        updatedAt: new Date(), // Updates the timestamp to bring it to the top
       },
     })
 
@@ -47,6 +47,10 @@ const retrieveMyAllRecentProducts = async (user: any) => {
   const result = await prisma.recentProduct.findMany({
     where: {
       userId: user.id,
+    },
+    take: 10,
+    orderBy: {
+      createdAt: 'desc',
     },
     include: {
       product: true,

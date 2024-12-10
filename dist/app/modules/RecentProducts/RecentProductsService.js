@@ -32,7 +32,7 @@ const createRecentProducts = (user, payload) => __awaiter(void 0, void 0, void 0
                 id: isAlreadyExist.id,
             },
             data: {
-                productId: isAlreadyExist.productId,
+                updatedAt: new Date(), // Updates the timestamp to bring it to the top
             },
         });
         return result;
@@ -55,6 +55,10 @@ const retrieveMyAllRecentProducts = (user) => __awaiter(void 0, void 0, void 0, 
     const result = yield prisma_1.default.recentProduct.findMany({
         where: {
             userId: user.id,
+        },
+        take: 10,
+        orderBy: {
+            createdAt: 'desc',
         },
         include: {
             product: true,

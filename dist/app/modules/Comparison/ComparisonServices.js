@@ -17,34 +17,56 @@ const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const AppError_1 = require("../../utils/AppError");
 const createComparison = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // Ensure the user exists
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            email: user === null || user === void 0 ? void 0 : user.email,
+            id: user.id,
         },
     });
+    // Ensure the product exists
+    const productData = yield prisma_1.default.product.findUniqueOrThrow({
+        where: { id: payload.productId },
+    });
+    // Check if the product is already in the comparison list
     const isAlreadyExist = yield prisma_1.default.comparison.findFirst({
         where: {
             productId: payload.productId,
             userId: userData.id,
         },
     });
-    const usersCompare = yield prisma_1.default.comparison.findMany({
+    if (isAlreadyExist) {
+        throw new AppError_1.AppError(http_status_1.default.ALREADY_REPORTED, 'Product is already in the comparison list.');
+    }
+    // Get all products in the user's comparison list
+    const userComparisonProducts = yield prisma_1.default.comparison.findMany({
         where: {
             userId: userData.id,
         },
-    });
-    if (isAlreadyExist || (usersCompare === null || usersCompare === void 0 ? void 0 : usersCompare.length) > 3) {
-        throw new AppError_1.AppError(http_status_1.default.ALREADY_REPORTED, 'Already exist!');
-    }
-    else {
-        const comparison = yield prisma_1.default.comparison.create({
-            data: {
-                userId: userData.id,
-                productId: payload.productId,
+        include: {
+            product: {
+                select: {
+                    categoryId: true,
+                },
             },
-        });
-        return comparison;
+        },
+    });
+    // Check if the user has already added 3 products
+    if (userComparisonProducts.length >= 3) {
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, 'You can only compare up to 3 products.');
     }
+    // Ensure all products belong to the same category
+    const hasDifferentCategory = userComparisonProducts.some(comparison => comparison.product.categoryId !== productData.categoryId);
+    if (hasDifferentCategory) {
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, 'All products in the comparison list must belong to the same category.');
+    }
+    // Add the product to the comparison list
+    const comparison = yield prisma_1.default.comparison.create({
+        data: {
+            userId: userData.id,
+            productId: payload.productId,
+        },
+    });
+    return comparison;
 });
 const retrieveAllMyComparison = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({

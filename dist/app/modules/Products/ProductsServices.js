@@ -148,8 +148,17 @@ const retrieveAllProduct = (fieldParams, paginationOption) => __awaiter(void 0, 
             category: true,
             colors: true,
             sizes: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
             shop: true,
-            reviews: true,
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
             orders: true,
             wishlist: true,
         },
@@ -181,7 +190,16 @@ const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, f
             colors: true,
             sizes: true,
             shop: true,
-            reviews: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
             orders: true,
             wishlist: true,
         },
@@ -234,7 +252,16 @@ const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0
             colors: true,
             sizes: true,
             shop: true,
-            reviews: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
             orders: true,
             wishlist: true,
         },
@@ -262,7 +289,16 @@ const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* (
             colors: true,
             sizes: true,
             shop: true,
-            reviews: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
             orders: true,
             wishlist: true,
         },
@@ -276,8 +312,17 @@ const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* 
             category: { select: { id: true, name: true } }, // Fetch only relevant fields
             colors: true,
             sizes: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
             shop: { select: { id: true, shopName: true } },
-            reviews: true,
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
             orders: false, // Include only if needed
             wishlist: false, // Include only if needed
         },

@@ -1,4 +1,6 @@
+import httpStatus from 'http-status'
 import prisma from '../../helpers/prisma'
+import { AppError } from '../../utils/AppError'
 import { TCoupon } from './CouponInterface'
 
 const createCoupon = async (payload: TCoupon) => {
@@ -13,6 +15,41 @@ const createCoupon = async (payload: TCoupon) => {
   })
 
   return coupon
+}
+
+const applyCoupon = async (
+  user: any,
+  couponCode: string,
+  cartTotal: number,
+) => {
+  // Find the coupon
+  const coupon = await prisma.coupon.findUnique({
+    where: { code: couponCode },
+  })
+
+  // Validate the coupon
+  if (!coupon) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Invalid coupon code.')
+  }
+
+  if (!coupon.isActive) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'This coupon is not active.')
+  }
+
+  if (new Date(coupon.expiryDate) < new Date()) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'This coupon has expired.')
+  }
+
+  // Calculate the discounted total
+  const discountAmount = (cartTotal * coupon.discount) / 100
+  const discountedTotal = Math.max(cartTotal - discountAmount, 0) // Ensure the total isn't negative
+
+  return {
+    originalTotal: cartTotal,
+    discountAmount,
+    discountedTotal,
+    appliedCoupon: coupon.code,
+  }
 }
 
 const retrieveAllCoupon = async () => {
@@ -69,5 +106,6 @@ export const couponServices = {
   retrieveAllCoupon,
   retrieveCouponById,
   updateCouponById,
+  applyCoupon,
   deleteCouponById,
 }

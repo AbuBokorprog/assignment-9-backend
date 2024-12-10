@@ -2,6 +2,7 @@ import httpStatus from 'http-status'
 import SuccessResponse from '../../utils/SuccessResponse'
 import CatchAsync from '../../utils/CatchAsync'
 import { couponServices } from './CouponServices'
+import { Request, Response } from 'express'
 
 const createCoupon = CatchAsync(async (req, res) => {
   const data = await couponServices.createCoupon(req.body)
@@ -14,6 +15,22 @@ const createCoupon = CatchAsync(async (req, res) => {
   })
 })
 
+const applyCoupon = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await couponServices.applyCoupon(
+      req?.user,
+      req.body.couponCode,
+      req.body.cartTotal,
+    )
+
+    SuccessResponse(res, {
+      status: httpStatus.OK,
+      success: true,
+      message: 'Retrieve all coupons successfully!',
+      data,
+    })
+  },
+)
 const retrieveAllCoupon = CatchAsync(async (req, res) => {
   const data = await couponServices.retrieveAllCoupon()
 
@@ -67,4 +84,5 @@ export const couponController = {
   retrieveCouponById,
   updateCouponById,
   deleteCouponById,
+  applyCoupon,
 }
