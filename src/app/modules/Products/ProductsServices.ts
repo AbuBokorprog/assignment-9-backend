@@ -185,12 +185,55 @@ const retrieveAllProductByVendor = async (user: any) => {
   return result
 }
 
-const allAvailableProducts = async () => {
+const allAvailableProducts = async (
+  fieldParams: any,
+  paginationOption: any,
+) => {
+  const { limit, page, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationOption)
+  const { searchTerm, ...filterData } = fieldParams
+
+  const andCondition: Prisma.ProductWhereInput[] = []
+  // search params
+  if (fieldParams.searchTerm) {
+    andCondition.push({
+      OR: searchableFields.map(field => ({
+        [field]: {
+          contains: fieldParams.searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    })
+  }
+
+  // specific field
+  if (Object.keys(filterData)?.length > 0) {
+    andCondition.push({
+      AND: Object.keys(filterData).map(key => ({
+        [key]: {
+          equals: filterData[key],
+        },
+      })),
+    })
+  }
+
+  const whereCondition: Prisma.ProductWhereInput = {
+    AND: andCondition,
+    isActive: 'APPROVED',
+  }
+
   const result = await prisma.product.findMany({
-    where: {
-      isActive: 'APPROVED',
-      stockStatus: 'IN_STOCK',
-    },
+    where: whereCondition,
+    skip: skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : {
+            createdAt: 'desc',
+          },
     include: {
       category: true,
       colors: true,
@@ -202,7 +245,18 @@ const allAvailableProducts = async () => {
     },
   })
 
-  return result
+  const total = await prisma.product.count({
+    where: whereCondition,
+  })
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  }
 }
 
 const allFlashSaleProducts = async () => {
@@ -210,7 +264,6 @@ const allFlashSaleProducts = async () => {
     where: {
       productStatus: 'FLASH_SALE',
       isActive: 'APPROVED',
-      stockStatus: 'IN_STOCK',
     },
     include: {
       category: true,

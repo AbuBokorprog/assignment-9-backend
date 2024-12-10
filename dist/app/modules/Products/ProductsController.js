@@ -47,7 +47,16 @@ const retrieveAllProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(voi
     });
 }));
 const allAvailableProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield ProductsServices_1.productServices.allAvailableProducts();
+    // pick
+    const filterFields = (0, Pick_1.default)(req.query, ProductsContaints_1.adminFilterableFields);
+    // pagination pick
+    const paginationOption = (0, Pick_1.default)(req.query, [
+        'limit',
+        'page',
+        'sortBy',
+        'sortOrder',
+    ]);
+    const data = yield ProductsServices_1.productServices.allAvailableProducts(filterFields, paginationOption);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,

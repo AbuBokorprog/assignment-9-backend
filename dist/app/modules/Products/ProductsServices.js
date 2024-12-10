@@ -188,12 +188,47 @@ const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, f
     });
     return result;
 });
-const allAvailableProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { limit, page, skip, sortBy, sortOrder } = PaginationHelpers_1.paginationHelpers.calculatePagination(paginationOption);
+    const { searchTerm } = fieldParams, filterData = __rest(fieldParams, ["searchTerm"]);
+    const andCondition = [];
+    // search params
+    if (fieldParams.searchTerm) {
+        andCondition.push({
+            OR: ProductsContaints_1.searchableFields.map(field => ({
+                [field]: {
+                    contains: fieldParams.searchTerm,
+                    mode: 'insensitive',
+                },
+            })),
+        });
+    }
+    // specific field
+    if (((_a = Object.keys(filterData)) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+        andCondition.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: filterData[key],
+                },
+            })),
+        });
+    }
+    const whereCondition = {
+        AND: andCondition,
+        isActive: 'APPROVED',
+    };
     const result = yield prisma_1.default.product.findMany({
-        where: {
-            isActive: 'APPROVED',
-            stockStatus: 'IN_STOCK',
-        },
+        where: whereCondition,
+        skip: skip,
+        take: limit,
+        orderBy: sortBy && sortOrder
+            ? {
+                [sortBy]: sortOrder,
+            }
+            : {
+                createdAt: 'desc',
+            },
         include: {
             category: true,
             colors: true,
@@ -204,14 +239,23 @@ const allAvailableProducts = () => __awaiter(void 0, void 0, void 0, function* (
             wishlist: true,
         },
     });
-    return result;
+    const total = yield prisma_1.default.product.count({
+        where: whereCondition,
+    });
+    return {
+        meta: {
+            page,
+            limit,
+            total,
+        },
+        data: result,
+    };
 });
 const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.product.findMany({
         where: {
             productStatus: 'FLASH_SALE',
             isActive: 'APPROVED',
-            stockStatus: 'IN_STOCK',
         },
         include: {
             category: true,

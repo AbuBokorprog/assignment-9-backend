@@ -41,7 +41,19 @@ const retrieveAllProduct = CatchAsync(async (req, res) => {
 })
 
 const allAvailableProducts = CatchAsync(async (req, res) => {
-  const data = await productServices.allAvailableProducts()
+  // pick
+  const filterFields = pick(req.query, adminFilterableFields)
+  // pagination pick
+  const paginationOption = pick(req.query, [
+    'limit',
+    'page',
+    'sortBy',
+    'sortOrder',
+  ])
+  const data = await productServices.allAvailableProducts(
+    filterFields,
+    paginationOption,
+  )
 
   SuccessResponse(res, {
     status: httpStatus.OK,
