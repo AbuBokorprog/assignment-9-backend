@@ -51,6 +51,14 @@ const createOrder = (user, payload) => __awaiter(void 0, void 0, void 0, functio
                 },
             });
         })));
+        yield transactionalClient.payment.create({
+            data: {
+                orderId: orderData.id,
+                amount: payload.totalAmount,
+                paymentMethod: payload.paymentType,
+                transactionId: `BB-${orderData.id}-${payload.totalAmount}`,
+            },
+        });
         yield transactionalClient.cart.deleteMany({
             where: {
                 customerId: payload.customerId,
@@ -63,6 +71,12 @@ const createOrder = (user, payload) => __awaiter(void 0, void 0, void 0, functio
 const retrieveOrder = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.order.findMany({
         include: {
+            payment: true,
+            customer: {
+                include: {
+                    customer: true,
+                },
+            },
             products: {
                 include: {
                     product: true,

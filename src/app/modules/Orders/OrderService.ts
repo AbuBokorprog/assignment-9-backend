@@ -45,6 +45,15 @@ const createOrder = async (user: any, payload: TOrder) => {
       }),
     )
 
+    await transactionalClient.payment.create({
+      data: {
+        orderId: orderData.id,
+        amount: payload.totalAmount,
+        paymentMethod: payload.paymentType,
+        transactionId: `BB-${orderData.id}-${payload.totalAmount}`,
+      },
+    })
+
     await transactionalClient.cart.deleteMany({
       where: {
         customerId: payload.customerId,
@@ -59,6 +68,12 @@ const createOrder = async (user: any, payload: TOrder) => {
 const retrieveOrder = async () => {
   const result = await prisma.order.findMany({
     include: {
+      payment: true,
+      customer: {
+        include: {
+          customer: true,
+        },
+      },
       products: {
         include: {
           product: true,
