@@ -76,6 +76,7 @@ const createComparison = (user, payload) => __awaiter(void 0, void 0, void 0, fu
         data: {
             userId: userData.id,
             productId: payload.productId,
+            rating: avgRating.toString(),
         },
     });
     return comparison;
@@ -99,9 +100,6 @@ const retrieveAllMyComparison = (user) => __awaiter(void 0, void 0, void 0, func
                     category: true,
                     regular_price: true,
                     discount_price: true,
-                },
-                include: {
-                    category: true,
                 },
             },
         },

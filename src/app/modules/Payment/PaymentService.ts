@@ -24,6 +24,7 @@ const confirmationService = async (transactionId: string) => {
       },
       data: {
         status: 'PAID',
+        paidAt: new Date(),
       },
     })
   }

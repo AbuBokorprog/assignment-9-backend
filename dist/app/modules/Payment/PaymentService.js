@@ -37,6 +37,7 @@ const confirmationService = (transactionId) => __awaiter(void 0, void 0, void 0,
             },
             data: {
                 status: 'PAID',
+                paidAt: new Date(),
             },
         });
     }

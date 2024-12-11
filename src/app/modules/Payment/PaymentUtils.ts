@@ -14,7 +14,7 @@ export const PaymentUtils = async (user: TOrder, transactionId: string) => {
         tran_id: transactionId,
         success_url: `http://localhost:3000/api/payment/success-payment?transactionId=${transactionId}`,
         fail_url: 'http://localhost:3000/api/payment/failed-payment',
-        cancel_url: '/',
+        cancel_url: 'http://localhost:5173',
         amount: user.totalAmount,
         currency: 'BDT',
         desc: 'Merchant Registration Payment',

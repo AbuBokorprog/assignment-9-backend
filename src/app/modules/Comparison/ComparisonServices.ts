@@ -86,6 +86,7 @@ const createComparison = async (user: any, payload: TComparison) => {
     data: {
       userId: userData.id,
       productId: payload.productId,
+      rating: avgRating.toString(),
     },
   })
 
@@ -111,9 +112,6 @@ const retrieveAllMyComparison = async (user: any) => {
           category: true,
           regular_price: true,
           discount_price: true,
-        },
-        include: {
-          category: true,
         },
       },
     },
