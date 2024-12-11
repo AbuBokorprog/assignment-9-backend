@@ -18,6 +18,7 @@ const OrderRoute_1 = require("../modules/Orders/OrderRoute");
 const reports_route_1 = require("../modules/dashboard-reports/reports.route");
 const RecentProductsRoute_1 = require("../modules/RecentProducts/RecentProductsRoute");
 const WishlistRoute_1 = require("../modules/Wishlist/WishlistRoute");
+const PaymentRoute_1 = require("../modules/Payment/PaymentRoute");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -51,6 +52,10 @@ const moduleRoutes = [
     {
         path: '/orders',
         route: OrderRoute_1.orderRouter,
+    },
+    {
+        path: '/payment',
+        route: PaymentRoute_1.paymentRoute,
     },
     {
         path: '/coupon',

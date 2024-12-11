@@ -40,3 +40,11 @@ export type VendorShop = {
   registrationNumber: string
   categoryId: string
 }
+
+export interface TCustomer {
+  name: string
+  email: string
+  password: string
+  profilePhoto?: string
+  contactNumber: string
+}

@@ -14,14 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordersService = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
+const PaymentUtils_1 = require("../Payment/PaymentUtils");
 const createOrder = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // check is user exist
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: user.id,
         },
     });
     payload.customerId = user.id;
+    // create order
     const result = yield prisma_1.default.$transaction((transactionalClient) => __awaiter(void 0, void 0, void 0, function* () {
+        // create order
         const orderData = yield transactionalClient.order.create({
             data: {
                 customerId: payload.customerId,
@@ -51,20 +55,32 @@ const createOrder = (user, payload) => __awaiter(void 0, void 0, void 0, functio
                 },
             });
         })));
-        yield transactionalClient.payment.create({
-            data: {
-                orderId: orderData.id,
-                amount: payload.totalAmount,
-                paymentMethod: payload.paymentType,
-                transactionId: `BB-${orderData.id}-${payload.totalAmount}`,
-            },
-        });
+        // create transactionId for payment
+        const transactionId = `BB-${orderData.id}-${payload.totalAmount}`;
+        let payment = null;
+        // if payment type Advanced payment(ADV) create payment
+        if (payload.paymentType === 'ADV') {
+            yield transactionalClient.payment.create({
+                data: {
+                    orderId: orderData.id,
+                    amount: payload.totalAmount,
+                    paymentMethod: payload.paymentType,
+                    transactionId: transactionId,
+                },
+            });
+            // payment utilize
+            payment = yield (0, PaymentUtils_1.PaymentUtils)(payload, transactionId);
+        }
+        // after order created, cart will be deleted.
         yield transactionalClient.cart.deleteMany({
             where: {
                 customerId: payload.customerId,
             },
         });
-        return orderData;
+        return {
+            orderData,
+            payment,
+        };
     }));
     return result;
 });

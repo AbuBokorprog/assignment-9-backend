@@ -1,7 +1,9 @@
 import prisma from '../../helpers/prisma'
+import { PaymentUtils } from '../Payment/PaymentUtils'
 import { TOrder } from './OrderInterface'
 
 const createOrder = async (user: any, payload: TOrder) => {
+  // check is user exist
   await prisma.user.findUniqueOrThrow({
     where: {
       id: user.id,
@@ -10,7 +12,9 @@ const createOrder = async (user: any, payload: TOrder) => {
 
   payload.customerId = user.id
 
+  // create order
   const result = await prisma.$transaction(async transactionalClient => {
+    // create order
     const orderData = await transactionalClient.order.create({
       data: {
         customerId: payload.customerId,
@@ -45,22 +49,36 @@ const createOrder = async (user: any, payload: TOrder) => {
       }),
     )
 
-    await transactionalClient.payment.create({
-      data: {
-        orderId: orderData.id,
-        amount: payload.totalAmount,
-        paymentMethod: payload.paymentType,
-        transactionId: `BB-${orderData.id}-${payload.totalAmount}`,
-      },
-    })
+    // create transactionId for payment
+    const transactionId = `BB-${orderData.id}-${payload.totalAmount}`
 
+    let payment = null
+    // if payment type Advanced payment(ADV) create payment
+    if (payload.paymentType === 'ADV') {
+      await transactionalClient.payment.create({
+        data: {
+          orderId: orderData.id,
+          amount: payload.totalAmount,
+          paymentMethod: payload.paymentType,
+          transactionId: transactionId,
+        },
+      })
+
+      // payment utilize
+      payment = await PaymentUtils(payload, transactionId)
+    }
+
+    // after order created, cart will be deleted.
     await transactionalClient.cart.deleteMany({
       where: {
         customerId: payload.customerId,
       },
     })
 
-    return orderData
+    return {
+      orderData,
+      payment,
+    }
   })
 
   return result
