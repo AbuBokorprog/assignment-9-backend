@@ -14,6 +14,9 @@ const createCart = async (user: any, payload: TCart) => {
     where: {
       id: payload.productId,
     },
+    include: {
+      vendor: true,
+    },
   })
 
   payload.vendorId = isExistProduct.vendorId
@@ -21,6 +24,15 @@ const createCart = async (user: any, payload: TCart) => {
     where: {
       customerId: userData?.id,
       productId: payload.productId,
+    },
+  })
+
+  const existingCart = await prisma.cart.findFirst({
+    where: {
+      customerId: userData.id,
+    },
+    include: {
+      vendor: true,
     },
   })
 
@@ -60,6 +72,14 @@ const createCart = async (user: any, payload: TCart) => {
         },
       })
       return result
+    } else if (
+      existingCart &&
+      existingCart.vendorId !== isExistProduct.vendorId
+    ) {
+      throw new AppError(
+        httpStatus.CONFLICT,
+        `Your cart already contains items from vendor ${existingCart.vendor.name}. Would you like to replace the cart with products from vendor ${isExistProduct.vendor.name}?`,
+      )
     } else {
       const result = await transactionClient.cart.create({
         data: payload,
@@ -86,6 +106,38 @@ const createCart = async (user: any, payload: TCart) => {
 
   return result
 }
+
+const replaceCart = async (user: any, payload: TCart) => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: user.id,
+    },
+  })
+
+  payload.customerId = user.id
+
+  const isExistProduct = await prisma.product.findUniqueOrThrow({
+    where: {
+      id: payload.productId,
+    },
+  })
+
+  payload.vendorId = isExistProduct.vendorId
+  const result = await prisma.$transaction(async transactionClient => {
+    await transactionClient.cart.deleteMany({
+      where: { customerId: user.id },
+    })
+
+    const result = await transactionClient.cart.create({
+      data: payload,
+    })
+
+    return result
+  })
+
+  return result
+}
+
 const retrieveCart = async () => {
   const result = await prisma.cart.findMany({
     include: {
@@ -185,4 +237,5 @@ export const cartsService = {
   updateCart,
   deleteCart,
   retrieveMyCart,
+  replaceCart,
 }

@@ -12,6 +12,12 @@ router.post(
   ValidationRequest(cartValidation.createCart),
   cartsController.createCart,
 )
+router.post(
+  '/conflict/replace-cart',
+  Auth(UserRole.CUSTOMER),
+  ValidationRequest(cartValidation.createCart),
+  cartsController.createCart,
+)
 router.get('/', cartsController.retrieveCart)
 router.get(
   '/my/carts',

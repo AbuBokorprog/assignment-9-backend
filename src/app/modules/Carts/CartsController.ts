@@ -14,6 +14,16 @@ const createCart = CatchAsync(async (req, res) => {
     data,
   })
 })
+const replaceCart = CatchAsync(async (req, res) => {
+  const data = await cartsService.replaceCart(req.user, req.body)
+
+  SuccessResponse(res, {
+    status: httpStatus.CREATED,
+    success: true,
+    message: 'Cart replace successfully!',
+    data,
+  })
+})
 const retrieveCart = CatchAsync(async (req, res) => {
   const data = await cartsService.retrieveCart()
 
@@ -77,4 +87,5 @@ export const cartsController = {
   updateCart,
   deleteCart,
   retrieveMyCart,
+  replaceCart,
 }

@@ -26,6 +26,15 @@ const createCart = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data,
     });
 }));
+const replaceCart = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield CartsServices_1.cartsService.replaceCart(req.user, req.body);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.CREATED,
+        success: true,
+        message: 'Cart replace successfully!',
+        data,
+    });
+}));
 const retrieveCart = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield CartsServices_1.cartsService.retrieveCart();
     (0, SuccessResponse_1.default)(res, {
@@ -81,4 +90,5 @@ exports.cartsController = {
     updateCart,
     deleteCart,
     retrieveMyCart,
+    replaceCart,
 };

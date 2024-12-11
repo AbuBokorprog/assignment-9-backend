@@ -12,6 +12,7 @@ const Auth_1 = __importDefault(require("../../middlewares/Auth"));
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.post('/', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), (0, ValidationRequest_1.default)(CartsValidation_1.cartValidation.createCart), CartsController_1.cartsController.createCart);
+router.post('/conflict/replace-cart', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), (0, ValidationRequest_1.default)(CartsValidation_1.cartValidation.createCart), CartsController_1.cartsController.createCart);
 router.get('/', CartsController_1.cartsController.retrieveCart);
 router.get('/my/carts', (0, Auth_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), CartsController_1.cartsController.retrieveMyCart);
 router.get('/:id', CartsController_1.cartsController.retrieveCartById);

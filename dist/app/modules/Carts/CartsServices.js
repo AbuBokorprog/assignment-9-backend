@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cartsService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const AppError_1 = require("../../utils/AppError");
 const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,12 +27,23 @@ const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function
         where: {
             id: payload.productId,
         },
+        include: {
+            vendor: true,
+        },
     });
     payload.vendorId = isExistProduct.vendorId;
     const isAlreadyExist = yield prisma_1.default.cart.findFirst({
         where: {
             customerId: userData === null || userData === void 0 ? void 0 : userData.id,
             productId: payload.productId,
+        },
+    });
+    const existingCart = yield prisma_1.default.cart.findFirst({
+        where: {
+            customerId: userData.id,
+        },
+        include: {
+            vendor: true,
         },
     });
     if ((isExistProduct === null || isExistProduct === void 0 ? void 0 : isExistProduct.inventory) === 0) {
@@ -67,6 +79,10 @@ const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function
             });
             return result;
         }
+        else if (existingCart &&
+            existingCart.vendorId !== isExistProduct.vendorId) {
+            throw new AppError_1.AppError(http_status_1.default.CONFLICT, `Your cart already contains items from vendor ${existingCart.vendor.name}. Would you like to replace the cart with products from vendor ${isExistProduct.vendor.name}?`);
+        }
         else {
             const result = yield transactionClient.cart.create({
                 data: payload,
@@ -86,6 +102,30 @@ const createCart = (user, payload) => __awaiter(void 0, void 0, void 0, function
             });
             return result;
         }
+    }));
+    return result;
+});
+const replaceCart = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: user.id,
+        },
+    });
+    payload.customerId = user.id;
+    const isExistProduct = yield prisma_1.default.product.findUniqueOrThrow({
+        where: {
+            id: payload.productId,
+        },
+    });
+    payload.vendorId = isExistProduct.vendorId;
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        yield transactionClient.cart.deleteMany({
+            where: { customerId: user.id },
+        });
+        const result = yield transactionClient.cart.create({
+            data: payload,
+        });
+        return result;
     }));
     return result;
 });
@@ -176,4 +216,5 @@ exports.cartsService = {
     updateCart,
     deleteCart,
     retrieveMyCart,
+    replaceCart,
 };
