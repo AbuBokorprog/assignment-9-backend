@@ -20,7 +20,7 @@ const retrieveAllComparison = CatchAsync(async (req, res) => {
   SuccessResponse(res, {
     status: httpStatus.OK,
     success: true,
-    message: 'Retrieve all comparisons successfully!',
+    message: 'Retrieve my comparisons successfully!',
     data,
   })
 })
@@ -56,7 +56,7 @@ const deleteComparisonById = CatchAsync(async (req, res) => {
   SuccessResponse(res, {
     status: httpStatus.OK,
     success: true,
-    message: 'Delete comparison by id successfully!',
+    message: 'Delete comparison successfully!',
     data,
   })
 })

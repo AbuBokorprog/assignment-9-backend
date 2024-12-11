@@ -17,6 +17,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const AppError_1 = require("../../utils/AppError");
 const createComparison = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     // Ensure the user exists
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
@@ -26,7 +27,18 @@ const createComparison = (user, payload) => __awaiter(void 0, void 0, void 0, fu
     // Ensure the product exists
     const productData = yield prisma_1.default.product.findUniqueOrThrow({
         where: { id: payload.productId },
+        include: {
+            reviews: {
+                select: {
+                    rating: true,
+                },
+            },
+        },
     });
+    const totalReviews = (_a = productData === null || productData === void 0 ? void 0 : productData.reviews) === null || _a === void 0 ? void 0 : _a.length;
+    const rating = (_b = productData === null || productData === void 0 ? void 0 : productData.reviews) === null || _b === void 0 ? void 0 : _b.reduce((sum, item) => sum + item.rating, 0);
+    const avgRating = totalReviews > 0 ? (rating / totalReviews).toFixed(1) : 0;
+    payload.rating = avgRating.toString();
     // Check if the product is already in the comparison list
     const isAlreadyExist = yield prisma_1.default.comparison.findFirst({
         where: {
@@ -78,6 +90,20 @@ const retrieveAllMyComparison = (user) => __awaiter(void 0, void 0, void 0, func
     const result = yield prisma_1.default.comparison.findMany({
         where: {
             userId: userData.id,
+        },
+        include: {
+            product: {
+                select: {
+                    images: true,
+                    name: true,
+                    category: true,
+                    regular_price: true,
+                    discount_price: true,
+                },
+                include: {
+                    category: true,
+                },
+            },
         },
     });
     return result;

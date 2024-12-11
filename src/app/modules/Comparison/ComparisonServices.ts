@@ -14,8 +14,24 @@ const createComparison = async (user: any, payload: TComparison) => {
   // Ensure the product exists
   const productData = await prisma.product.findUniqueOrThrow({
     where: { id: payload.productId },
+    include: {
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
+    },
   })
 
+  const totalReviews = productData?.reviews?.length
+
+  const rating = productData?.reviews?.reduce(
+    (sum, item) => sum + item.rating,
+    0,
+  )
+
+  const avgRating = totalReviews > 0 ? (rating / totalReviews).toFixed(1) : 0
+  payload.rating = avgRating.toString()
   // Check if the product is already in the comparison list
   const isAlreadyExist = await prisma.comparison.findFirst({
     where: {
@@ -86,6 +102,20 @@ const retrieveAllMyComparison = async (user: any) => {
   const result = await prisma.comparison.findMany({
     where: {
       userId: userData.id,
+    },
+    include: {
+      product: {
+        select: {
+          images: true,
+          name: true,
+          category: true,
+          regular_price: true,
+          discount_price: true,
+        },
+        include: {
+          category: true,
+        },
+      },
     },
   })
 

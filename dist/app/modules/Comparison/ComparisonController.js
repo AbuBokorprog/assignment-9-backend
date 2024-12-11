@@ -31,7 +31,7 @@ const retrieveAllComparison = (0, CatchAsync_1.default)((req, res) => __awaiter(
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Retrieve all comparisons successfully!',
+        message: 'Retrieve my comparisons successfully!',
         data,
     });
 }));
@@ -61,7 +61,7 @@ const deleteComparisonById = (0, CatchAsync_1.default)((req, res) => __awaiter(v
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
-        message: 'Delete comparison by id successfully!',
+        message: 'Delete comparison successfully!',
         data,
     });
 }));
