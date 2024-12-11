@@ -119,6 +119,7 @@ const retrieveMyOrders = (user) => __awaiter(void 0, void 0, void 0, function* (
                     product: true,
                 },
             },
+            payment: true,
         },
     });
     return result;

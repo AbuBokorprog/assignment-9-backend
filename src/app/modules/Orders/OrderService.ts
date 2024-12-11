@@ -121,6 +121,7 @@ const retrieveMyOrders = async (user: any) => {
           product: true,
         },
       },
+      payment: true,
     },
   })
 
