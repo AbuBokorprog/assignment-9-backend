@@ -1,9 +1,54 @@
+import httpStatus from 'http-status'
 import prisma from '../../helpers/prisma'
+import { AppError } from '../../utils/AppError'
 import { TReview } from './ReviewInterface'
 
-const createReview = async (payload: TReview) => {
+const createReview = async (user: any, payload: TReview) => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: user?.id,
+    },
+  })
+
+  const isExistProduct = await prisma.product.findUniqueOrThrow({
+    where: {
+      id: payload.productId,
+      isActive: 'APPROVED',
+    },
+    include: {
+      orders: {
+        include: {
+          order: {
+            select: {
+              customerId: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  payload.shopId = isExistProduct.shopId
+
+  const isOrderedProduct = isExistProduct?.orders?.some(
+    item => item.order.customerId === user?.id,
+  )
+
+  if (!isOrderedProduct) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Before giving review order this product.',
+    )
+  }
+
   const review = await prisma.review.create({
-    data: payload,
+    data: {
+      customerId: user?.id,
+      productId: payload.productId,
+      shopId: payload.shopId,
+      rating: payload.rating,
+      comment: payload.comment,
+    },
   })
 
   return review

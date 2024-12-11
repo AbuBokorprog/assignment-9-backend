@@ -333,7 +333,15 @@ const retrieveProductById = async (id: any) => {
           rating: true,
         },
       },
-      orders: false, // Include only if needed
+      orders: {
+        include: {
+          order: {
+            select: {
+              customerId: true,
+            },
+          },
+        },
+      }, // Include only if needed
       wishlist: false, // Include only if needed
     },
   })

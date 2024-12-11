@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const createReview = z.object({
-  customerId: z.string({ required_error: 'Customer ID is required.' }),
+  // customerId: z.string({ required_error: 'Customer ID is required.' }),
   productId: z.string({ required_error: 'Product ID is required.' }),
   rating: z
     .number()

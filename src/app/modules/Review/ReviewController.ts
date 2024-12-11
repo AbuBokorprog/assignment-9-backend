@@ -2,17 +2,20 @@ import httpStatus from 'http-status'
 import SuccessResponse from '../../utils/SuccessResponse'
 import CatchAsync from '../../utils/CatchAsync'
 import { reviewServices } from './ReviewServices'
+import { Request, Response } from 'express'
 
-const createReview = CatchAsync(async (req, res) => {
-  const data = await reviewServices.createReview(req.body)
+const createReview = CatchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const data = await reviewServices.createReview(req?.user, req.body)
 
-  SuccessResponse(res, {
-    status: httpStatus.CREATED,
-    success: true,
-    message: 'Create review successfully!',
-    data,
-  })
-})
+    SuccessResponse(res, {
+      status: httpStatus.CREATED,
+      success: true,
+      message: 'Create review successfully!',
+      data,
+    })
+  },
+)
 
 const retrieveAllReview = CatchAsync(async (req, res) => {
   const data = await reviewServices.retrieveAllReview()
