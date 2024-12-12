@@ -8,11 +8,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reportsService = void 0;
-const getUserDashboardReports = () => __awaiter(void 0, void 0, void 0, function* () { });
-const getVendorDashboardReports = () => __awaiter(void 0, void 0, void 0, function* () { });
-const getAdminDashboardReports = () => __awaiter(void 0, void 0, void 0, function* () { });
+const prisma_1 = __importDefault(require("../../helpers/prisma"));
+const getUserDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () { });
+const getVendorDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: user === null || user === void 0 ? void 0 : user.id,
+        },
+    });
+    const result = yield prisma_1.default.vendor.findFirst({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
+        },
+        include: {
+            shops: {
+                select: {
+                    id: true,
+                },
+            },
+            products: {
+                select: {
+                    id: true,
+                },
+            },
+        },
+    });
+    return result;
+});
+const getAdminDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.reportsService = {
     getUserDashboardReports,
     getVendorDashboardReports,

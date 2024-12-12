@@ -1,8 +1,36 @@
-const getUserDashboardReports = async () => {}
+import prisma from '../../helpers/prisma'
 
-const getVendorDashboardReports = async () => {}
+const getUserDashboardReports = async (user: any) => {}
 
-const getAdminDashboardReports = async () => {}
+const getVendorDashboardReports = async (user: any) => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: user?.id,
+    },
+  })
+
+  const result = await prisma.vendor.findFirst({
+    where: {
+      email: user?.email,
+    },
+    include: {
+      shops: {
+        select: {
+          id: true,
+        },
+      },
+      products: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  })
+
+  return result
+}
+
+const getAdminDashboardReports = async (user: any) => {}
 
 export const reportsService = {
   getUserDashboardReports,

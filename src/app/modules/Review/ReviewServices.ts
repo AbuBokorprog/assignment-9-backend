@@ -109,7 +109,16 @@ const retrieveVendorAllReview = async (user: any) => {
     include: {
       product: true,
       shop: true,
-      customer: true,
+      customer: {
+        include: {
+          customer: {
+            select: {
+              name: true,
+              profilePhoto: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -147,6 +156,27 @@ const updateReviewById = async (id: string, payload: any) => {
 
   return result
 }
+const updateReviewStatus = async (
+  id: string,
+  status: 'PENDING' | 'APPROVED' | 'REJECT',
+) => {
+  await prisma.review.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
+
+  const result = await prisma.review.update({
+    where: {
+      id: id,
+    },
+    data: {
+      reviewStatus: status,
+    },
+  })
+
+  return result
+}
 
 const deleteReviewById = async (id: string) => {
   await prisma.review.findUniqueOrThrow({
@@ -172,4 +202,5 @@ export const reviewServices = {
   deleteReviewById,
   retrieveVendorAllReview,
   retrieveAllMyReview,
+  updateReviewStatus,
 }

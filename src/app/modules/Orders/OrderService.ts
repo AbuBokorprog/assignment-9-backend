@@ -128,6 +128,36 @@ const retrieveMyOrders = async (user: any) => {
   return result
 }
 
+const retrieveVendorOrders = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user?.email,
+      status: 'ACTIVE',
+    },
+  })
+
+  const isExistVendor = await prisma.vendor.findUniqueOrThrow({
+    where: {
+      email: userData.email,
+    },
+  })
+
+  const result = await prisma.order.findMany({
+    include: {
+      products: {
+        where: {
+          product: {
+            vendorId: isExistVendor?.id,
+          },
+        },
+      },
+      payment: true,
+    },
+  })
+
+  return result
+}
+
 const retrieveOrderById = async (id: string) => {
   const result = await prisma.order.findUniqueOrThrow({
     where: {
@@ -196,4 +226,5 @@ export const ordersService = {
   retrieveMyOrders,
   updateStatus,
   deleteOrder,
+  retrieveVendorOrders,
 }

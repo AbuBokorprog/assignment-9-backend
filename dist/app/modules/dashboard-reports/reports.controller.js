@@ -18,7 +18,7 @@ const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const reports_services_1 = require("./reports.services");
 const getUserDashboardReports = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield reports_services_1.reportsService.getUserDashboardReports();
+    const data = yield reports_services_1.reportsService.getUserDashboardReports(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
@@ -27,7 +27,7 @@ const getUserDashboardReports = (0, CatchAsync_1.default)((req, res) => __awaite
     });
 }));
 const getVendorDashboardReports = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield reports_services_1.reportsService.getVendorDashboardReports();
+    const data = yield reports_services_1.reportsService.getVendorDashboardReports(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
@@ -36,7 +36,7 @@ const getVendorDashboardReports = (0, CatchAsync_1.default)((req, res) => __awai
     });
 }));
 const getAdminDashboardReports = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield reports_services_1.reportsService.getAdminDashboardReports();
+    const data = yield reports_services_1.reportsService.getAdminDashboardReports(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,

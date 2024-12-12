@@ -25,6 +25,7 @@ router.get(
   reviewController.retrieveVendorAllReview,
 )
 router.get('/:id', reviewController.retrieveReviewById)
+router.patch('/status/update-status', reviewController.updateReviewStatus)
 router.patch('/:id', reviewController.updateReviewById)
 router.delete('/:id', reviewController.deleteReviewById)
 

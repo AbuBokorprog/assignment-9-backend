@@ -106,7 +106,16 @@ const retrieveVendorAllReview = (user) => __awaiter(void 0, void 0, void 0, func
         include: {
             product: true,
             shop: true,
-            customer: true,
+            customer: {
+                include: {
+                    customer: {
+                        select: {
+                            name: true,
+                            profilePhoto: true,
+                        },
+                    },
+                },
+            },
         },
     });
     return result;
@@ -138,6 +147,22 @@ const updateReviewById = (id, payload) => __awaiter(void 0, void 0, void 0, func
     });
     return result;
 });
+const updateReviewStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.review.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.review.update({
+        where: {
+            id: id,
+        },
+        data: {
+            reviewStatus: status,
+        },
+    });
+    return result;
+});
 const deleteReviewById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.review.findUniqueOrThrow({
         where: {
@@ -159,4 +184,5 @@ exports.reviewServices = {
     deleteReviewById,
     retrieveVendorAllReview,
     retrieveAllMyReview,
+    updateReviewStatus,
 };

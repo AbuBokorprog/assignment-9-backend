@@ -124,6 +124,32 @@ const retrieveMyOrders = (user) => __awaiter(void 0, void 0, void 0, function* (
     });
     return result;
 });
+const retrieveVendorOrders = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user === null || user === void 0 ? void 0 : user.email,
+            status: 'ACTIVE',
+        },
+    });
+    const isExistVendor = yield prisma_1.default.vendor.findUniqueOrThrow({
+        where: {
+            email: userData.email,
+        },
+    });
+    const result = yield prisma_1.default.order.findMany({
+        include: {
+            products: {
+                where: {
+                    product: {
+                        vendorId: isExistVendor === null || isExistVendor === void 0 ? void 0 : isExistVendor.id,
+                    },
+                },
+            },
+            payment: true,
+        },
+    });
+    return result;
+});
 const retrieveOrderById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.order.findUniqueOrThrow({
         where: {
@@ -181,4 +207,5 @@ exports.ordersService = {
     retrieveMyOrders,
     updateStatus,
     deleteOrder,
+    retrieveVendorOrders,
 };

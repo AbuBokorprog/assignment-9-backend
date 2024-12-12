@@ -420,9 +420,12 @@ const deleteProductById = async (id: string) => {
     },
   })
 
-  const result = await prisma.product.delete({
+  const result = await prisma.product.update({
     where: {
       id: id,
+    },
+    data: {
+      isActive: 'DELETE',
     },
   })
 

@@ -73,6 +73,16 @@ const updateReviewById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 
         data,
     });
 }));
+const updateReviewStatus = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const data = yield ReviewServices_1.reviewServices.updateReviewStatus((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.id, (_b = req.body) === null || _b === void 0 ? void 0 : _b.status);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update status successfully!',
+        data,
+    });
+}));
 const deleteReviewById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield ReviewServices_1.reviewServices.deleteReviewById(id);
@@ -90,5 +100,6 @@ exports.reviewController = {
     updateReviewById,
     deleteReviewById,
     retrieveAllMyReview,
+    updateReviewStatus,
     retrieveVendorAllReview,
 };

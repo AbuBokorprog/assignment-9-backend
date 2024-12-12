@@ -44,6 +44,15 @@ const retrieveMyOrders = (0, CatchAsync_1.default)((req, res) => __awaiter(void 
         data,
     });
 }));
+const retrieveVendorOrders = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield OrderService_1.ordersService.retrieveVendorOrders(req === null || req === void 0 ? void 0 : req.user);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve orders successfully!',
+        data,
+    });
+}));
 const retrieveOrderById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const data = yield OrderService_1.ordersService.retrieveOrderById(id);
@@ -91,4 +100,5 @@ exports.ordersController = {
     retrieveMyOrders,
     updateOrder,
     deleteOrder,
+    retrieveVendorOrders,
 };

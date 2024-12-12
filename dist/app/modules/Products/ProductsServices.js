@@ -400,9 +400,12 @@ const deleteProductById = (id) => __awaiter(void 0, void 0, void 0, function* ()
             id: id,
         },
     });
-    const result = yield prisma_1.default.product.delete({
+    const result = yield prisma_1.default.product.update({
         where: {
             id: id,
+        },
+        data: {
+            isActive: 'DELETE',
         },
     });
     return result;

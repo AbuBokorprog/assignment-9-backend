@@ -38,6 +38,17 @@ const retrieveMyOrders = CatchAsync(async (req, res) => {
   })
 })
 
+const retrieveVendorOrders = CatchAsync(async (req, res) => {
+  const data = await ordersService.retrieveVendorOrders(req?.user)
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve orders successfully!',
+    data,
+  })
+})
+
 const retrieveOrderById = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await ordersService.retrieveOrderById(id)
@@ -91,4 +102,5 @@ export const ordersController = {
   retrieveMyOrders,
   updateOrder,
   deleteOrder,
+  retrieveVendorOrders,
 }

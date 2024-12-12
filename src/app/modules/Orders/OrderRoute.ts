@@ -18,6 +18,11 @@ router.get(
   Auth(UserRole.CUSTOMER),
   ordersController.retrieveMyOrders,
 )
+router.get(
+  '/vendor/my-orders',
+  Auth(UserRole.VENDOR),
+  ordersController.retrieveVendorOrders,
+)
 router.get('/:id', ordersController.retrieveOrderById)
 router.patch('/:id', ordersController.updateOrder)
 router.patch(

@@ -61,7 +61,7 @@ model Vendor {
   user                  User @relation(fields: [email], references: [email])
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
-  shop                  Shop?
+  shops                  Shop[]
   products              Product[]
   carts                 Cart[]
 @@map("vendors")
@@ -92,7 +92,7 @@ model Shop {
   categoryId            String
   isActive              ActiveStatus @default(PENDING)
   category              Category @relation(fields: [categoryId], references: [id])
-  vendorId              String   @unique
+  vendorId              String
   vendor                Vendor   @relation(fields: [vendorId], references: [id])
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt

@@ -74,6 +74,20 @@ const updateReviewById = CatchAsync(async (req, res) => {
   })
 })
 
+const updateReviewStatus = CatchAsync(async (req, res) => {
+  const data = await reviewServices.updateReviewStatus(
+    req?.body?.id,
+    req.body?.status,
+  )
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Update status successfully!',
+    data,
+  })
+})
+
 const deleteReviewById = CatchAsync(async (req, res) => {
   const { id } = req.params
   const data = await reviewServices.deleteReviewById(id)
@@ -93,5 +107,6 @@ export const reviewController = {
   updateReviewById,
   deleteReviewById,
   retrieveAllMyReview,
+  updateReviewStatus,
   retrieveVendorAllReview,
 }

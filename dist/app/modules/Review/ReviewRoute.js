@@ -16,6 +16,7 @@ router.get('/', ReviewController_1.reviewController.retrieveAllReview);
 router.get('/users/my-review', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), ReviewController_1.reviewController.retrieveAllMyReview);
 router.get('/vendor/my-review', (0, Auth_1.default)(client_1.UserRole.VENDOR), ReviewController_1.reviewController.retrieveVendorAllReview);
 router.get('/:id', ReviewController_1.reviewController.retrieveReviewById);
+router.patch('/status/update-status', ReviewController_1.reviewController.updateReviewStatus);
 router.patch('/:id', ReviewController_1.reviewController.updateReviewById);
 router.delete('/:id', ReviewController_1.reviewController.deleteReviewById);
 exports.reviewRouter = router;
