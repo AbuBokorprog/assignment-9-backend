@@ -21,8 +21,8 @@ router.get(
 )
 router.get(
   '/vendor/my-review',
-  Auth(UserRole.CUSTOMER),
-  reviewController.retrieveAllMyReview,
+  Auth(UserRole.VENDOR),
+  reviewController.retrieveVendorAllReview,
 )
 router.get('/:id', reviewController.retrieveReviewById)
 router.patch('/:id', reviewController.updateReviewById)

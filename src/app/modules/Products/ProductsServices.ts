@@ -329,8 +329,8 @@ const retrieveProductById = async (id: any) => {
       },
       shop: { select: { id: true, shopName: true } },
       reviews: {
-        select: {
-          rating: true,
+        where: {
+          reviewStatus: 'APPROVED',
         },
       },
       orders: {

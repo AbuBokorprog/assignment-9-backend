@@ -170,5 +170,6 @@ export const reviewServices = {
   retrieveReviewById,
   updateReviewById,
   deleteReviewById,
+  retrieveVendorAllReview,
   retrieveAllMyReview,
 }
