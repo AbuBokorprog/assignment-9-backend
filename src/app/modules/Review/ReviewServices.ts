@@ -86,6 +86,35 @@ const retrieveAllMyReview = async (user: any) => {
 
   return result
 }
+const retrieveVendorAllReview = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: 'ACTIVE',
+    },
+  })
+
+  const isExistVendor = await prisma.vendor.findUniqueOrThrow({
+    where: {
+      email: userData.email,
+    },
+  })
+
+  const result = await prisma.review.findMany({
+    where: {
+      shop: {
+        vendorId: isExistVendor.id,
+      },
+    },
+    include: {
+      product: true,
+      shop: true,
+      customer: true,
+    },
+  })
+
+  return result
+}
 
 const retrieveReviewById = async (id: any) => {
   const result = await prisma.review.findUniqueOrThrow({
