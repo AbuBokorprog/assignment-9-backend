@@ -54,7 +54,7 @@ const forgotPassword = CatchAsync(
     SuccessResponse(res, {
       status: httpStatus.OK,
       success: true,
-      message: 'Signup successfully!',
+      message: 'Please check your giving email!',
       data,
     })
   },

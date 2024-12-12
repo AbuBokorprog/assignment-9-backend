@@ -171,7 +171,7 @@ const forgotPassword = async (payload: { email: string }) => {
     '5m',
   )
 
-  const resetLink = `http://localhost:3000/reset-password/id?=${isExistUser?.id}?token=${accessToken}`
+  const resetLink = `http://localhost:5173/reset-password/email?=${isExistUser?.email}?token=${accessToken}`
   SendMail(isExistUser?.email, resetLink)
 }
 
