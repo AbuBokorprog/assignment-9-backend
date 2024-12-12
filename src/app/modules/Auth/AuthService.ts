@@ -6,6 +6,9 @@ import { TLogin } from './AuthInterface'
 import { getAccessToken } from '../../helpers/AccessToken'
 import config from '../../config'
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { HashPassword } from '../../helpers/HashPassword'
+import { SendMail } from '../../utils/SendMail'
+import { VerifyToken } from '../../helpers/VerifyToken'
 
 const userLogin = async (payload: TLogin) => {
   const isExistUser = await prisma.user.findUniqueOrThrow({
@@ -103,6 +106,109 @@ const refreshToken = async (token: string) => {
   }
 }
 
-const userSignUp = async (payload: any) => {}
+const changePassword = async (
+  user: any,
+  payload: { newPassword: string; oldPassword: string },
+) => {
+  const isExistUser = await prisma.user.findUniqueOrThrow({
+    where: { id: user?.id, status: 'ACTIVE' },
+    include: {
+      admin: true,
+      vendor: true,
+      customer: true,
+    },
+  })
 
-export const authService = { userSignUp, userLogin, refreshToken }
+  const isMatchedPassword = await ComparePassword(
+    payload.oldPassword,
+    isExistUser?.password,
+  )
+
+  if (!isMatchedPassword) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Old password not matched!')
+  }
+
+  const newHashedPassword = await HashPassword(payload.newPassword)
+  const result = await prisma.user.update({
+    where: {
+      id: user?.id,
+    },
+    data: {
+      password: newHashedPassword,
+    },
+  })
+
+  return result
+}
+
+const forgotPassword = async (payload: { email: string }) => {
+  const isExistUser = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+      status: 'ACTIVE',
+    },
+    include: {
+      admin: true,
+      vendor: true,
+      customer: true,
+    },
+  })
+
+  const resetTokenData = {
+    email: isExistUser.email,
+    name: isExistUser.admin
+      ? isExistUser?.admin?.name
+      : isExistUser?.vendor
+        ? isExistUser?.vendor?.name
+        : isExistUser?.customer?.name,
+    role: isExistUser.role,
+    id: isExistUser.id,
+  }
+
+  const accessToken = await getAccessToken(
+    resetTokenData,
+    config.access_token as string,
+    '5m',
+  )
+
+  const resetLink = `http://localhost:3000/reset-password/id?=${isExistUser?.id}?token=${accessToken}`
+  SendMail(isExistUser?.email, resetLink)
+}
+
+const resetPassword = async (
+  payload: { email: string; newPassword: string },
+  token: string,
+) => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+    },
+  })
+
+  const decode = VerifyToken(token, token) as JwtPayload
+
+  if (payload.email !== decode?.email) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'User unauthorized!')
+  }
+
+  const newHashedPassword = await HashPassword(payload.newPassword)
+
+  const result = await prisma.user.update({
+    where: {
+      email: payload?.email,
+    },
+    data: {
+      password: newHashedPassword,
+    },
+  })
+
+  return result
+}
+
+export const authService = {
+  changePassword,
+  userLogin,
+  refreshToken,
+  resetPassword,
+  forgotPassword,
+}

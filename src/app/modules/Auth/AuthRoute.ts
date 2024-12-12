@@ -10,6 +10,8 @@ route.post(
   ValidationRequest(authValidation.refreshTokenValidationSchema),
   authController.refreshToken,
 )
-route.post('/sign-up', authController.userSignUp)
+route.post('/change-password', authController.changePassword)
+route.post('/forgot-password', authController.forgotPassword)
+route.post('/reset-password', authController.resetPassword)
 
 export const authRouter = route
