@@ -157,5 +157,6 @@ exports.reviewServices = {
     retrieveReviewById,
     updateReviewById,
     deleteReviewById,
+    retrieveVendorAllReview,
     retrieveAllMyReview,
 };

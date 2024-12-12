@@ -196,6 +196,9 @@ const retrieveAllProductByVendor = (user) => __awaiter(void 0, void 0, void 0, f
                 },
             },
             reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
                 select: {
                     rating: true,
                 },
@@ -258,6 +261,9 @@ const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0
                 },
             },
             reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
                 select: {
                     rating: true,
                 },
@@ -295,6 +301,9 @@ const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* (
                 },
             },
             reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
                 select: {
                     rating: true,
                 },
@@ -319,8 +328,8 @@ const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* 
             },
             shop: { select: { id: true, shopName: true } },
             reviews: {
-                select: {
-                    rating: true,
+                where: {
+                    reviewStatus: 'APPROVED',
                 },
             },
             orders: {

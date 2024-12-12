@@ -55,7 +55,7 @@ const retrieveShopById = CatchAsync(async (req, res) => {
 
 const updateShopById = CatchAsync(async (req, res) => {
   const { id } = req.params
-  const data = await shopServices.updateShopById(id, req.body)
+  const data = await shopServices.updateShopById(id, req.files, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.OK,
@@ -66,7 +66,7 @@ const updateShopById = CatchAsync(async (req, res) => {
 })
 
 const updateStatus = CatchAsync(async (req, res) => {
-  const data = await shopServices.updateShopById(req.body.id, req.body.status)
+  const data = await shopServices.updateStatus(req.body.id, req.body.status)
 
   SuccessResponse(res, {
     status: httpStatus.OK,

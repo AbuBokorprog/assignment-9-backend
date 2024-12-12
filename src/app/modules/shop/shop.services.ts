@@ -106,7 +106,29 @@ const retrieveShopById = async (id: any) => {
   return result
 }
 
-const updateShopById = async (id: string, payload: any) => {
+const updateShopById = async (
+  id: string,
+  files: any,
+  payload: Partial<TShop>,
+) => {
+  if (files.logo) {
+    const logoResponse: any = await ImageUpload(
+      `${payload.shopName}-logo`,
+      files.logo[0].path,
+    )
+    const shopLogo: string = logoResponse.secure_url
+    payload.shopLogo = shopLogo
+  }
+
+  if (files.cover) {
+    const coverResponse: any = await ImageUpload(
+      `${payload.shopName}-cover`,
+      files.cover[0].path,
+    )
+    const shopCover: string = coverResponse.secure_url
+    payload.shopCover = shopCover
+  }
+
   await prisma.shop.findUniqueOrThrow({
     where: {
       id: id,

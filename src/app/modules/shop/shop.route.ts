@@ -28,7 +28,19 @@ router.get(
   shopController.retrieveAllShopByVendor,
 )
 router.get('/:id', shopController.retrieveShopById)
-router.patch('/:id', Auth(UserRole.VENDOR), shopController.updateShopById)
+router.patch(
+  '/:id',
+  upload.fields([
+    { name: 'logo', maxCount: 1 },
+    { name: 'cover', maxCount: 1 },
+  ]),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data)
+    next()
+  },
+  Auth(UserRole.VENDOR),
+  shopController.updateShopById,
+)
 router.patch(
   '/status/update-status',
   Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),

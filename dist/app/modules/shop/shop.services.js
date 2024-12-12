@@ -100,7 +100,17 @@ const retrieveShopById = (id) => __awaiter(void 0, void 0, void 0, function* () 
     });
     return result;
 });
-const updateShopById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const updateShopById = (id, files, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    if (files.logo) {
+        const logoResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-logo`, files.logo[0].path);
+        const shopLogo = logoResponse.secure_url;
+        payload.shopLogo = shopLogo;
+    }
+    if (files.cover) {
+        const coverResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-cover`, files.cover[0].path);
+        const shopCover = coverResponse.secure_url;
+        payload.shopCover = shopCover;
+    }
     yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
             id: id,

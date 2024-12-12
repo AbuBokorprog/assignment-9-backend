@@ -191,6 +191,9 @@ const retrieveAllProductByVendor = async (user: any) => {
         },
       },
       reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
         select: {
           rating: true,
         },
@@ -263,6 +266,9 @@ const allAvailableProducts = async (
         },
       },
       reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
         select: {
           rating: true,
         },
@@ -303,6 +309,9 @@ const allFlashSaleProducts = async () => {
         },
       },
       reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
         select: {
           rating: true,
         },

@@ -42,8 +42,8 @@ const refreshToken = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
-const userSignUp = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield AuthService_1.authService.userSignUp(req.body);
+const changePassword = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield AuthService_1.authService.changePassword(req === null || req === void 0 ? void 0 : req.user, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
@@ -51,4 +51,31 @@ const userSignUp = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data,
     });
 }));
-exports.authController = { userLogin, userSignUp, refreshToken };
+const forgotPassword = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield AuthService_1.authService.forgotPassword(req.body);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Please check your giving email!',
+        data,
+    });
+}));
+const resetPassword = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { body } = req.body;
+    const token = (_a = req === null || req === void 0 ? void 0 : req.headers) === null || _a === void 0 ? void 0 : _a.authorization;
+    const result = yield AuthService_1.authService.resetPassword(body, token);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Reset link generated successfully!',
+        data: result,
+    });
+}));
+exports.authController = {
+    userLogin,
+    changePassword,
+    refreshToken,
+    forgotPassword,
+    resetPassword,
+};

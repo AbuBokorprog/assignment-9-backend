@@ -12,10 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VerifyToken = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const VerifyToken = (token, secret) => __awaiter(void 0, void 0, void 0, function* () {
-    const decoded = jsonwebtoken_1.default.verify(token, secret);
-    return decoded;
+exports.SendMail = void 0;
+const config_1 = __importDefault(require("../config"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const SendMail = (to, html) => __awaiter(void 0, void 0, void 0, function* () {
+    const transporter = nodemailer_1.default.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: config_1.default.node_env === 'production', // Use `true` for port 465, `false` for all other ports
+        auth: {
+            user: 'abubokor1066@gmail.com',
+            pass: 'mlca mdrw szys zjei',
+        },
+    });
+    yield transporter.sendMail({
+        from: 'abubokor1066@gmail.com', // sender address
+        to: `${to}`, // list of receivers
+        subject: 'Reset password instruction', // Subject line
+        text: `Hello ${to}`, // plain text body
+        html: `${html}`, // html body
+    });
 });
-exports.VerifyToken = VerifyToken;
+exports.SendMail = SendMail;

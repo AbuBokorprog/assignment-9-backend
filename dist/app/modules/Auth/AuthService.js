@@ -20,6 +20,9 @@ const AppError_1 = require("../../utils/AppError");
 const AccessToken_1 = require("../../helpers/AccessToken");
 const config_1 = __importDefault(require("../../config"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const HashPassword_1 = require("../../helpers/HashPassword");
+const SendMail_1 = require("../../utils/SendMail");
+const VerifyToken_1 = require("../../helpers/VerifyToken");
 const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
@@ -86,5 +89,82 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
         token: accessToken,
     };
 });
-const userSignUp = (payload) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.authService = { userSignUp, userLogin, refreshToken };
+const changePassword = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+        where: { id: user === null || user === void 0 ? void 0 : user.id, status: 'ACTIVE' },
+        include: {
+            admin: true,
+            vendor: true,
+            customer: true,
+        },
+    });
+    const isMatchedPassword = yield (0, ComparePassword_1.ComparePassword)(payload.oldPassword, isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.password);
+    if (!isMatchedPassword) {
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, 'Old password not matched!');
+    }
+    const newHashedPassword = yield (0, HashPassword_1.HashPassword)(payload.newPassword);
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id: user === null || user === void 0 ? void 0 : user.id,
+        },
+        data: {
+            password: newHashedPassword,
+        },
+    });
+    return result;
+});
+const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
+    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: payload.email,
+            status: 'ACTIVE',
+        },
+        include: {
+            admin: true,
+            vendor: true,
+            customer: true,
+        },
+    });
+    const resetTokenData = {
+        email: isExistUser.email,
+        name: isExistUser.admin
+            ? (_a = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.admin) === null || _a === void 0 ? void 0 : _a.name
+            : (isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.vendor)
+                ? (_b = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.vendor) === null || _b === void 0 ? void 0 : _b.name
+                : (_c = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.customer) === null || _c === void 0 ? void 0 : _c.name,
+        role: isExistUser.role,
+        id: isExistUser.id,
+    };
+    const accessToken = yield (0, AccessToken_1.getAccessToken)(resetTokenData, config_1.default.access_token, '5m');
+    const resetLink = `http://localhost:5173/reset-password/email?=${isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email}?token=${accessToken}`;
+    (0, SendMail_1.SendMail)(isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email, resetLink);
+});
+const resetPassword = (payload, token) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: payload.email,
+        },
+    });
+    const decode = (0, VerifyToken_1.VerifyToken)(token, token);
+    if (payload.email !== (decode === null || decode === void 0 ? void 0 : decode.email)) {
+        throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, 'User unauthorized!');
+    }
+    const newHashedPassword = yield (0, HashPassword_1.HashPassword)(payload.newPassword);
+    const result = yield prisma_1.default.user.update({
+        where: {
+            email: payload === null || payload === void 0 ? void 0 : payload.email,
+        },
+        data: {
+            password: newHashedPassword,
+        },
+    });
+    return result;
+});
+exports.authService = {
+    changePassword,
+    userLogin,
+    refreshToken,
+    resetPassword,
+    forgotPassword,
+};
