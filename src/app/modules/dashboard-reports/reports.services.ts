@@ -30,7 +30,22 @@ const getVendorDashboardReports = async (user: any) => {
   return result
 }
 
-const getAdminDashboardReports = async (user: any) => {}
+const getAdminDashboardReports = async (user: any) => {
+  const totalUsers = await prisma.user.count()
+  const totalActiveShop = await prisma.shop.count({
+    where: {
+      isActive: 'APPROVED',
+    },
+  })
+
+  const totalOrders = await prisma.order.count()
+
+  return {
+    totalUsers,
+    totalActiveShop,
+    totalOrders,
+  }
+}
 
 export const reportsService = {
   getUserDashboardReports,
