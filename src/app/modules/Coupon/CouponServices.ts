@@ -68,8 +68,8 @@ const retrieveCouponById = async (id: any) => {
   return result
 }
 
-const updateCouponById = async (id: string, payload: any) => {
-  await prisma.coupon.findUniqueOrThrow({
+const updateCouponById = async (id: string, payload: Partial<TCoupon>) => {
+  const isExistCoupon = await prisma.coupon.findUniqueOrThrow({
     where: {
       id: id,
     },
@@ -79,7 +79,14 @@ const updateCouponById = async (id: string, payload: any) => {
     where: {
       id: id,
     },
-    data: payload,
+    data: {
+      name: payload.name,
+      code: payload.code,
+      discount: Number(payload.discount),
+      expiryDate: payload?.expiryDate
+        ? new Date(payload?.expiryDate)
+        : new Date(isExistCoupon?.expiryDate),
+    },
   })
 
   return result

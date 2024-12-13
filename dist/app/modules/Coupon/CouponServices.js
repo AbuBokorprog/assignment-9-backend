@@ -66,7 +66,7 @@ const retrieveCouponById = (id) => __awaiter(void 0, void 0, void 0, function* (
     return result;
 });
 const updateCouponById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.coupon.findUniqueOrThrow({
+    const isExistCoupon = yield prisma_1.default.coupon.findUniqueOrThrow({
         where: {
             id: id,
         },
@@ -75,7 +75,14 @@ const updateCouponById = (id, payload) => __awaiter(void 0, void 0, void 0, func
         where: {
             id: id,
         },
-        data: payload,
+        data: {
+            name: payload.name,
+            code: payload.code,
+            discount: Number(payload.discount),
+            expiryDate: (payload === null || payload === void 0 ? void 0 : payload.expiryDate)
+                ? new Date(payload === null || payload === void 0 ? void 0 : payload.expiryDate)
+                : new Date(isExistCoupon === null || isExistCoupon === void 0 ? void 0 : isExistCoupon.expiryDate),
+        },
     });
     return result;
 });
