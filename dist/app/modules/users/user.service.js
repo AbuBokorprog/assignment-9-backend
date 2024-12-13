@@ -307,6 +307,22 @@ const userStatusChanged = (id, status) => __awaiter(void 0, void 0, void 0, func
     }));
     return result;
 });
+const userRoleUpdate = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExit = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: payload === null || payload === void 0 ? void 0 : payload.id,
+        },
+    });
+    const result = yield prisma_1.default.user.update({
+        where: {
+            email: isUserExit.email,
+        },
+        data: {
+            role: payload.data,
+        },
+    });
+    return result;
+});
 exports.userServices = {
     createAdmin,
     createVendor,
@@ -316,4 +332,5 @@ exports.userServices = {
     myProfile,
     userStatusChanged,
     updateMyProfile,
+    userRoleUpdate,
 };

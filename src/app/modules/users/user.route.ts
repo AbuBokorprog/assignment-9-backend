@@ -44,6 +44,16 @@ router.patch(
   Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
   userControllers.userStatusChanged,
 )
+router.patch(
+  '/role/user-role',
+  Auth(
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.CUSTOMER,
+    UserRole.VENDOR,
+  ),
+  userControllers.userRoleUpdate,
+)
 router.get(
   '/profile/my-profile',
   Auth(

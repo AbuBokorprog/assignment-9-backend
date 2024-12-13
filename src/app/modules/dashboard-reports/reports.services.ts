@@ -1,6 +1,50 @@
 import prisma from '../../helpers/prisma'
 
-const getUserDashboardReports = async (user: any) => {}
+const getUserDashboardReports = async (user: any) => {
+  const isUserExist = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: user?.id,
+    },
+  })
+
+  const totalOrder = await prisma.order.count({
+    where: {
+      customerId: isUserExist?.id,
+    },
+  })
+
+  const totalWishlist = await prisma.wishlist.count({
+    where: {
+      userId: isUserExist?.id,
+    },
+  })
+
+  const totalCart = await prisma.cart.count({
+    where: {
+      customerId: isUserExist?.id,
+    },
+  })
+
+  const totalFollowingShop = await prisma.follower.count({
+    where: {
+      customerId: isUserExist?.id,
+    },
+  })
+
+  const totalReview = await prisma.review.count({
+    where: {
+      customerId: isUserExist?.id,
+    },
+  })
+
+  return {
+    totalOrder,
+    totalWishlist,
+    totalCart,
+    totalFollowingShop,
+    totalReview,
+  }
+}
 
 const getVendorDashboardReports = async (user: any) => {
   await prisma.user.findUniqueOrThrow({

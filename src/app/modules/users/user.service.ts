@@ -334,6 +334,25 @@ const userStatusChanged = async (
   return result
 }
 
+const userRoleUpdate = async (payload: { id: string; data: UserRole }) => {
+  const isUserExit = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: payload?.id,
+    },
+  })
+
+  const result = await prisma.user.update({
+    where: {
+      email: isUserExit.email,
+    },
+    data: {
+      role: payload.data,
+    },
+  })
+
+  return result
+}
+
 export const userServices = {
   createAdmin,
   createVendor,
@@ -343,4 +362,5 @@ export const userServices = {
   myProfile,
   userStatusChanged,
   updateMyProfile,
+  userRoleUpdate,
 }

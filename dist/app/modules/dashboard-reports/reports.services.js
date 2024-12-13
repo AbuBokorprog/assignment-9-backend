@@ -14,7 +14,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reportsService = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
-const getUserDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () { });
+const getUserDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExist = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: user === null || user === void 0 ? void 0 : user.id,
+        },
+    });
+    const totalOrder = yield prisma_1.default.order.count({
+        where: {
+            customerId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.id,
+        },
+    });
+    const totalWishlist = yield prisma_1.default.wishlist.count({
+        where: {
+            userId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.id,
+        },
+    });
+    const totalCart = yield prisma_1.default.cart.count({
+        where: {
+            customerId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.id,
+        },
+    });
+    const totalFollowingShop = yield prisma_1.default.follower.count({
+        where: {
+            customerId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.id,
+        },
+    });
+    const totalReview = yield prisma_1.default.review.count({
+        where: {
+            customerId: isUserExist === null || isUserExist === void 0 ? void 0 : isUserExist.id,
+        },
+    });
+    return {
+        totalOrder,
+        totalWishlist,
+        totalCart,
+        totalFollowingShop,
+        totalReview,
+    };
+});
 const getVendorDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {

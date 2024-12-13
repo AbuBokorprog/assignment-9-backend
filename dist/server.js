@@ -14,11 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./app/config"));
+const seed_1 = require("./app/seed/seed");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         // ... you will write your Prisma Client queries here
         const server = app_1.default.listen(config_1.default.port, () => {
             console.log(`Example app listening on port ${config_1.default.port}`);
+            (0, seed_1.seedSuperAdmin)();
         });
     });
 }
