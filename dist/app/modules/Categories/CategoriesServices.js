@@ -44,12 +44,18 @@ const retrieveCategoryById = (id) => __awaiter(void 0, void 0, void 0, function*
     });
     return result;
 });
-const updateCategoryById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCategoryById = (file, id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.category.findUniqueOrThrow({
         where: {
             id: id,
         },
     });
+    if (file) {
+        const path = file.path;
+        const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, path);
+        const secureUrl = response.secure_url;
+        payload.image = secureUrl;
+    }
     const result = yield prisma_1.default.category.update({
         where: {
             id: id,

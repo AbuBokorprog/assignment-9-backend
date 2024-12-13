@@ -39,7 +39,7 @@ const retrieveCategoryById = CatchAsync(async (req, res) => {
 
 const updateCategoryById = CatchAsync(async (req, res) => {
   const { id } = req.params
-  const data = await categoryServices.updateCategoryById(id, req.body)
+  const data = await categoryServices.updateCategoryById(req.file, id, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.OK,

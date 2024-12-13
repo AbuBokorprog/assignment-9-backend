@@ -21,6 +21,7 @@ router.post(
 )
 router.get('/', categoryController.retrieveAllCategory)
 router.get('/:id', categoryController.retrieveCategoryById)
+
 router.patch(
   '/:id',
   Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
@@ -31,6 +32,7 @@ router.patch(
   },
   categoryController.updateCategoryById,
 )
+
 router.delete(
   '/:id',
   Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),

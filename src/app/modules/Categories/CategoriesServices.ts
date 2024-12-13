@@ -38,12 +38,23 @@ const retrieveCategoryById = async (id: any) => {
   return result
 }
 
-const updateCategoryById = async (id: string, payload: any) => {
+const updateCategoryById = async (
+  file: any,
+  id: string,
+  payload: Partial<TCategory>,
+) => {
   await prisma.category.findUniqueOrThrow({
     where: {
       id: id,
     },
   })
+
+  if (file) {
+    const path = file.path
+    const response: any = await ImageUpload(payload.name as string, path)
+    const secureUrl = response.secure_url
+    payload.image = secureUrl
+  }
 
   const result = await prisma.category.update({
     where: {
