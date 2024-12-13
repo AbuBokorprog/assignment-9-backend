@@ -40,7 +40,20 @@ const getVendorDashboardReports = (user) => __awaiter(void 0, void 0, void 0, fu
     });
     return result;
 });
-const getAdminDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () { });
+const getAdminDashboardReports = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const totalUsers = yield prisma_1.default.user.count();
+    const totalActiveShop = yield prisma_1.default.shop.count({
+        where: {
+            isActive: 'APPROVED',
+        },
+    });
+    const totalOrders = yield prisma_1.default.order.count();
+    return {
+        totalUsers,
+        totalActiveShop,
+        totalOrders,
+    };
+});
 exports.reportsService = {
     getUserDashboardReports,
     getVendorDashboardReports,
