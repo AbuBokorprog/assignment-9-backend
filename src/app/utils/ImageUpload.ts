@@ -2,6 +2,7 @@ import { v2 as cloudinary, UploadApiResponse } from 'cloudinary'
 import multer from 'multer'
 import fs from 'fs'
 import config from '../config'
+import { CloudinaryStorage } from 'multer-storage-cloudinary'
 
 cloudinary.config({
   cloud_name: 'dphjei2ph',
@@ -43,4 +44,8 @@ const storage = multer.diskStorage({
   },
 })
 
-export const upload = multer({ storage: storage })
+const newStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+})
+
+export const upload = multer({ storage: newStorage })

@@ -8,6 +8,7 @@ const cloudinary_1 = require("cloudinary");
 const multer_1 = __importDefault(require("multer"));
 const fs_1 = __importDefault(require("fs"));
 const config_1 = __importDefault(require("../config"));
+const multer_storage_cloudinary_1 = require("multer-storage-cloudinary");
 cloudinary_1.v2.config({
     cloud_name: 'dphjei2ph',
     api_key: config_1.default.cloudinary_api_key,
@@ -43,4 +44,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, file.fieldname + '-' + uniqueSuffix);
     },
 });
-exports.upload = (0, multer_1.default)({ storage: storage });
+const newStorage = new multer_storage_cloudinary_1.CloudinaryStorage({
+    cloudinary: cloudinary_1.v2,
+});
+exports.upload = (0, multer_1.default)({ storage: newStorage });
