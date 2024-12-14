@@ -52,16 +52,23 @@ const createVendor = async (files: any, payload: TVendor) => {
     isDeleted: false,
   }
 
-  const logoResponse: any = await ImageUpload(
-    `${payload.shopName}-logo`,
-    files.logo[0].path,
-  )
-  const shopLogo: string = logoResponse.secure_url
-  const coverResponse: any = await ImageUpload(
-    `${payload.shopName}-cover`,
-    files.cover[0].path,
-  )
-  const shopCover: string = coverResponse.secure_url
+  let shopLogo: string
+  if (files?.logo) {
+    const logoResponse: any = await ImageUpload(
+      `${payload.shopName}-logo`,
+      files.logo[0].path,
+    )
+    shopLogo = logoResponse.secure_url
+  }
+
+  let shopCover: string
+  if (files?.cover) {
+    const coverResponse: any = await ImageUpload(
+      `${payload.shopName}-cover`,
+      files.cover[0].path,
+    )
+    shopCover = coverResponse.secure_url
+  }
 
   const result = await prisma.$transaction(async transactionClient => {
     await transactionClient.user.create({

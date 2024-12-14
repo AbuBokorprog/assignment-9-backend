@@ -136,19 +136,23 @@ const retrieveVendorOrders = (user) => __awaiter(void 0, void 0, void 0, functio
             email: userData.email,
         },
     });
-    const result = yield prisma_1.default.order.findMany({
-        include: {
+    // Fetch orders where the vendor's products are included
+    const orders = yield prisma_1.default.order.findMany({
+        where: {
             products: {
-                where: {
+                some: {
                     product: {
-                        vendorId: isExistVendor === null || isExistVendor === void 0 ? void 0 : isExistVendor.id,
+                        vendorId: isExistVendor.id,
                     },
                 },
             },
+        },
+        include: {
+            products: true,
             payment: true,
         },
     });
-    return result;
+    return orders;
 });
 const retrieveOrderById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.order.findUniqueOrThrow({

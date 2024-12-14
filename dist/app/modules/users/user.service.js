@@ -56,10 +56,16 @@ const createVendor = (files, payload) => __awaiter(void 0, void 0, void 0, funct
         contactNumber: payload.contactNumber,
         isDeleted: false,
     };
-    const logoResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-logo`, files.logo[0].path);
-    const shopLogo = logoResponse.secure_url;
-    const coverResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-cover`, files.cover[0].path);
-    const shopCover = coverResponse.secure_url;
+    let shopLogo;
+    if (files === null || files === void 0 ? void 0 : files.logo) {
+        const logoResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-logo`, files.logo[0].path);
+        shopLogo = logoResponse.secure_url;
+    }
+    let shopCover;
+    if (files === null || files === void 0 ? void 0 : files.cover) {
+        const coverResponse = yield (0, ImageUpload_1.ImageUpload)(`${payload.shopName}-cover`, files.cover[0].path);
+        shopCover = coverResponse.secure_url;
+    }
     const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
         yield transactionClient.user.create({
             data: userData,

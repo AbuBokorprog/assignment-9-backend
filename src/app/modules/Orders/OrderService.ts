@@ -142,20 +142,24 @@ const retrieveVendorOrders = async (user: any) => {
     },
   })
 
-  const result = await prisma.order.findMany({
-    include: {
+  // Fetch orders where the vendor's products are included
+  const orders = await prisma.order.findMany({
+    where: {
       products: {
-        where: {
+        some: {
           product: {
-            vendorId: isExistVendor?.id,
+            vendorId: isExistVendor.id,
           },
         },
       },
+    },
+    include: {
+      products: true,
       payment: true,
     },
   })
 
-  return result
+  return orders
 }
 
 const retrieveOrderById = async (id: string) => {

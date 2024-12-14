@@ -16,7 +16,7 @@ router.post(
   '/conflict/replace-cart',
   Auth(UserRole.CUSTOMER),
   ValidationRequest(cartValidation.createCart),
-  cartsController.createCart,
+  cartsController.replaceCart,
 )
 router.get('/', cartsController.retrieveCart)
 router.get(

@@ -85,8 +85,8 @@ model Customer {
 model Shop {
   id                    String   @id @default(uuid())
   shopName              String @unique
-  shopLogo              String
-  shopCover             String
+  shopLogo              String?
+  shopCover             String?
   description           String?
   address               String
   registrationNumber    String
