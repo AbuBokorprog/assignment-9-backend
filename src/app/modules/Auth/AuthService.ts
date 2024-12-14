@@ -16,6 +16,11 @@ const userLogin = async (payload: TLogin) => {
       email: payload.email,
       status: 'ACTIVE',
     },
+    include: {
+      admin: true,
+      customer: true,
+      vendor: true,
+    },
   })
 
   async function getUserByRole(role: string, email: string) {
@@ -32,7 +37,7 @@ const userLogin = async (payload: TLogin) => {
     }
   }
 
-  const user = await getUserByRole(isExistUser.role, isExistUser.email)
+  // const user = await getUserByRole(isExistUser.role, isExistUser.email)
 
   const isMatchedPassword = await ComparePassword(
     payload.password,
@@ -45,7 +50,11 @@ const userLogin = async (payload: TLogin) => {
 
   const accessTokenData = {
     email: isExistUser.email,
-    name: user.name,
+    name: isExistUser?.admin
+      ? isExistUser?.admin?.name
+      : isExistUser?.vendor
+        ? isExistUser?.vendor?.name
+        : isExistUser?.customer?.name,
     role: isExistUser.role,
     id: isExistUser.id,
   }
@@ -64,7 +73,11 @@ const userLogin = async (payload: TLogin) => {
 
   return {
     email: isExistUser.email,
-    name: user.name,
+    name: isExistUser?.admin
+      ? isExistUser?.admin?.name
+      : isExistUser?.vendor
+        ? isExistUser?.vendor?.name
+        : isExistUser?.customer?.name,
     role: isExistUser.role,
     token: accessToken,
     id: isExistUser.id,

@@ -3,6 +3,8 @@ import { TAdmin, TShop, TVendor } from './user.interface'
 import prisma from '../../helpers/prisma'
 import { HashPassword } from '../../helpers/HashPassword'
 import { ImageUpload } from '../../utils/ImageUpload'
+import { AppError } from '../../utils/AppError'
+import httpStatus from 'http-status'
 
 const createAdmin = async (payload: TAdmin) => {
   const password = await HashPassword(payload.password)
@@ -335,22 +337,88 @@ const userStatusChanged = async (
 }
 
 const userRoleUpdate = async (payload: { id: string; data: UserRole }) => {
-  const isUserExit = await prisma.user.findUniqueOrThrow({
-    where: {
-      id: payload?.id,
-    },
+  const user = await prisma.user.findUnique({
+    where: { id: payload.id },
+    include: { admin: true, customer: true, vendor: true },
   })
 
-  const result = await prisma.user.update({
-    where: {
-      email: isUserExit.email,
-    },
-    data: {
-      role: payload.data,
-    },
+  if (!user) throw new Error('User not found')
+
+  // Determine current role-specific model
+  let currentRoleData: any
+  if (user.role === 'ADMIN') {
+    currentRoleData = await prisma.admin.findFirst({
+      where: { email: user.email },
+    })
+  } else if (user.role === 'CUSTOMER') {
+    currentRoleData = await prisma.customer.findFirst({
+      where: { email: user.email },
+    })
+  } else if (user.role === 'VENDOR') {
+    currentRoleData = await prisma.vendor.findFirst({
+      where: { email: user.email },
+    })
+  }
+
+  if (!currentRoleData) {
+    throw new Error(`Role-specific data not found for role: ${user.role}`)
+  }
+
+  // Use a transaction for atomic updates
+  await prisma.$transaction(async tx => {
+    // Update user role
+    await tx.user.update({
+      where: { id: payload.id },
+      data: { role: payload.data },
+    })
+
+    // Create new role-specific record
+    if (payload.data === 'ADMIN') {
+      await tx.admin.create({
+        data: {
+          id: user.id,
+          name: currentRoleData.name,
+          contactNumber: currentRoleData.contactNumber,
+          email: user.email,
+          isDeleted: currentRoleData.isDeleted,
+          profilePhoto: currentRoleData.profilePhoto,
+        },
+      })
+    } else if (payload.data === 'CUSTOMER') {
+      await tx.customer.create({
+        data: {
+          id: user.id,
+          name: currentRoleData.name,
+          contactNumber: currentRoleData.contactNumber,
+          email: user.email,
+          isDeleted: currentRoleData.isDeleted,
+          profilePhoto: currentRoleData.profilePhoto,
+        },
+      })
+    } else if (payload.data === 'VENDOR') {
+      await tx.vendor.create({
+        data: {
+          id: user.id,
+          name: currentRoleData.name,
+          contactNumber: currentRoleData.contactNumber,
+          email: user.email,
+          isDeleted: currentRoleData.isDeleted,
+          profilePhoto: currentRoleData.profilePhoto,
+        },
+      })
+    }
+
+    // Delete old role-specific record
+    if (user.role === 'ADMIN') {
+      await tx.admin.delete({ where: { email: user.email } })
+    } else if (user.role === 'CUSTOMER') {
+      await tx.customer.delete({ where: { email: user.email } })
+    } else if (user.role === 'VENDOR') {
+      await tx.vendor.delete({ where: { email: user.email } })
+    }
   })
 
-  return result
+  return { message: `User role updated to ${payload.data}` }
 }
 
 export const userServices = {

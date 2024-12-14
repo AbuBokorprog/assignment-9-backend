@@ -24,10 +24,16 @@ const HashPassword_1 = require("../../helpers/HashPassword");
 const SendMail_1 = require("../../utils/SendMail");
 const VerifyToken_1 = require("../../helpers/VerifyToken");
 const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d, _e, _f;
     const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,
             status: 'ACTIVE',
+        },
+        include: {
+            admin: true,
+            customer: true,
+            vendor: true,
         },
     });
     function getUserByRole(role, email) {
@@ -45,14 +51,18 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
     }
-    const user = yield getUserByRole(isExistUser.role, isExistUser.email);
+    // const user = await getUserByRole(isExistUser.role, isExistUser.email)
     const isMatchedPassword = yield (0, ComparePassword_1.ComparePassword)(payload.password, isExistUser.password);
     if (!isMatchedPassword) {
         throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, 'You are unauthorized!');
     }
     const accessTokenData = {
         email: isExistUser.email,
-        name: user.name,
+        name: (isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.admin)
+            ? (_a = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.admin) === null || _a === void 0 ? void 0 : _a.name
+            : (isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.vendor)
+                ? (_b = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.vendor) === null || _b === void 0 ? void 0 : _b.name
+                : (_c = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.customer) === null || _c === void 0 ? void 0 : _c.name,
         role: isExistUser.role,
         id: isExistUser.id,
     };
@@ -60,7 +70,11 @@ const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = yield (0, AccessToken_1.getAccessToken)(accessTokenData, config_1.default.refresh_token, config_1.default.refresh_expiresIn);
     return {
         email: isExistUser.email,
-        name: user.name,
+        name: (isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.admin)
+            ? (_d = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.admin) === null || _d === void 0 ? void 0 : _d.name
+            : (isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.vendor)
+                ? (_e = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.vendor) === null || _e === void 0 ? void 0 : _e.name
+                : (_f = isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.customer) === null || _f === void 0 ? void 0 : _f.name,
         role: isExistUser.role,
         token: accessToken,
         id: isExistUser.id,

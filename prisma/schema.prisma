@@ -45,7 +45,7 @@ model Admin {
   profilePhoto          String?
   contactNumber         String
   isDeleted             Boolean @default(false)
-  user                  User @relation(fields: [email], references: [email])
+  user                  User @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Cascade)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
@@ -59,7 +59,7 @@ model Vendor {
   profilePhoto          String?
   contactNumber         String
   isDeleted             Boolean @default(false)
-  user                  User @relation(fields: [email], references: [email])
+  user                  User @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Cascade)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   shops                  Shop[]
@@ -75,7 +75,7 @@ model Customer {
   profilePhoto          String?
   contactNumber         String
   isDeleted             Boolean @default(false)
-  user                  User @relation(fields: [email], references: [email])
+  user                  User @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: Cascade)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 

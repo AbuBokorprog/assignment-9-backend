@@ -308,20 +308,88 @@ const userStatusChanged = (id, status) => __awaiter(void 0, void 0, void 0, func
     return result;
 });
 const userRoleUpdate = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const isUserExit = yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            id: payload === null || payload === void 0 ? void 0 : payload.id,
-        },
+    const user = yield prisma_1.default.user.findUnique({
+        where: { id: payload.id },
+        include: { admin: true, customer: true, vendor: true },
     });
-    const result = yield prisma_1.default.user.update({
-        where: {
-            email: isUserExit.email,
-        },
-        data: {
-            role: payload.data,
-        },
-    });
-    return result;
+    if (!user)
+        throw new Error('User not found');
+    // Determine current role-specific model
+    let currentRoleData;
+    if (user.role === 'ADMIN') {
+        currentRoleData = yield prisma_1.default.admin.findFirst({
+            where: { email: user.email },
+        });
+    }
+    else if (user.role === 'CUSTOMER') {
+        currentRoleData = yield prisma_1.default.customer.findFirst({
+            where: { email: user.email },
+        });
+    }
+    else if (user.role === 'VENDOR') {
+        currentRoleData = yield prisma_1.default.vendor.findFirst({
+            where: { email: user.email },
+        });
+    }
+    if (!currentRoleData) {
+        throw new Error(`Role-specific data not found for role: ${user.role}`);
+    }
+    // Use a transaction for atomic updates
+    yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        // Update user role
+        yield tx.user.update({
+            where: { id: payload.id },
+            data: { role: payload.data },
+        });
+        // Create new role-specific record
+        if (payload.data === 'ADMIN') {
+            yield tx.admin.create({
+                data: {
+                    id: user.id,
+                    name: currentRoleData.name,
+                    contactNumber: currentRoleData.contactNumber,
+                    email: user.email,
+                    isDeleted: currentRoleData.isDeleted,
+                    profilePhoto: currentRoleData.profilePhoto,
+                },
+            });
+        }
+        else if (payload.data === 'CUSTOMER') {
+            yield tx.customer.create({
+                data: {
+                    id: user.id,
+                    name: currentRoleData.name,
+                    contactNumber: currentRoleData.contactNumber,
+                    email: user.email,
+                    isDeleted: currentRoleData.isDeleted,
+                    profilePhoto: currentRoleData.profilePhoto,
+                },
+            });
+        }
+        else if (payload.data === 'VENDOR') {
+            yield tx.vendor.create({
+                data: {
+                    id: user.id,
+                    name: currentRoleData.name,
+                    contactNumber: currentRoleData.contactNumber,
+                    email: user.email,
+                    isDeleted: currentRoleData.isDeleted,
+                    profilePhoto: currentRoleData.profilePhoto,
+                },
+            });
+        }
+        // Delete old role-specific record
+        if (user.role === 'ADMIN') {
+            yield tx.admin.delete({ where: { email: user.email } });
+        }
+        else if (user.role === 'CUSTOMER') {
+            yield tx.customer.delete({ where: { email: user.email } });
+        }
+        else if (user.role === 'VENDOR') {
+            yield tx.vendor.delete({ where: { email: user.email } });
+        }
+    }));
+    return { message: `User role updated to ${payload.data}` };
 });
 exports.userServices = {
     createAdmin,
