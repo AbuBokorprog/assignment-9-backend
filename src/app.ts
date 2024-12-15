@@ -7,7 +7,12 @@ import GlobalErrorHandler from './app/middlewares/GlobalErrorHandler'
 import NotFoundErrorHandler from './app/middlewares/NotFoundErrorHandler'
 
 app.use(express.json())
-app.use(cors({ credentials: true, origin: 'http://localhost:5173' }))
+app.use(
+  cors({
+    credentials: true,
+    origin: 'https://bazaar-bridge-front.vercel.app/',
+  }),
+)
 app.use(cookieParser())
 
 app.get('/', (req: Request, res: Response) => {

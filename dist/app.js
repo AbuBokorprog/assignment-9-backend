@@ -11,7 +11,10 @@ const routers_1 = __importDefault(require("./app/routers"));
 const GlobalErrorHandler_1 = __importDefault(require("./app/middlewares/GlobalErrorHandler"));
 const NotFoundErrorHandler_1 = __importDefault(require("./app/middlewares/NotFoundErrorHandler"));
 app.use(express_1.default.json());
-app.use((0, cors_1.default)({ credentials: true, origin: 'http://localhost:5173' }));
+app.use((0, cors_1.default)({
+    credentials: true,
+    origin: 'https://bazaar-bridge-front.vercel.app/',
+}));
 app.use((0, cookie_parser_1.default)());
 app.get('/', (req, res) => {
     res.send('BazaarBridge Home page!');
