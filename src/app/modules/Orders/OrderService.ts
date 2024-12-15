@@ -168,6 +168,7 @@ const retrieveOrderById = async (id: string) => {
     },
     include: {
       products: true,
+      payment: true,
     },
   })
 
