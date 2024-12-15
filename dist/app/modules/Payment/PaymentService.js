@@ -52,7 +52,24 @@ const failedPayment = () => __awaiter(void 0, void 0, void 0, function* () {
     const template = (0, fs_1.readFileSync)(filePath, 'utf-8');
     return template;
 });
+const updateStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistOrder = yield prisma_1.default.payment.findUniqueOrThrow({
+        where: {
+            id: id,
+        },
+    });
+    const result = yield prisma_1.default.payment.update({
+        where: {
+            id: isExistOrder.id,
+        },
+        data: {
+            status: status,
+        },
+    });
+    return result;
+});
 exports.paymentServices = {
     confirmationService,
     failedPayment,
+    updateStatus,
 };

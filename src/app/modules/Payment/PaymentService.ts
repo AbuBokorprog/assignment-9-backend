@@ -42,7 +42,31 @@ const failedPayment = async () => {
   const template = readFileSync(filePath, 'utf-8')
   return template
 }
+
+const updateStatus = async (
+  id: string,
+  status: 'PAID' | 'UNPAID' | 'FAILED' | 'REFUNDED',
+) => {
+  const isExistOrder = await prisma.payment.findUniqueOrThrow({
+    where: {
+      id: id,
+    },
+  })
+
+  const result = await prisma.payment.update({
+    where: {
+      id: isExistOrder.id,
+    },
+    data: {
+      status: status,
+    },
+  })
+
+  return result
+}
+
 export const paymentServices = {
   confirmationService,
   failedPayment,
+  updateStatus,
 }

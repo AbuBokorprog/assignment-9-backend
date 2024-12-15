@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.paymentController = void 0;
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const PaymentService_1 = require("./PaymentService");
+const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
+const http_status_1 = __importDefault(require("http-status"));
 const confirmationController = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { transactionId } = req.query;
     const result = yield PaymentService_1.paymentServices.confirmationService(transactionId);
@@ -24,7 +26,17 @@ const PaymentFailed = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, 
     const result = yield PaymentService_1.paymentServices.failedPayment();
     res.send(result);
 }));
+const updateStatus = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield PaymentService_1.paymentServices.updateStatus(req.body.id, req.body.status);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Update payment status successfully!',
+        data,
+    });
+}));
 exports.paymentController = {
     confirmationController,
     PaymentFailed,
+    updateStatus,
 };

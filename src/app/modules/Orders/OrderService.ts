@@ -53,20 +53,19 @@ const createOrder = async (user: any, payload: TOrder) => {
     const transactionId = `BB-${orderData.id}-${payload.totalAmount}`
 
     let payment = null
-    // if payment type Advanced payment(ADV) create payment
+    // if payment type Advanced payment(ADV) payment utilize
     if (payload.paymentType === 'ADV') {
-      await transactionalClient.payment.create({
-        data: {
-          orderId: orderData.id,
-          amount: payload.totalAmount,
-          paymentMethod: payload.paymentType,
-          transactionId: transactionId,
-        },
-      })
-
-      // payment utilize
       payment = await PaymentUtils(payload, transactionId)
     }
+    // create payment
+    await transactionalClient.payment.create({
+      data: {
+        orderId: orderData.id,
+        amount: payload.totalAmount,
+        paymentMethod: payload.paymentType,
+        transactionId: transactionId,
+      },
+    })
 
     // after order created, cart will be deleted.
     await transactionalClient.cart.deleteMany({

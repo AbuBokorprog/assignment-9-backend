@@ -58,19 +58,19 @@ const createOrder = (user, payload) => __awaiter(void 0, void 0, void 0, functio
         // create transactionId for payment
         const transactionId = `BB-${orderData.id}-${payload.totalAmount}`;
         let payment = null;
-        // if payment type Advanced payment(ADV) create payment
+        // if payment type Advanced payment(ADV) payment utilize
         if (payload.paymentType === 'ADV') {
-            yield transactionalClient.payment.create({
-                data: {
-                    orderId: orderData.id,
-                    amount: payload.totalAmount,
-                    paymentMethod: payload.paymentType,
-                    transactionId: transactionId,
-                },
-            });
-            // payment utilize
             payment = yield (0, PaymentUtils_1.PaymentUtils)(payload, transactionId);
         }
+        // create payment
+        yield transactionalClient.payment.create({
+            data: {
+                orderId: orderData.id,
+                amount: payload.totalAmount,
+                paymentMethod: payload.paymentType,
+                transactionId: transactionId,
+            },
+        });
         // after order created, cart will be deleted.
         yield transactionalClient.cart.deleteMany({
             where: {
