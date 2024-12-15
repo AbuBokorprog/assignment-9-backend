@@ -10,7 +10,7 @@ app.use(express.json())
 app.use(
   cors({
     credentials: true,
-    origin: 'https://bazaar-bridge-front.vercel.app/',
+    origin: 'https://bazaar-bridge-front.vercel.app',
   }),
 )
 app.use(cookieParser())
