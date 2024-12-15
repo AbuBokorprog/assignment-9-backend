@@ -155,7 +155,7 @@ const changePassword = async (
 }
 
 const forgotPassword = async (payload: { email: string }) => {
-  const isExistUser = await prisma.user.findUniqueOrThrow({
+  const isExistUser = await prisma.user.findFirst({
     where: {
       email: payload.email,
       status: 'ACTIVE',
@@ -166,6 +166,13 @@ const forgotPassword = async (payload: { email: string }) => {
       customer: true,
     },
   })
+
+  if (!isExistUser) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'User not found please register your account!',
+    )
+  }
 
   const resetTokenData = {
     email: isExistUser.email,
@@ -184,7 +191,7 @@ const forgotPassword = async (payload: { email: string }) => {
     '5m',
   )
 
-  const resetLink = `http://localhost:5173/reset-password/email?=${isExistUser?.email}?token=${accessToken}`
+  const resetLink = `https://bazaar-bridge-front.vercel.app/reset-password/email?=${isExistUser?.email}?token=${accessToken}`
   SendMail(isExistUser?.email, resetLink)
 }
 

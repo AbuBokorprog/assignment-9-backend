@@ -129,7 +129,7 @@ const changePassword = (user, payload) => __awaiter(void 0, void 0, void 0, func
 });
 const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c;
-    const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
+    const isExistUser = yield prisma_1.default.user.findFirst({
         where: {
             email: payload.email,
             status: 'ACTIVE',
@@ -140,6 +140,9 @@ const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* 
             customer: true,
         },
     });
+    if (!isExistUser) {
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, 'User not found please register your account!');
+    }
     const resetTokenData = {
         email: isExistUser.email,
         name: isExistUser.admin
@@ -151,7 +154,7 @@ const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* 
         id: isExistUser.id,
     };
     const accessToken = yield (0, AccessToken_1.getAccessToken)(resetTokenData, config_1.default.access_token, '5m');
-    const resetLink = `http://localhost:5173/reset-password/email?=${isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email}?token=${accessToken}`;
+    const resetLink = `https://bazaar-bridge-front.vercel.app/reset-password/email?=${isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email}?token=${accessToken}`;
     (0, SendMail_1.SendMail)(isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email, resetLink);
 });
 const resetPassword = (payload, token) => __awaiter(void 0, void 0, void 0, function* () {
