@@ -161,6 +161,7 @@ const retrieveOrderById = (id) => __awaiter(void 0, void 0, void 0, function* ()
         },
         include: {
             products: true,
+            payment: true,
         },
     });
     return result;

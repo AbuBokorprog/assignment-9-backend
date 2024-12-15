@@ -101,7 +101,7 @@ const retrieveProductById = CatchAsync(async (req, res) => {
 
 const updateProductById = CatchAsync(async (req, res) => {
   const { id } = req.params
-  const data = await productServices.updateProductById(id, req.body)
+  const data = await productServices.updateProductById(id, req.files, req.body)
 
   SuccessResponse(res, {
     status: httpStatus.OK,

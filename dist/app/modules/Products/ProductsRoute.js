@@ -22,7 +22,11 @@ router.get('/all-products/available', ProductsController_1.productController.all
 router.get('/all-products/flash-sale', ProductsController_1.productController.allFlashSaleProducts);
 router.get('/vendor/my-product', (0, Auth_1.default)(client_1.UserRole.VENDOR), ProductsController_1.productController.retrieveAllProductByVendor);
 router.get('/:id', ProductsController_1.productController.retrieveProductById);
-router.patch('/:id', ProductsController_1.productController.updateProductById);
+router.patch('/:id', ImageUpload_1.upload.array('files[]'), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    console.log(req.files);
+    next();
+}, (0, Auth_1.default)(client_1.UserRole.VENDOR), ProductsController_1.productController.updateProductById);
 router.patch('/status/update-status', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.SUPER_ADMIN), ProductsController_1.productController.updateProductStatusId);
 router.delete('/:id', ProductsController_1.productController.deleteProductById);
 exports.productRouter = router;

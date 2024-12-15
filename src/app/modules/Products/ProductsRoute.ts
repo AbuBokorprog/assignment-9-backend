@@ -29,7 +29,17 @@ router.get(
   productController.retrieveAllProductByVendor,
 )
 router.get('/:id', productController.retrieveProductById)
-router.patch('/:id', productController.updateProductById)
+router.patch(
+  '/:id',
+  upload.array('files[]'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data)
+    console.log(req.files)
+    next()
+  },
+  Auth(UserRole.VENDOR),
+  productController.updateProductById,
+)
 router.patch(
   '/status/update-status',
   Auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),

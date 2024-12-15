@@ -94,7 +94,7 @@ const retrieveProductById = (0, CatchAsync_1.default)((req, res) => __awaiter(vo
 }));
 const updateProductById = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const data = yield ProductsServices_1.productServices.updateProductById(id, req.body);
+    const data = yield ProductsServices_1.productServices.updateProductById(id, req.files, req.body);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,

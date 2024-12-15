@@ -228,11 +228,31 @@ const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0
     // specific field
     if (((_a = Object.keys(filterData)) === null || _a === void 0 ? void 0 : _a.length) > 0) {
         andCondition.push({
-            AND: Object.keys(filterData).map(key => ({
-                [key]: {
-                    equals: filterData[key],
-                },
-            })),
+            AND: Object.keys(filterData).map(key => {
+                if (key === 'minPrice') {
+                    return {
+                        OR: [
+                            { regular_price: { gte: Number(filterData[key]) } },
+                            { discount_price: { gte: Number(filterData[key]) } },
+                        ],
+                    };
+                }
+                else if (key === 'maxPrice') {
+                    return {
+                        OR: [
+                            { regular_price: { lte: Number(filterData[key]) } },
+                            { discount_price: { lte: Number(filterData[key]) } },
+                        ],
+                    };
+                }
+                else {
+                    return {
+                        [key]: {
+                            equals: filterData[key],
+                        },
+                    };
+                }
+            }),
         });
     }
     const whereCondition = {
@@ -364,18 +384,96 @@ const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* 
         relatedProducts,
     };
 });
-const updateProductById = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.product.findUniqueOrThrow({
+const updateProductById = (id, files, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistProduct = yield prisma_1.default.product.findUniqueOrThrow({
         where: {
             id: id,
         },
     });
-    const result = yield prisma_1.default.product.update({
+    // Upload files and collect their URLs
+    const images = isExistProduct === null || isExistProduct === void 0 ? void 0 : isExistProduct.images;
+    if (files) {
+        for (const file of files) {
+            const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, file.path); // Upload each file
+            images.push(response.secure_url); // Collect uploaded URLs
+        }
+    }
+    const shopData = yield prisma_1.default.shop.findUniqueOrThrow({
         where: {
-            id: id,
+            id: payload.shopId,
         },
-        data: payload,
     });
+    yield prisma_1.default.vendor.findUniqueOrThrow({
+        where: {
+            id: shopData.vendorId,
+            isDeleted: false,
+        },
+    });
+    yield prisma_1.default.category.findUniqueOrThrow({
+        where: {
+            id: payload.categoryId,
+        },
+    });
+    const result = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a, _b;
+        const product = yield transactionClient.product.update({
+            where: {
+                id: id,
+            },
+            data: {
+                name: payload === null || payload === void 0 ? void 0 : payload.name,
+                regular_price: Number(payload === null || payload === void 0 ? void 0 : payload.regular_price),
+                discount_price: Number(payload === null || payload === void 0 ? void 0 : payload.discount_price),
+                description: payload === null || payload === void 0 ? void 0 : payload.description,
+                images: images,
+                productStatus: payload.productStatus && payload.productStatus,
+                inventory: Number(payload === null || payload === void 0 ? void 0 : payload.inventory),
+                categoryId: payload === null || payload === void 0 ? void 0 : payload.categoryId,
+                vendorId: shopData === null || shopData === void 0 ? void 0 : shopData.vendorId,
+                shopId: payload === null || payload === void 0 ? void 0 : payload.shopId,
+            },
+        });
+        const productSize = (_a = payload.productSize) === null || _a === void 0 ? void 0 : _a.map((s) => ({
+            size: s.size,
+            stock: Number(s.stock),
+            productId: product.id,
+        }));
+        if (productSize) {
+            try {
+                yield transactionClient.sizeOption.updateMany({
+                    where: {
+                        productId: id,
+                    },
+                    data: productSize,
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+        const productColors = (_b = payload.productColors) === null || _b === void 0 ? void 0 : _b.map((c) => ({
+            color: c.color,
+            stock: Number(c.colorStock),
+            code: c.colorCode,
+            productId: product.id,
+        }));
+        if (productColors) {
+            try {
+                yield transactionClient.colorOption.updateMany({
+                    where: {
+                        productId: id,
+                    },
+                    data: productColors,
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+        return {
+            product,
+        };
+    }));
     return result;
 });
 const updateProductStatusId = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
