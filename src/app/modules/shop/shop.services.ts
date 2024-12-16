@@ -109,7 +109,7 @@ const retrieveAllAvailableShop = async (
     andCondition.push({
       OR: searchableFields?.map(field => ({
         [field]: {
-          contains: searchTerm,
+          contains: filterFields?.searchTerm,
           mode: 'insensitive',
         },
       })),
@@ -152,7 +152,18 @@ const retrieveAllAvailableShop = async (
     },
   })
 
-  return result
+  const total = await prisma.shop.count({
+    where: whereCondition,
+  })
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  }
 }
 
 const retrieveAllShopByVendor = async (vendor: {

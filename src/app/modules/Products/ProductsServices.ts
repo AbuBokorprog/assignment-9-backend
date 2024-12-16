@@ -215,12 +215,13 @@ const allAvailableProducts = async (
   const { searchTerm, ...filterData } = fieldParams
 
   const andCondition: Prisma.ProductWhereInput[] = []
+
   // search params
-  if (fieldParams.searchTerm) {
+  if (fieldParams?.searchTerm) {
     andCondition.push({
-      OR: searchableFields.map(field => ({
+      OR: searchableFields?.map(field => ({
         [field]: {
-          contains: fieldParams.searchTerm,
+          contains: fieldParams?.searchTerm,
           mode: 'insensitive',
         },
       })),

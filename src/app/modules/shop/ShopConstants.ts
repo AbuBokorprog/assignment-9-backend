@@ -1,5 +1,5 @@
 // pick
-const shopFilterableFields = ['name', 'category', 'reviews']
+const shopFilterableFields = ['name', 'category', 'reviews', 'searchTerm']
 
 // searchTerm
 const searchableFields = ['description', 'shopName']

@@ -10,8 +10,9 @@ const productFilterableFields = [
     'minPrice',
     'maxPrice',
     'stockStatus',
+    'searchTerm',
 ];
 exports.productFilterableFields = productFilterableFields;
 // searchTerm
-const searchableFields = ['name', 'description', 'shop'];
+const searchableFields = ['name', 'description'];
 exports.searchableFields = searchableFields;

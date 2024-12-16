@@ -215,11 +215,11 @@ const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0
     const { searchTerm } = fieldParams, filterData = __rest(fieldParams, ["searchTerm"]);
     const andCondition = [];
     // search params
-    if (fieldParams.searchTerm) {
+    if (fieldParams === null || fieldParams === void 0 ? void 0 : fieldParams.searchTerm) {
         andCondition.push({
-            OR: ProductsContaints_1.searchableFields.map(field => ({
+            OR: ProductsContaints_1.searchableFields === null || ProductsContaints_1.searchableFields === void 0 ? void 0 : ProductsContaints_1.searchableFields.map(field => ({
                 [field]: {
-                    contains: fieldParams.searchTerm,
+                    contains: fieldParams === null || fieldParams === void 0 ? void 0 : fieldParams.searchTerm,
                     mode: 'insensitive',
                 },
             })),

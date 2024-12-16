@@ -110,7 +110,7 @@ const retrieveAllAvailableShop = (fieldParams, paginationParams) => __awaiter(vo
         andCondition.push({
             OR: ShopConstants_1.searchableFields === null || ShopConstants_1.searchableFields === void 0 ? void 0 : ShopConstants_1.searchableFields.map(field => ({
                 [field]: {
-                    contains: searchTerm,
+                    contains: filterFields === null || filterFields === void 0 ? void 0 : filterFields.searchTerm,
                     mode: 'insensitive',
                 },
             })),
@@ -148,7 +148,17 @@ const retrieveAllAvailableShop = (fieldParams, paginationParams) => __awaiter(vo
             reviews: true,
         },
     });
-    return result;
+    const total = yield prisma_1.default.shop.count({
+        where: whereCondition,
+    });
+    return {
+        meta: {
+            page,
+            limit,
+            total,
+        },
+        data: result,
+    };
 });
 const retrieveAllShopByVendor = (vendor) => __awaiter(void 0, void 0, void 0, function* () {
     const isExistVendor = yield prisma_1.default.vendor.findUniqueOrThrow({
