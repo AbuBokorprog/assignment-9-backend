@@ -4,7 +4,7 @@ import CatchAsync from '../../utils/CatchAsync'
 import { productServices } from './ProductsServices'
 import { Request, Response } from 'express'
 import pick from '../../helpers/Pick'
-import { adminFilterableFields } from './ProductsContaints'
+import { productFilterableFields } from './ProductsContaints'
 
 const createProduct = CatchAsync(async (req, res) => {
   const data = await productServices.createProduct(req.files, req.body)
@@ -19,7 +19,7 @@ const createProduct = CatchAsync(async (req, res) => {
 
 const retrieveAllProduct = CatchAsync(async (req, res) => {
   // pick
-  const filterFields = pick(req.query, adminFilterableFields)
+  const filterFields = pick(req.query, productFilterableFields)
   // pagination pick
   const paginationOption = pick(req.query, [
     'limit',
@@ -42,7 +42,7 @@ const retrieveAllProduct = CatchAsync(async (req, res) => {
 
 const allAvailableProducts = CatchAsync(async (req, res) => {
   // pick
-  const filterFields = pick(req.query, adminFilterableFields)
+  const filterFields = pick(req.query, productFilterableFields)
   // pagination pick
   const paginationOption = pick(req.query, [
     'limit',

@@ -3,6 +3,8 @@ import CatchAsync from '../../utils/CatchAsync'
 import SuccessResponse from '../../utils/SuccessResponse'
 import { shopServices } from './shop.services'
 import { Request, Response } from 'express'
+import pick from '../../helpers/Pick'
+import { shopFilterableFields } from './ShopConstants'
 
 const createShop = CatchAsync(async (req, res) => {
   const data = await shopServices.createShop(req.files, req.body)
@@ -16,7 +18,38 @@ const createShop = CatchAsync(async (req, res) => {
 })
 
 const retrieveAllShop = CatchAsync(async (req, res) => {
-  const data = await shopServices.retrieveAllShop()
+  const filterFields = pick(req?.query, shopFilterableFields)
+  const paginationOption = pick(req?.query, [
+    'limit',
+    'page',
+    'sortBy',
+    'sortOrder',
+  ])
+  const data = await shopServices.retrieveAllShop(
+    filterFields,
+    paginationOption,
+  )
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve all shops successfully!',
+    data,
+  })
+})
+
+const retrieveAllAvailableShop = CatchAsync(async (req, res) => {
+  const filterFields = pick(req?.query, shopFilterableFields)
+  const paginationOption = pick(req?.query, [
+    'limit',
+    'page',
+    'sortBy',
+    'sortOrder',
+  ])
+  const data = await shopServices.retrieveAllAvailableShop(
+    filterFields,
+    paginationOption,
+  )
 
   SuccessResponse(res, {
     status: httpStatus.OK,
@@ -96,4 +129,5 @@ export const shopController = {
   deleteShopById,
   updateStatus,
   retrieveAllShopByVendor,
+  retrieveAllAvailableShop,
 }

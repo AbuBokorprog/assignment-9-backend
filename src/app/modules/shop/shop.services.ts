@@ -1,7 +1,10 @@
+import { Prisma } from '@prisma/client'
+import { paginationHelpers } from '../../helpers/PaginationHelpers'
 import prisma from '../../helpers/prisma'
 import { ImageUpload } from '../../utils/ImageUpload'
 import { TActive } from '../users/user.containts'
 import { TShop } from './shop.interface'
+import { searchableFields } from './ShopConstants'
 
 const createShop = async (files: any, payload: TShop) => {
   const logoResponse: any = await ImageUpload(
@@ -37,13 +40,115 @@ const createShop = async (files: any, payload: TShop) => {
   return shop
 }
 
-const retrieveAllShop = async () => {
+const retrieveAllShop = async (fieldParams: any, paginationParams: any) => {
+  const { limit, page, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationParams)
+  const { searchTerm, ...filterFields } = fieldParams
+
+  const andCondition: Prisma.ShopWhereInput[] = []
+
+  if (fieldParams?.searchTerm) {
+    andCondition.push({
+      OR: searchableFields?.map(field => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    })
+  }
+
+  if (Object.keys(filterFields)?.length > 0) {
+    andCondition.push({
+      AND: Object.keys(filterFields).map(key => ({
+        [key]: {
+          equals: filterFields[key],
+        },
+      })),
+    })
+  }
+
+  const whereCondition: Prisma.ShopWhereInput = {
+    AND: andCondition,
+  }
+
   const result = await prisma.shop.findMany({
+    where: whereCondition,
+    skip: skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : {
+            createdAt: 'desc',
+          },
     include: {
       category: true,
       followers: true,
       products: true,
       vendor: true,
+      reviews: true,
+    },
+  })
+
+  return result
+}
+const retrieveAllAvailableShop = async (
+  fieldParams: any,
+  paginationParams: any,
+) => {
+  const { limit, page, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(paginationParams)
+  const { searchTerm, ...filterFields } = fieldParams
+
+  const andCondition: Prisma.ShopWhereInput[] = []
+
+  if (fieldParams?.searchTerm) {
+    andCondition.push({
+      OR: searchableFields?.map(field => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    })
+  }
+
+  if (Object.keys(filterFields)?.length > 0) {
+    andCondition.push({
+      AND: Object.keys(filterFields).map(key => ({
+        [key]: {
+          equals: filterFields[key],
+        },
+      })),
+    })
+  }
+
+  const whereCondition: Prisma.ShopWhereInput = {
+    AND: andCondition,
+    isActive: 'APPROVED',
+  }
+
+  const result = await prisma.shop.findMany({
+    where: whereCondition,
+    skip: skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : {
+            createdAt: 'desc',
+          },
+    include: {
+      category: true,
+      followers: true,
+      products: true,
+      vendor: true,
+      reviews: true,
     },
   })
 
@@ -90,7 +195,7 @@ const retrieveShopById = async (id: any) => {
       category: true,
       followers: {
         select: {
-          id: true,
+          customerId: true,
         },
       },
       products: true,
@@ -187,5 +292,6 @@ export const shopServices = {
   updateShopById,
   retrieveAllShopByVendor,
   deleteShopById,
+  retrieveAllAvailableShop,
   updateStatus,
 }

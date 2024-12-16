@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchableFields = exports.adminFilterableFields = void 0;
+exports.searchableFields = exports.productFilterableFields = void 0;
 // pick
-const adminFilterableFields = [
+const productFilterableFields = [
     'name',
     'category',
     'reviews',
@@ -11,7 +11,7 @@ const adminFilterableFields = [
     'maxPrice',
     'stockStatus',
 ];
-exports.adminFilterableFields = adminFilterableFields;
+exports.productFilterableFields = productFilterableFields;
 // searchTerm
 const searchableFields = ['name', 'description', 'shop'];
 exports.searchableFields = searchableFields;

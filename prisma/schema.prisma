@@ -360,6 +360,7 @@ enum ActiveStatus {
   APPROVED
   REJECT
   DELETE
+  BLOCK
 }
 
 enum OrderStatus {

@@ -20,6 +20,7 @@ router.post('/', (0, Auth_1.default)(client_1.UserRole.VENDOR), ImageUpload_1.up
     next();
 }, (0, ValidationRequest_1.default)(shop_validation_1.shopValidation.createShop), shop_controller_1.shopController.createShop);
 router.get('/', shop_controller_1.shopController.retrieveAllShop);
+router.get('/all-available', shop_controller_1.shopController.retrieveAllAvailableShop);
 router.get('/vendor-shops', (0, Auth_1.default)(client_1.UserRole.VENDOR), shop_controller_1.shopController.retrieveAllShopByVendor);
 router.get('/:id', shop_controller_1.shopController.retrieveShopById);
 router.patch('/:id', ImageUpload_1.upload.fields([

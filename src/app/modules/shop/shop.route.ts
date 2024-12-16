@@ -22,6 +22,7 @@ router.post(
   shopController.createShop,
 )
 router.get('/', shopController.retrieveAllShop)
+router.get('/all-available', shopController.retrieveAllAvailableShop)
 router.get(
   '/vendor-shops',
   Auth(UserRole.VENDOR),

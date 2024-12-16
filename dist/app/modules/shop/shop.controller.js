@@ -17,6 +17,8 @@ const http_status_1 = __importDefault(require("http-status"));
 const CatchAsync_1 = __importDefault(require("../../utils/CatchAsync"));
 const SuccessResponse_1 = __importDefault(require("../../utils/SuccessResponse"));
 const shop_services_1 = require("./shop.services");
+const Pick_1 = __importDefault(require("../../helpers/Pick"));
+const ShopConstants_1 = require("./ShopConstants");
 const createShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield shop_services_1.shopServices.createShop(req.files, req.body);
     (0, SuccessResponse_1.default)(res, {
@@ -27,7 +29,30 @@ const createShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, voi
     });
 }));
 const retrieveAllShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield shop_services_1.shopServices.retrieveAllShop();
+    const filterFields = (0, Pick_1.default)(req === null || req === void 0 ? void 0 : req.query, ShopConstants_1.shopFilterableFields);
+    const paginationOption = (0, Pick_1.default)(req === null || req === void 0 ? void 0 : req.query, [
+        'limit',
+        'page',
+        'sortBy',
+        'sortOrder',
+    ]);
+    const data = yield shop_services_1.shopServices.retrieveAllShop(filterFields, paginationOption);
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all shops successfully!',
+        data,
+    });
+}));
+const retrieveAllAvailableShop = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const filterFields = (0, Pick_1.default)(req === null || req === void 0 ? void 0 : req.query, ShopConstants_1.shopFilterableFields);
+    const paginationOption = (0, Pick_1.default)(req === null || req === void 0 ? void 0 : req.query, [
+        'limit',
+        'page',
+        'sortBy',
+        'sortOrder',
+    ]);
+    const data = yield shop_services_1.shopServices.retrieveAllAvailableShop(filterFields, paginationOption);
     (0, SuccessResponse_1.default)(res, {
         status: http_status_1.default.OK,
         success: true,
@@ -92,4 +117,5 @@ exports.shopController = {
     deleteShopById,
     updateStatus,
     retrieveAllShopByVendor,
+    retrieveAllAvailableShop,
 };

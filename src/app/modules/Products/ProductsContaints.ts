@@ -1,5 +1,5 @@
 // pick
-const adminFilterableFields = [
+const productFilterableFields = [
   'name',
   'category',
   'reviews',
@@ -12,4 +12,4 @@ const adminFilterableFields = [
 // searchTerm
 const searchableFields = ['name', 'description', 'shop']
 
-export { adminFilterableFields, searchableFields }
+export { productFilterableFields, searchableFields }

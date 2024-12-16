@@ -30,7 +30,7 @@ const createProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, 
 }));
 const retrieveAllProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // pick
-    const filterFields = (0, Pick_1.default)(req.query, ProductsContaints_1.adminFilterableFields);
+    const filterFields = (0, Pick_1.default)(req.query, ProductsContaints_1.productFilterableFields);
     // pagination pick
     const paginationOption = (0, Pick_1.default)(req.query, [
         'limit',
@@ -48,7 +48,7 @@ const retrieveAllProduct = (0, CatchAsync_1.default)((req, res) => __awaiter(voi
 }));
 const allAvailableProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // pick
-    const filterFields = (0, Pick_1.default)(req.query, ProductsContaints_1.adminFilterableFields);
+    const filterFields = (0, Pick_1.default)(req.query, ProductsContaints_1.productFilterableFields);
     // pagination pick
     const paginationOption = (0, Pick_1.default)(req.query, [
         'limit',
