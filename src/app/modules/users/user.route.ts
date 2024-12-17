@@ -66,6 +66,11 @@ router.get(
 )
 router.patch(
   '/profile/my-profile',
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data)
+    next()
+  },
   Auth(
     UserRole.ADMIN,
     UserRole.CUSTOMER,

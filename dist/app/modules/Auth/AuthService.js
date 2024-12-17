@@ -154,16 +154,19 @@ const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* 
         id: isExistUser.id,
     };
     const accessToken = yield (0, AccessToken_1.getAccessToken)(resetTokenData, config_1.default.access_token, '5m');
-    const resetLink = `https://bazaar-bridge-front.vercel.app/reset-password/email?=${isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email}?token=${accessToken}`;
+    const resetLink = `https://bazaar-bridge-front.vercel.app/reset-password?email=${isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email}&token=${accessToken}`;
     (0, SendMail_1.SendMail)(isExistUser === null || isExistUser === void 0 ? void 0 : isExistUser.email, resetLink);
 });
-const resetPassword = (payload, token) => __awaiter(void 0, void 0, void 0, function* () {
+const resetPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,
         },
     });
-    const decode = (0, VerifyToken_1.VerifyToken)(token, token);
+    const decode = (0, VerifyToken_1.VerifyToken)(payload === null || payload === void 0 ? void 0 : payload.token, config_1.default.access_token);
+    if (!decode) {
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, 'Token expired!');
+    }
     if (payload.email !== (decode === null || decode === void 0 ? void 0 : decode.email)) {
         throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, 'User unauthorized!');
     }

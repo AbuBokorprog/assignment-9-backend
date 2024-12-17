@@ -191,21 +191,29 @@ const forgotPassword = async (payload: { email: string }) => {
     '5m',
   )
 
-  const resetLink = `https://bazaar-bridge-front.vercel.app/reset-password/email?=${isExistUser?.email}?token=${accessToken}`
+  const resetLink = `https://bazaar-bridge-front.vercel.app/reset-password?email=${isExistUser?.email}&token=${accessToken}`
   SendMail(isExistUser?.email, resetLink)
 }
 
-const resetPassword = async (
-  payload: { email: string; newPassword: string },
-  token: string,
-) => {
+const resetPassword = async (payload: {
+  email: string
+  newPassword: string
+  token: string
+}) => {
   await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
     },
   })
 
-  const decode = VerifyToken(token, token) as JwtPayload
+  const decode = VerifyToken(
+    payload?.token,
+    config.access_token as string,
+  ) as JwtPayload
+
+  if (!decode) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Token expired!')
+  }
 
   if (payload.email !== decode?.email) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'User unauthorized!')

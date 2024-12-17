@@ -179,15 +179,21 @@ const myProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const updateMyProfile = (user, file, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Uploaded File:', file);
     const isExistUser = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: user === null || user === void 0 ? void 0 : user.email,
         },
+        include: {
+            admin: true,
+            customer: true,
+            vendor: true,
+        },
     });
     if (file) {
-        const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, file.path);
+        const response = yield (0, ImageUpload_1.ImageUpload)(file === null || file === void 0 ? void 0 : file.originalname, file.path);
         const secureUrl = response.secureUrl;
-        payload.profilePhoto = secureUrl;
+        payload.profilePhoto = secureUrl || (file === null || file === void 0 ? void 0 : file.path);
     }
     if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
         const result = yield prisma_1.default.admin.update({

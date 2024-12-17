@@ -26,5 +26,8 @@ router.get('/:id', user_controller_1.userControllers.retrieveUserById);
 router.patch('/status/user-status', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.SUPER_ADMIN), user_controller_1.userControllers.userStatusChanged);
 router.patch('/role/user-role', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.VENDOR), user_controller_1.userControllers.userRoleUpdate);
 router.get('/profile/my-profile', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), user_controller_1.userControllers.myProfile);
-router.patch('/profile/my-profile', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), user_controller_1.userControllers.updateMyProfile);
+router.patch('/profile/my-profile', ImageUpload_1.upload.single('file'), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+}, (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), user_controller_1.userControllers.updateMyProfile);
 exports.userRouter = router;

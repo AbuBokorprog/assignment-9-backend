@@ -197,16 +197,23 @@ const myProfile = async (user: any) => {
 }
 
 const updateMyProfile = async (user: any, file: any, payload: any) => {
+  console.log('Uploaded File:', file)
   const isExistUser = await prisma.user.findUniqueOrThrow({
     where: {
       email: user?.email,
     },
+    include: {
+      admin: true,
+      customer: true,
+      vendor: true,
+    },
   })
 
   if (file) {
-    const response: any = await ImageUpload(payload.name, file.path)
+    const response: any = await ImageUpload(file?.originalname, file.path)
     const secureUrl = response.secureUrl as string
-    payload.profilePhoto = secureUrl
+
+    payload.profilePhoto = secureUrl || file?.path
   }
 
   if (isExistUser.role === 'ADMIN' || isExistUser.role === 'SUPER_ADMIN') {
@@ -244,6 +251,7 @@ const updateMyProfile = async (user: any, file: any, payload: any) => {
         profilePhoto: payload.profilePhoto,
       },
     })
+
     return result
   }
 }
