@@ -398,8 +398,12 @@ const updateProductById = (id, files, payload) => __awaiter(void 0, void 0, void
     const images = isExistProduct === null || isExistProduct === void 0 ? void 0 : isExistProduct.images;
     if (files) {
         for (const file of files) {
-            const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, file.path); // Upload each file
-            images.push(response.secure_url); // Collect uploaded URLs
+            // Generate a unique name for each image, for example using a timestamp
+            const uniqueName = `${payload.name}-${Date.now()}-${Math.random().toString(16).substr(2, 9)}`;
+            // Upload the image to Cloudinary with the unique name
+            const response = yield (0, ImageUpload_1.ImageUpload)(uniqueName, file.path);
+            // Collect the secure URL of the uploaded image
+            images.push(response.secure_url);
         }
     }
     const shopData = yield prisma_1.default.shop.findUniqueOrThrow({
