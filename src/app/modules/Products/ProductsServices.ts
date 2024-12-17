@@ -11,8 +11,14 @@ const createProduct = async (files: any, payload: TProduct) => {
   const images: string[] = []
   if (files) {
     for (const file of files) {
-      const response: any = await ImageUpload(payload.name, file.path) // Upload each file
-      images.push(response.secure_url) // Collect uploaded URLs
+      // Generate a unique name for each image, for example using a timestamp
+      const uniqueName = `${payload.name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
+      // Upload the image to Cloudinary with the unique name
+      const response: any = await ImageUpload(uniqueName, file.path)
+
+      // Collect the secure URL of the uploaded image
+      images.push(response.secure_url)
     }
   }
 
@@ -407,8 +413,14 @@ const updateProductById = async (id: string, files: any, payload: any) => {
   const images: string[] = isExistProduct?.images
   if (files) {
     for (const file of files) {
-      const response: any = await ImageUpload(payload.name, file.path) // Upload each file
-      images.push(response.secure_url) // Collect uploaded URLs
+      // Generate a unique name for each image, for example using a timestamp
+      const uniqueName = `${payload.name}-${Date.now()}-${Math.random().toString(16).substr(2, 9)}`
+
+      // Upload the image to Cloudinary with the unique name
+      const response: any = await ImageUpload(uniqueName, file.path)
+
+      // Collect the secure URL of the uploaded image
+      images.push(response.secure_url)
     }
   }
 
