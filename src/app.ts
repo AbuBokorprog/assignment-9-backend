@@ -9,7 +9,7 @@ import NotFoundErrorHandler from './app/middlewares/NotFoundErrorHandler'
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:5174',
+    origin: 'https://bazaar-bridge-front.vercel.app',
   }),
 )
 app.use(express.json())
