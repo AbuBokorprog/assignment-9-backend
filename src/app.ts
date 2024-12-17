@@ -6,13 +6,13 @@ import router from './app/routers'
 import GlobalErrorHandler from './app/middlewares/GlobalErrorHandler'
 import NotFoundErrorHandler from './app/middlewares/NotFoundErrorHandler'
 
-app.use(express.json())
 app.use(
   cors({
     credentials: true,
-    origin: 'https://bazaar-bridge-front.vercel.app',
+    origin: 'http://localhost:5174',
   }),
 )
+app.use(express.json())
 app.use(cookieParser())
 
 app.get('/', (req: Request, res: Response) => {

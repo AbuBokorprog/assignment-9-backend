@@ -16,9 +16,10 @@ exports.categoryServices = void 0;
 const prisma_1 = __importDefault(require("../../helpers/prisma"));
 const ImageUpload_1 = require("../../utils/ImageUpload");
 const createCategory = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     if (file) {
         const path = file.path;
-        const response = yield (0, ImageUpload_1.ImageUpload)(payload.name, path);
+        const response = yield (0, ImageUpload_1.ImageUpload)((_a = payload.name) === null || _a === void 0 ? void 0 : _a.split(' ')[0], path);
         const secureUrl = response.secure_url;
         payload.image = secureUrl;
         const data = {

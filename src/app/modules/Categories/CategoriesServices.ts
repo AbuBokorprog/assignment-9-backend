@@ -5,7 +5,10 @@ import { TCategory } from './CategoriesInterface'
 const createCategory = async (file: any, payload: TCategory) => {
   if (file) {
     const path = file.path
-    const response: any = await ImageUpload(payload.name as string, path)
+    const response: any = await ImageUpload(
+      payload.name?.split(' ')[0] as string,
+      path,
+    )
     const secureUrl = response.secure_url
     payload.image = secureUrl
     const data = {
