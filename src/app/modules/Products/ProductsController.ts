@@ -73,6 +73,16 @@ const allFlashSaleProducts = CatchAsync(async (req, res) => {
     data,
   })
 })
+const allHomeProducts = CatchAsync(async (req, res) => {
+  const data = await productServices.allHomeProducts()
+
+  SuccessResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: 'Retrieve all home products successfully!',
+    data,
+  })
+})
 
 const retrieveAllProductByVendor = CatchAsync(
   async (req: Request & { user?: any }, res: Response) => {
@@ -147,4 +157,5 @@ export const productController = {
   deleteProductById,
   retrieveAllProductByVendor,
   updateProductStatusId,
+  allHomeProducts,
 }

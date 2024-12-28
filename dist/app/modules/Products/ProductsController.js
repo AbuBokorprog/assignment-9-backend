@@ -73,6 +73,15 @@ const allFlashSaleProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(v
         data,
     });
 }));
+const allHomeProducts = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = yield ProductsServices_1.productServices.allHomeProducts();
+    (0, SuccessResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: 'Retrieve all home products successfully!',
+        data,
+    });
+}));
 const retrieveAllProductByVendor = (0, CatchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield ProductsServices_1.productServices.retrieveAllProductByVendor(req === null || req === void 0 ? void 0 : req.user);
     (0, SuccessResponse_1.default)(res, {
@@ -131,4 +140,5 @@ exports.productController = {
     deleteProductById,
     retrieveAllProductByVendor,
     updateProductStatusId,
+    allHomeProducts,
 };

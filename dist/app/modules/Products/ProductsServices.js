@@ -338,6 +338,150 @@ const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* (
     });
     return result;
 });
+const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+    const allFlashSaleProducts = yield prisma_1.default.product.findMany({
+        where: {
+            productStatus: 'FLASH_SALE',
+            isActive: 'APPROVED',
+        },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
+                select: {
+                    rating: true,
+                },
+            },
+            orders: true,
+            wishlist: true,
+        },
+    });
+    const allHotProducts = yield prisma_1.default.product.findMany({
+        where: {
+            productStatus: 'HOT',
+            isActive: 'APPROVED',
+        },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
+                select: {
+                    rating: true,
+                },
+            },
+            orders: true,
+            wishlist: true,
+        },
+    });
+    const allNewProducts = yield prisma_1.default.product.findMany({
+        where: {
+            productStatus: 'NEW',
+            isActive: 'APPROVED',
+        },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
+                select: {
+                    rating: true,
+                },
+            },
+            orders: true,
+            wishlist: true,
+        },
+    });
+    const allDiscountProducts = yield prisma_1.default.product.findMany({
+        where: {
+            productStatus: 'DISCOUNT',
+            isActive: 'APPROVED',
+        },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
+                select: {
+                    rating: true,
+                },
+            },
+            orders: true,
+            wishlist: true,
+        },
+    });
+    const allFeaturedProducts = yield prisma_1.default.product.findMany({
+        where: {
+            productStatus: 'FEATURED',
+            isActive: 'APPROVED',
+        },
+        include: {
+            category: true,
+            colors: true,
+            sizes: true,
+            shop: true,
+            vendor: {
+                select: {
+                    name: true,
+                },
+            },
+            reviews: {
+                where: {
+                    reviewStatus: 'APPROVED',
+                },
+                select: {
+                    rating: true,
+                },
+            },
+            orders: true,
+            wishlist: true,
+        },
+    });
+    return {
+        allFlashSaleProducts,
+        allHotProducts,
+        allNewProducts,
+        allDiscountProducts,
+        allFeaturedProducts,
+    };
+});
 const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const product = yield prisma_1.default.product.findUniqueOrThrow({
         where: { id },
@@ -526,4 +670,5 @@ exports.productServices = {
     deleteProductById,
     updateProductStatusId,
     retrieveAllProductByVendor,
+    allHomeProducts,
 };

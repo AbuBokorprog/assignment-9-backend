@@ -349,6 +349,153 @@ const allFlashSaleProducts = async () => {
   return result
 }
 
+const allHomeProducts = async () => {
+  const allFlashSaleProducts = await prisma.product.findMany({
+    where: {
+      productStatus: 'FLASH_SALE',
+      isActive: 'APPROVED',
+    },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
+        select: {
+          rating: true,
+        },
+      },
+      orders: true,
+      wishlist: true,
+    },
+  })
+
+  const allHotProducts = await prisma.product.findMany({
+    where: {
+      productStatus: 'HOT',
+      isActive: 'APPROVED',
+    },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
+        select: {
+          rating: true,
+        },
+      },
+      orders: true,
+      wishlist: true,
+    },
+  })
+  const allNewProducts = await prisma.product.findMany({
+    where: {
+      productStatus: 'NEW',
+      isActive: 'APPROVED',
+    },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
+        select: {
+          rating: true,
+        },
+      },
+      orders: true,
+      wishlist: true,
+    },
+  })
+  const allDiscountProducts = await prisma.product.findMany({
+    where: {
+      productStatus: 'DISCOUNT',
+      isActive: 'APPROVED',
+    },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
+        select: {
+          rating: true,
+        },
+      },
+      orders: true,
+      wishlist: true,
+    },
+  })
+  const allFeaturedProducts = await prisma.product.findMany({
+    where: {
+      productStatus: 'FEATURED',
+      isActive: 'APPROVED',
+    },
+    include: {
+      category: true,
+      colors: true,
+      sizes: true,
+      shop: true,
+      vendor: {
+        select: {
+          name: true,
+        },
+      },
+      reviews: {
+        where: {
+          reviewStatus: 'APPROVED',
+        },
+        select: {
+          rating: true,
+        },
+      },
+      orders: true,
+      wishlist: true,
+    },
+  })
+
+  return {
+    allFlashSaleProducts,
+    allHotProducts,
+    allNewProducts,
+    allDiscountProducts,
+    allFeaturedProducts,
+  }
+}
+
 const retrieveProductById = async (id: any) => {
   const product = await prisma.product.findUniqueOrThrow({
     where: { id },
@@ -558,4 +705,5 @@ export const productServices = {
   deleteProductById,
   updateProductStatusId,
   retrieveAllProductByVendor,
+  allHomeProducts,
 }
