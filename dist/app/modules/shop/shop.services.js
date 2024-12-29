@@ -118,11 +118,25 @@ const retrieveAllAvailableShop = (fieldParams, paginationParams) => __awaiter(vo
     }
     if (((_a = Object.keys(filterFields)) === null || _a === void 0 ? void 0 : _a.length) > 0) {
         andCondition.push({
-            AND: Object.keys(filterFields).map(key => ({
-                [key]: {
-                    equals: filterFields[key],
-                },
-            })),
+            AND: Object.keys(filterFields).map(key => {
+                if (key === 'category') {
+                    return {
+                        category: {
+                            name: {
+                                equals: filterFields[key],
+                                mode: 'insensitive',
+                            },
+                        },
+                    };
+                }
+                else {
+                    return {
+                        [key]: {
+                            equals: filterFields[key],
+                        },
+                    };
+                }
+            }),
         });
     }
     const whereCondition = {
@@ -151,6 +165,7 @@ const retrieveAllAvailableShop = (fieldParams, paginationParams) => __awaiter(vo
     const total = yield prisma_1.default.shop.count({
         where: whereCondition,
     });
+    console.log(result);
     return {
         meta: {
             page,

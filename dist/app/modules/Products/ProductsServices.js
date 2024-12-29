@@ -249,6 +249,16 @@ const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0
                         ],
                     };
                 }
+                else if (key === 'category') {
+                    return {
+                        category: {
+                            name: {
+                                equals: filterData[key],
+                                mode: 'insensitive',
+                            },
+                        },
+                    };
+                }
                 else {
                     return {
                         [key]: {
@@ -271,9 +281,15 @@ const allAvailableProducts = (fieldParams, paginationOption) => __awaiter(void 0
             ? {
                 [sortBy]: sortOrder,
             }
-            : {
-                createdAt: 'desc',
-            },
+            : sortBy === 'reviews'
+                ? {
+                    reviews: {
+                        _count: 'desc',
+                    },
+                }
+                : {
+                    createdAt: 'desc',
+                },
         include: {
             category: true,
             colors: true,

@@ -252,6 +252,15 @@ const allAvailableProducts = async (
               { discount_price: { lte: Number(filterData[key]) } },
             ],
           }
+        } else if (key === 'category') {
+          return {
+            category: {
+              name: {
+                equals: filterData[key],
+                mode: 'insensitive',
+              },
+            },
+          }
         } else {
           return {
             [key]: {
@@ -277,9 +286,15 @@ const allAvailableProducts = async (
         ? {
             [sortBy]: sortOrder,
           }
-        : {
-            createdAt: 'desc',
-          },
+        : sortBy === 'reviews'
+          ? {
+              reviews: {
+                _count: 'desc',
+              },
+            }
+          : {
+              createdAt: 'desc',
+            },
     include: {
       category: true,
       colors: true,

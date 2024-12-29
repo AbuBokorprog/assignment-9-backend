@@ -118,11 +118,24 @@ const retrieveAllAvailableShop = async (
 
   if (Object.keys(filterFields)?.length > 0) {
     andCondition.push({
-      AND: Object.keys(filterFields).map(key => ({
-        [key]: {
-          equals: filterFields[key],
-        },
-      })),
+      AND: Object.keys(filterFields).map(key => {
+        if (key === 'category') {
+          return {
+            category: {
+              name: {
+                equals: filterFields[key],
+                mode: 'insensitive',
+              },
+            },
+          }
+        } else {
+          return {
+            [key]: {
+              equals: filterFields[key],
+            },
+          }
+        }
+      }),
     })
   }
 
@@ -155,7 +168,7 @@ const retrieveAllAvailableShop = async (
   const total = await prisma.shop.count({
     where: whereCondition,
   })
-
+  console.log(result)
   return {
     meta: {
       page,

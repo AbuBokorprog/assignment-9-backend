@@ -50,6 +50,7 @@ const allAvailableProducts = CatchAsync(async (req, res) => {
     'sortBy',
     'sortOrder',
   ])
+
   const data = await productServices.allAvailableProducts(
     filterFields,
     paginationOption,
