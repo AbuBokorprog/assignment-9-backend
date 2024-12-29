@@ -324,6 +324,13 @@ model RecentProduct{
   @@map("recentProducts")
 }
 
+model Newsletter {
+  id                  String @id @default(uuid())
+  email               String @unique
+
+  @@map("newsletter")
+}
+
 
 // enums
 enum UserRole {

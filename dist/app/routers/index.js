@@ -19,6 +19,7 @@ const reports_route_1 = require("../modules/dashboard-reports/reports.route");
 const RecentProductsRoute_1 = require("../modules/RecentProducts/RecentProductsRoute");
 const WishlistRoute_1 = require("../modules/Wishlist/WishlistRoute");
 const PaymentRoute_1 = require("../modules/Payment/PaymentRoute");
+const NewsletterRoute_1 = require("../modules/Newsletter/NewsletterRoute");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -80,6 +81,10 @@ const moduleRoutes = [
     {
         path: '/wishlist',
         route: WishlistRoute_1.wishlistRouter,
+    },
+    {
+        path: '/newsletter',
+        route: NewsletterRoute_1.newsletterRoute,
     },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));

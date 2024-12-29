@@ -14,6 +14,7 @@ import { reportsRoute } from '../modules/dashboard-reports/reports.route'
 import { recentProductsRouter } from '../modules/RecentProducts/RecentProductsRoute'
 import { wishlistRouter } from '../modules/Wishlist/WishlistRoute'
 import { paymentRoute } from '../modules/Payment/PaymentRoute'
+import { newsletterRoute } from '../modules/Newsletter/NewsletterRoute'
 const router = express.Router()
 
 const moduleRoutes = [
@@ -76,6 +77,10 @@ const moduleRoutes = [
   {
     path: '/wishlist',
     route: wishlistRouter,
+  },
+  {
+    path: '/newsletter',
+    route: newsletterRoute,
   },
 ]
 
