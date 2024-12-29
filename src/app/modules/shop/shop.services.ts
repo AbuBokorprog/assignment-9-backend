@@ -168,7 +168,7 @@ const retrieveAllAvailableShop = async (
   const total = await prisma.shop.count({
     where: whereCondition,
   })
-  console.log(result)
+
   return {
     meta: {
       page,

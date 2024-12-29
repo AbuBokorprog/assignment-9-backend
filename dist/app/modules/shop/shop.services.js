@@ -165,7 +165,6 @@ const retrieveAllAvailableShop = (fieldParams, paginationParams) => __awaiter(vo
     const total = yield prisma_1.default.shop.count({
         where: whereCondition,
     });
-    console.log(result);
     return {
         meta: {
             page,
