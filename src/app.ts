@@ -5,11 +5,11 @@ import cors from 'cors'
 import router from './app/routers'
 import GlobalErrorHandler from './app/middlewares/GlobalErrorHandler'
 import NotFoundErrorHandler from './app/middlewares/NotFoundErrorHandler'
-// 'https://bazaar-bridge-front.vercel.app'
+
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:5173',
+    origin: 'https://bazaar-bridge-front.vercel.app',
   }),
 )
 app.use(express.json())
