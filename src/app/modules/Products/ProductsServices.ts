@@ -398,6 +398,7 @@ const allHomeProducts = async () => {
       productStatus: 'HOT',
       isActive: 'APPROVED',
     },
+    take: 10,
     include: {
       category: true,
       colors: true,
@@ -425,6 +426,7 @@ const allHomeProducts = async () => {
       productStatus: 'NEW',
       isActive: 'APPROVED',
     },
+    take: 10,
     include: {
       category: true,
       colors: true,
@@ -452,6 +454,7 @@ const allHomeProducts = async () => {
       productStatus: 'DISCOUNT',
       isActive: 'APPROVED',
     },
+    take: 10,
     include: {
       category: true,
       colors: true,
@@ -479,6 +482,7 @@ const allHomeProducts = async () => {
       productStatus: 'FEATURED',
       isActive: 'APPROVED',
     },
+    take: 10,
     include: {
       category: true,
       colors: true,
