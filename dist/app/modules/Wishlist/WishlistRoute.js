@@ -12,7 +12,7 @@ const WishlistValidation_1 = require("./WishlistValidation");
 const WishlistController_1 = require("./WishlistController");
 const router = express_1.default.Router();
 router.post('/', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), (0, ValidationRequest_1.default)(WishlistValidation_1.wishlistValidation.createWishlist), WishlistController_1.wishlistController.createWishlist);
-router.get('/user/my-wishlist', (0, Auth_1.default)(client_1.UserRole.CUSTOMER), WishlistController_1.wishlistController.retrieveAllWishlist);
+router.get('/user/my-wishlist', (0, Auth_1.default)(client_1.UserRole.CUSTOMER, client_1.UserRole.ADMIN, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.SUPER_ADMIN), WishlistController_1.wishlistController.retrieveAllWishlist);
 router.get('/:id', WishlistController_1.wishlistController.retrieveWishlistById);
 router.patch('/:id', WishlistController_1.wishlistController.updateWishlistById);
 router.delete('/user/wishlist-delete', (0, Auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.SUPER_ADMIN, client_1.UserRole.VENDOR), WishlistController_1.wishlistController.deleteWishlistById);

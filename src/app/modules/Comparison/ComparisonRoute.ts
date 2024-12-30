@@ -9,7 +9,12 @@ const router = express.Router()
 
 router.post(
   '/',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   ValidationRequest(comparisonValidation.createComparison),
   comparisonController.createComparison,
 )
@@ -20,6 +25,15 @@ router.get(
 )
 router.get('/:id', comparisonController.retrieveComparisonById)
 router.patch('/:id', comparisonController.updateComparisonById)
-router.delete('/:id', comparisonController.deleteComparisonById)
+router.delete(
+  '/:id',
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
+  comparisonController.deleteComparisonById,
+)
 
 export const comparisonRouter = router

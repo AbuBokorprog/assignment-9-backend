@@ -8,14 +8,24 @@ const router = express.Router()
 
 router.post(
   '/',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   ValidationRequest(orderValidation.createOrder),
   ordersController.createOrder,
 )
 router.get('/', ordersController.retrieveOrder)
 router.get(
   '/users/my-orders',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   ordersController.retrieveMyOrders,
 )
 router.get(

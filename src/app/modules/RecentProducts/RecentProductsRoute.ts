@@ -9,14 +9,24 @@ const router = express.Router()
 
 router.post(
   '/',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   ValidationRequest(recentProductsValidation.createRecentValidation),
   recentProductsController.createRecentProducts,
 )
 router.get('/', recentProductsController.retrieveAllRecentProducts)
 router.get(
   '/user/my-recent-products',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   recentProductsController.retrieveMyAllRecentProducts,
 )
 router.get('/:id', recentProductsController.retrieveRecentProductsById)

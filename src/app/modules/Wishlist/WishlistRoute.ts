@@ -15,7 +15,12 @@ router.post(
 )
 router.get(
   '/user/my-wishlist',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   wishlistController.retrieveAllWishlist,
 )
 router.get('/:id', wishlistController.retrieveWishlistById)

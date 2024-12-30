@@ -8,13 +8,23 @@ const router = express.Router()
 
 router.post(
   '/',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   ValidationRequest(cartValidation.createCart),
   cartsController.createCart,
 )
 router.post(
   '/conflict/replace-cart',
-  Auth(UserRole.CUSTOMER),
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
   ValidationRequest(cartValidation.createCart),
   cartsController.replaceCart,
 )
@@ -31,6 +41,15 @@ router.get(
 )
 router.get('/:id', cartsController.retrieveCartById)
 router.patch('/:id', cartsController.updateCart)
-router.delete('/:id', cartsController.deleteCart)
+router.delete(
+  '/:id',
+  Auth(
+    UserRole.CUSTOMER,
+    UserRole.ADMIN,
+    UserRole.SUPER_ADMIN,
+    UserRole.SUPER_ADMIN,
+  ),
+  cartsController.deleteCart,
+)
 
 export const cartRouter = router
