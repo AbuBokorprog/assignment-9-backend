@@ -8,12 +8,12 @@ import NotFoundErrorHandler from './app/middlewares/NotFoundErrorHandler'
 
 app.use(
   cors({
-    credentials: true,
     origin: [
       'http://localhost:5173',
       'https://bazaar-bridge-front.vercel.app',
       'https://bazaar-bridge-dashboard.vercel.app',
     ],
+    credentials: true, // Allow cookies or Authorization headers
   }),
 )
 app.use(express.json())
