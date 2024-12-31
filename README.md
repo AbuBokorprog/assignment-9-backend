@@ -4,10 +4,17 @@
 
 The E-Commerce Application is a scalable, high-performance platform for online shopping. It supports users, vendors, and administrators with distinct functionalities and a seamless shopping experience.
 
+**Repository Links:**
+
+- [Backend](https://github.com/AbuBokorprog/bazaar-bridge-backend)
+- [Frontend](https://github.com/AbuBokorprog/bazaar-bridge-frontend/)
+- [Dashboard](https://github.com/AbuBokorprog/bazaar-bridge-dashboard/)
+
 **Live Links:**
 
 - [Backend](https://bazaar-bridge.vercel.app/)
 - [Frontend](https://bazaar-bridge-front.vercel.app/)
+- [Dashboard](https://bazaar-bridge-front.vercel.app/)
 
 ---
 
