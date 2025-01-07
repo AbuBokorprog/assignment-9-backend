@@ -23,7 +23,10 @@ router.post(
 router.get('/', productController.retrieveAllProduct)
 router.get('/all-products/available', productController.allAvailableProducts)
 router.get('/all-products/flash-sale', productController.allFlashSaleProducts)
-router.get('/all-products/home-products', productController.allHomeProducts)
+router.get(
+  '/all-products/home/home-products',
+  productController.allHomeProducts,
+)
 router.get(
   '/vendor/my-product',
   Auth(UserRole.VENDOR),

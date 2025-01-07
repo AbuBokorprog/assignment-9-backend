@@ -365,34 +365,6 @@ const allFlashSaleProducts = async () => {
 }
 
 const allHomeProducts = async () => {
-  const allFlashSaleProducts = await prisma.product.findMany({
-    where: {
-      productStatus: 'FLASH_SALE',
-      isActive: 'APPROVED',
-    },
-    include: {
-      category: true,
-      colors: true,
-      sizes: true,
-      shop: true,
-      vendor: {
-        select: {
-          name: true,
-        },
-      },
-      reviews: {
-        where: {
-          reviewStatus: 'APPROVED',
-        },
-        select: {
-          rating: true,
-        },
-      },
-      orders: true,
-      wishlist: true,
-    },
-  })
-
   const allHotProducts = await prisma.product.findMany({
     where: {
       productStatus: 'HOT',
@@ -507,7 +479,6 @@ const allHomeProducts = async () => {
   })
 
   return {
-    allFlashSaleProducts,
     allHotProducts,
     allNewProducts,
     allDiscountProducts,

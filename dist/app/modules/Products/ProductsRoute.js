@@ -20,7 +20,7 @@ router.post('/', ImageUpload_1.upload.array('files[]'), (req, res, next) => {
 router.get('/', ProductsController_1.productController.retrieveAllProduct);
 router.get('/all-products/available', ProductsController_1.productController.allAvailableProducts);
 router.get('/all-products/flash-sale', ProductsController_1.productController.allFlashSaleProducts);
-router.get('/all-products/home-products', ProductsController_1.productController.allHomeProducts);
+router.get('/all-products/home/home-products', ProductsController_1.productController.allHomeProducts);
 router.get('/vendor/my-product', (0, Auth_1.default)(client_1.UserRole.VENDOR), ProductsController_1.productController.retrieveAllProductByVendor);
 router.get('/:id', ProductsController_1.productController.retrieveProductById);
 router.patch('/:id', ImageUpload_1.upload.array('files[]'), (req, res, next) => {

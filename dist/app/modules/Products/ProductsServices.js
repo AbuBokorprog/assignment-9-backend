@@ -355,39 +355,12 @@ const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* (
     return result;
 });
 const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
-    const allFlashSaleProducts = yield prisma_1.default.product.findMany({
-        where: {
-            productStatus: 'FLASH_SALE',
-            isActive: 'APPROVED',
-        },
-        include: {
-            category: true,
-            colors: true,
-            sizes: true,
-            shop: true,
-            vendor: {
-                select: {
-                    name: true,
-                },
-            },
-            reviews: {
-                where: {
-                    reviewStatus: 'APPROVED',
-                },
-                select: {
-                    rating: true,
-                },
-            },
-            orders: true,
-            wishlist: true,
-        },
-    });
     const allHotProducts = yield prisma_1.default.product.findMany({
         where: {
             productStatus: 'HOT',
             isActive: 'APPROVED',
         },
-        take: 10,
+        take: 20,
         include: {
             category: true,
             colors: true,
@@ -415,7 +388,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'NEW',
             isActive: 'APPROVED',
         },
-        take: 10,
+        take: 20,
         include: {
             category: true,
             colors: true,
@@ -443,7 +416,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'DISCOUNT',
             isActive: 'APPROVED',
         },
-        take: 10,
+        take: 20,
         include: {
             category: true,
             colors: true,
@@ -471,7 +444,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'FEATURED',
             isActive: 'APPROVED',
         },
-        take: 10,
+        take: 20,
         include: {
             category: true,
             colors: true,
@@ -495,7 +468,6 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
     return {
-        allFlashSaleProducts,
         allHotProducts,
         allNewProducts,
         allDiscountProducts,
