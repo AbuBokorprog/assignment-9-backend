@@ -355,12 +355,12 @@ const allFlashSaleProducts = () => __awaiter(void 0, void 0, void 0, function* (
     return result;
 });
 const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
-    const allHotProducts = yield prisma_1.default.product.findMany({
+    const allProducts = yield prisma_1.default.product.findMany({
         where: {
-            productStatus: 'HOT',
+            productStatus: { in: ['HOT', 'NEW', 'DISCOUNT', 'FEATURED'] },
             isActive: 'APPROVED',
         },
-        take: 10,
+        take: 40, // Total products to fetch (adjust based on requirements)
         include: {
             category: true,
             colors: true,
@@ -383,96 +383,14 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             wishlist: true,
         },
     });
-    const allNewProducts = yield prisma_1.default.product.findMany({
-        where: {
-            productStatus: 'NEW',
-            isActive: 'APPROVED',
-        },
-        take: 10,
-        include: {
-            category: true,
-            colors: true,
-            sizes: true,
-            shop: true,
-            vendor: {
-                select: {
-                    name: true,
-                },
-            },
-            reviews: {
-                where: {
-                    reviewStatus: 'APPROVED',
-                },
-                select: {
-                    rating: true,
-                },
-            },
-            orders: true,
-            wishlist: true,
-        },
-    });
-    const allDiscountProducts = yield prisma_1.default.product.findMany({
-        where: {
-            productStatus: 'DISCOUNT',
-            isActive: 'APPROVED',
-        },
-        take: 10,
-        include: {
-            category: true,
-            colors: true,
-            sizes: true,
-            shop: true,
-            vendor: {
-                select: {
-                    name: true,
-                },
-            },
-            reviews: {
-                where: {
-                    reviewStatus: 'APPROVED',
-                },
-                select: {
-                    rating: true,
-                },
-            },
-            orders: true,
-            wishlist: true,
-        },
-    });
-    const allFeaturedProducts = yield prisma_1.default.product.findMany({
-        where: {
-            productStatus: 'FEATURED',
-            isActive: 'APPROVED',
-        },
-        take: 10,
-        include: {
-            category: true,
-            colors: true,
-            sizes: true,
-            shop: true,
-            vendor: {
-                select: {
-                    name: true,
-                },
-            },
-            reviews: {
-                where: {
-                    reviewStatus: 'APPROVED',
-                },
-                select: {
-                    rating: true,
-                },
-            },
-            orders: true,
-            wishlist: true,
-        },
-    });
-    return {
-        allHotProducts,
-        allNewProducts,
-        allDiscountProducts,
-        allFeaturedProducts,
+    // Group products by their `productStatus`
+    const groupedProducts = {
+        allHotProducts: allProducts.filter(p => p.productStatus === 'HOT'),
+        allNewProducts: allProducts.filter(p => p.productStatus === 'NEW'),
+        allDiscountProducts: allProducts.filter(p => p.productStatus === 'DISCOUNT'),
+        allFeaturedProducts: allProducts.filter(p => p.productStatus === 'FEATURED'),
     };
+    return groupedProducts;
 });
 const retrieveProductById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const product = yield prisma_1.default.product.findUniqueOrThrow({

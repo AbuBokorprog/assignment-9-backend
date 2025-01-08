@@ -365,96 +365,12 @@ const allFlashSaleProducts = async () => {
 }
 
 const allHomeProducts = async () => {
-  const allHotProducts = await prisma.product.findMany({
+  const allProducts = await prisma.product.findMany({
     where: {
-      productStatus: 'HOT',
+      productStatus: { in: ['HOT', 'NEW', 'DISCOUNT', 'FEATURED'] },
       isActive: 'APPROVED',
     },
-    take: 10,
-    include: {
-      category: true,
-      colors: true,
-      sizes: true,
-      shop: true,
-      vendor: {
-        select: {
-          name: true,
-        },
-      },
-      reviews: {
-        where: {
-          reviewStatus: 'APPROVED',
-        },
-        select: {
-          rating: true,
-        },
-      },
-      orders: true,
-      wishlist: true,
-    },
-  })
-  const allNewProducts = await prisma.product.findMany({
-    where: {
-      productStatus: 'NEW',
-      isActive: 'APPROVED',
-    },
-    take: 10,
-    include: {
-      category: true,
-      colors: true,
-      sizes: true,
-      shop: true,
-      vendor: {
-        select: {
-          name: true,
-        },
-      },
-      reviews: {
-        where: {
-          reviewStatus: 'APPROVED',
-        },
-        select: {
-          rating: true,
-        },
-      },
-      orders: true,
-      wishlist: true,
-    },
-  })
-  const allDiscountProducts = await prisma.product.findMany({
-    where: {
-      productStatus: 'DISCOUNT',
-      isActive: 'APPROVED',
-    },
-    take: 10,
-    include: {
-      category: true,
-      colors: true,
-      sizes: true,
-      shop: true,
-      vendor: {
-        select: {
-          name: true,
-        },
-      },
-      reviews: {
-        where: {
-          reviewStatus: 'APPROVED',
-        },
-        select: {
-          rating: true,
-        },
-      },
-      orders: true,
-      wishlist: true,
-    },
-  })
-  const allFeaturedProducts = await prisma.product.findMany({
-    where: {
-      productStatus: 'FEATURED',
-      isActive: 'APPROVED',
-    },
-    take: 10,
+    take: 40, // Total products to fetch (adjust based on requirements)
     include: {
       category: true,
       colors: true,
@@ -478,12 +394,19 @@ const allHomeProducts = async () => {
     },
   })
 
-  return {
-    allHotProducts,
-    allNewProducts,
-    allDiscountProducts,
-    allFeaturedProducts,
+  // Group products by their `productStatus`
+  const groupedProducts = {
+    allHotProducts: allProducts.filter(p => p.productStatus === 'HOT'),
+    allNewProducts: allProducts.filter(p => p.productStatus === 'NEW'),
+    allDiscountProducts: allProducts.filter(
+      p => p.productStatus === 'DISCOUNT',
+    ),
+    allFeaturedProducts: allProducts.filter(
+      p => p.productStatus === 'FEATURED',
+    ),
   }
+
+  return groupedProducts
 }
 
 const retrieveProductById = async (id: any) => {
