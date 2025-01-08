@@ -360,7 +360,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'HOT',
             isActive: 'APPROVED',
         },
-        take: 20,
+        take: 10,
         include: {
             category: true,
             colors: true,
@@ -388,7 +388,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'NEW',
             isActive: 'APPROVED',
         },
-        take: 20,
+        take: 10,
         include: {
             category: true,
             colors: true,
@@ -416,7 +416,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'DISCOUNT',
             isActive: 'APPROVED',
         },
-        take: 20,
+        take: 10,
         include: {
             category: true,
             colors: true,
@@ -444,7 +444,7 @@ const allHomeProducts = () => __awaiter(void 0, void 0, void 0, function* () {
             productStatus: 'FEATURED',
             isActive: 'APPROVED',
         },
-        take: 20,
+        take: 10,
         include: {
             category: true,
             colors: true,
